@@ -109,9 +109,9 @@ This document provides a complete, dependency-ordered task list for implementing
 
 ### Application Layer
 
-- [ ] T032 [US1] Create GameDto type in `src/server/application/dto/GameDto.ts`
-- [ ] T033 [US1] Implement CreateGame use case in `src/server/application/use-cases/games/CreateGame.ts`
-- [ ] T034 [US1] Write unit tests for CreateGame use case in `tests/unit/use-cases/CreateGame.test.ts`
+- [X] T032 [US1] Create GameDto type in `src/server/application/dto/GameDto.ts`
+- [X] T033 [US1] Implement CreateGame use case in `src/server/application/use-cases/games/CreateGame.ts`
+- [X] T034 [US1] Write unit tests for CreateGame use case in `tests/unit/use-cases/CreateGame.test.ts`
 
 ### Presentation Layer
 
