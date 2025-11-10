@@ -1,8 +1,10 @@
 // Game entity
-// Represents a game instance in the system
+// Feature: 002-game-preparation
+// Represents a game instance with status transitions and presenter management
 
 import type { GameId } from '../value-objects/GameId';
-import type { GameStatus } from '../value-objects/GameStatus';
+import { GameStatus } from '../value-objects/GameStatus';
+import { InvalidStatusTransitionError } from '../errors/InvalidStatusTransitionError';
 
 /**
  * Error thrown when game name is invalid
@@ -181,5 +183,45 @@ export class Game {
     }
     this._currentPlayers--;
     this._updatedAt = new Date();
+  }
+
+  /**
+   * Transitions game from 準備中 to 出題中 (FR-001)
+   * @throws InvalidStatusTransitionError if not in 準備中 status
+   */
+  startAccepting(): void {
+    if (!this._status.isPreparation()) {
+      throw new InvalidStatusTransitionError(
+        this._status.toString(),
+        '出題中',
+        'Can only start accepting from 準備中 status'
+      );
+    }
+    this._status = GameStatus.acceptingResponses();
+    this._updatedAt = new Date();
+  }
+
+  /**
+   * Transitions game from 出題中 to 締切 (FR-001)
+   * @throws InvalidStatusTransitionError if not in 出題中 status
+   */
+  close(): void {
+    if (!this._status.isAcceptingResponses()) {
+      throw new InvalidStatusTransitionError(
+        this._status.toString(),
+        '締切',
+        'Can only close from 出題中 status'
+      );
+    }
+    this._status = GameStatus.closed();
+    this._updatedAt = new Date();
+  }
+
+  /**
+   * Checks if game can be edited (FR-014)
+   * Only games in 準備中 status can be edited
+   */
+  canEdit(): boolean {
+    return this._status.canEdit();
   }
 }
