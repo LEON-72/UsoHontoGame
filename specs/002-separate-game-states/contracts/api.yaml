@@ -1,0 +1,228 @@
+openapi: 3.0.0
+info:
+  title: Game Session API
+  version: 1.0.0
+  description: API for managing game sessions with separate creation and start states
+
+paths:
+  /api/sessions:
+    post:
+      summary: Create a new game session
+      description: Creates a game session with episodes and returns the session ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - episodes
+              properties:
+                episodes:
+                  type: array
+                  minItems: 1
+                  maxItems: 20
+                  items:
+                    type: object
+                    required:
+                      - content
+                    properties:
+                      content:
+                        type: string
+                        minLength: 1
+                        maxLength: 500
+                        description: Episode text content
+      responses:
+        201:
+          description: Game session created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateSessionResponse'
+        400:
+          description: Invalid request data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/sessions/{sessionId}:
+    get:
+      summary: Get game session details
+      description: Retrieves the current state and details of a game session
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[A-Za-z0-9_-]{10}$'
+      responses:
+        200:
+          description: Session details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionResponse'
+        404:
+          description: Session not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/sessions/{sessionId}/host-access:
+    get:
+      summary: Check host access permissions
+      description: Verifies if the current user is the host of the specified session
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[A-Za-z0-9_-]{10}$'
+      responses:
+        200:
+          description: Host access check completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HostAccessResponse'
+        404:
+          description: Session not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/sessions/{sessionId}/start:
+    post:
+      summary: Start a game session
+      description: Transitions a game from created to started state (host only)
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[A-Za-z0-9_-]{10}$'
+      responses:
+        200:
+          description: Game started successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        403:
+          description: Not authorized (not host)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        404:
+          description: Session not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        409:
+          description: Invalid state transition
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    CreateSessionResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          properties:
+            sessionId:
+              type: string
+              example: "xK9mP2nQ7R"
+            message:
+              type: string
+              example: "ゲームセッションが正常に作成されました"
+
+    SessionResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              example: "xK9mP2nQ7R"
+            state:
+              type: string
+              enum: [created, started, ended]
+              example: "created"
+            episodeCount:
+              type: integer
+              example: 3
+            playerCount:
+              type: integer
+              example: 0
+            maxPlayers:
+              type: integer
+              example: 10
+            createdAt:
+              type: string
+              format: date-time
+            isHost:
+              type: boolean
+              description: Whether the current user is the host
+
+    HostAccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          properties:
+            isHost:
+              type: boolean
+              example: true
+            sessionId:
+              type: string
+              example: "xK9mP2nQ7R"
+
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          properties:
+            message:
+              type: string
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "Session not found"
+            code:
+              type: string
+              example: "SESSION_NOT_FOUND"
