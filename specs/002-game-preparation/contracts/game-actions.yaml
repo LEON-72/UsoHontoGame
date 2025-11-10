@@ -1,0 +1,278 @@
+# Server Action Contracts: Game Management
+# Feature: 002-game-preparation
+# Technology: Next.js Server Actions
+# Validation: Zod schemas (see src/server/domain/schemas/gameSchemas.ts)
+#
+# All Server Actions validate input using Zod before executing use cases.
+# Error responses include structured validation errors from z.ZodError.flatten().
+
+actions:
+  createGame:
+    description: Create a new game with specified player limit (FR-001, FR-002)
+    zodSchema: CreateGameSchema
+    input:
+      type: object
+      required:
+        - playerLimit
+      properties:
+        playerLimit:
+          type: integer
+          minimum: 1
+          maximum: 100
+          description: Maximum number of players allowed in the game
+    output:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Whether the operation succeeded
+        gameId:
+          type: string
+          format: uuid
+          description: The created game's unique identifier (only present on success)
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: Structured validation errors from Zod (only present on validation failure)
+        error:
+          type: string
+          description: General error message (only present on non-validation failure)
+    errors:
+      - ZodError: Input validation failed (returns structured errors object)
+      - UnauthorizedError: User must have valid session
+    requirements:
+      - FR-001
+      - FR-002
+      - FR-008
+      - FR-017
+
+  updateGame:
+    description: Update game details when status is 準備中 (FR-013)
+    input:
+      type: object
+      required:
+        - gameId
+      properties:
+        gameId:
+          type: string
+          format: uuid
+        playerLimit:
+          type: integer
+          minimum: 1
+          maximum: 100
+          description: Updated player limit
+    output:
+      type: object
+      properties:
+        success:
+          type: boolean
+        error:
+          type: string
+    errors:
+      - ValidationError: Player limit must be between 1 and 100
+      - UnauthorizedError: Only creator can update game
+      - InvalidStatusError: Cannot update game in 出題中 or 締切 status
+      - NotFoundError: Game not found
+    requirements:
+      - FR-013
+      - FR-017
+
+  deleteGame:
+    description: Delete a game and all associated data (FR-015, FR-016)
+    input:
+      type: object
+      required:
+        - gameId
+      properties:
+        gameId:
+          type: string
+          format: uuid
+    output:
+      type: object
+      properties:
+        success:
+          type: boolean
+        requiresConfirmation:
+          type: boolean
+          description: True if game has status 出題中 or 締切
+        error:
+          type: string
+    errors:
+      - UnauthorizedError: Only creator can delete game
+      - NotFoundError: Game not found
+    requirements:
+      - FR-015
+      - FR-016
+
+  startAcceptingResponses:
+    description: Transition game from 準備中 to 出題中 (FR-009, FR-011)
+    input:
+      type: object
+      required:
+        - gameId
+      properties:
+        gameId:
+          type: string
+          format: uuid
+    output:
+      type: object
+      properties:
+        success:
+          type: boolean
+        error:
+          type: string
+    errors:
+      - ValidationError: Game must have at least 1 presenter with complete episodes
+      - InvalidStatusError: Game must be in 準備中 status
+      - UnauthorizedError: Only creator can change status
+      - NotFoundError: Game not found
+    requirements:
+      - FR-009
+      - FR-011
+      - FR-018
+      - FR-019
+
+  closeGame:
+    description: Transition game from 出題中 to 締切 (FR-010)
+    input:
+      type: object
+      required:
+        - gameId
+      properties:
+        gameId:
+          type: string
+          format: uuid
+    output:
+      type: object
+      properties:
+        success:
+          type: boolean
+        error:
+          type: string
+    errors:
+      - InvalidStatusError: Game must be in 出題中 status
+      - UnauthorizedError: Only creator can change status
+      - NotFoundError: Game not found
+    requirements:
+      - FR-010
+
+  getGamesByCreator:
+    description: Get all games created by current user (FR-012)
+    input:
+      type: object
+      properties: {}
+    output:
+      type: object
+      properties:
+        success:
+          type: boolean
+        games:
+          type: array
+          items:
+            $ref: '#/components/schemas/GameDto'
+        error:
+          type: string
+    errors:
+      - UnauthorizedError: User must have valid session
+    requirements:
+      - FR-012
+
+  getGameDetail:
+    description: Get full game details including presenters and episodes
+    input:
+      type: object
+      required:
+        - gameId
+      properties:
+        gameId:
+          type: string
+          format: uuid
+    output:
+      type: object
+      properties:
+        success:
+          type: boolean
+        game:
+          $ref: '#/components/schemas/GameDetailDto'
+        error:
+          type: string
+    errors:
+      - UnauthorizedError: Only creator can view full details
+      - NotFoundError: Game not found
+    requirements:
+      - FR-012
+      - FR-021
+
+components:
+  schemas:
+    GameDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        playerLimit:
+          type: integer
+        status:
+          type: string
+          enum: [準備中, 出題中, 締切]
+        presenterCount:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+
+    GameDetailDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        playerLimit:
+          type: integer
+        status:
+          type: string
+          enum: [準備中, 出題中, 締切]
+        presenters:
+          type: array
+          items:
+            $ref: '#/components/schemas/PresenterWithLieDto'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    PresenterWithLieDto:
+      type: object
+      description: Full presenter data including lie markers (moderator/presenter view only)
+      properties:
+        id:
+          type: string
+          format: uuid
+        nickname:
+          type: string
+        episodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/EpisodeWithLieDto'
+          minItems: 0
+          maxItems: 3
+
+    EpisodeWithLieDto:
+      type: object
+      description: Episode with lie marker (confidential - FR-006)
+      properties:
+        id:
+          type: string
+          format: uuid
+        text:
+          type: string
+          maxLength: 1000
+        isLie:
+          type: boolean
+          description: "⚠️ CONFIDENTIAL - Never expose in public APIs"
