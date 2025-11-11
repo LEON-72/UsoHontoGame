@@ -148,8 +148,8 @@ This document provides a complete, dependency-ordered task list for implementing
 - [X] T044 [US2] Implement RemovePresenter use case in `src/server/application/use-cases/games/RemovePresenter.ts`
 - [X] T045 [US2] Implement AddEpisode use case with lie marker validation in `src/server/application/use-cases/games/AddEpisode.ts`
 - [X] T046 [US2] Implement GetPresenterEpisodes use case (with access control) in `src/server/application/use-cases/games/GetPresenterEpisodes.ts`
-- [ ] T047 [P] [US2] Write unit tests for AddPresenter (including NotFoundError for invalid nickname) in `tests/unit/use-cases/AddPresenter.test.ts`
-- [ ] T048 [P] [US2] Write unit tests for AddEpisode in `tests/unit/use-cases/AddEpisode.test.ts`
+- [X] T047 [P] [US2] Write unit tests for AddPresenter (including NotFoundError for invalid nickname) in `tests/unit/use-cases/AddPresenter.test.ts`
+- [X] T048 [P] [US2] Write unit tests for AddEpisode in `tests/unit/use-cases/AddEpisode.test.ts`
 
 ### Presentation Layer
 
