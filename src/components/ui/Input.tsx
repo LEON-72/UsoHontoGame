@@ -1,8 +1,8 @@
 // Input component
 // Reusable text input with consistent styling
 
-import { useId } from 'react';
 import type { InputHTMLAttributes } from 'react';
+import { useId } from 'react';
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;

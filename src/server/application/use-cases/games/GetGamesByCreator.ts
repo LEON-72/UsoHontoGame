@@ -2,23 +2,23 @@
 // Feature: 002-game-preparation
 // Retrieve all games created by a specific moderator
 
-import type { IGameRepository } from "@/server/domain/repositories/IGameRepository";
-import type { GameManagementDto } from "@/server/application/dto/GameDto";
+import type { GameManagementDto } from '@/server/application/dto/GameDto';
+import type { IGameRepository } from '@/server/domain/repositories/IGameRepository';
 
 /**
  * GetGamesByCreator Input
  */
 export interface GetGamesByCreatorInput {
-	/** Session ID of the creator/moderator */
-	creatorId: string;
+  /** Session ID of the creator/moderator */
+  creatorId: string;
 }
 
 /**
  * GetGamesByCreator Output
  */
 export interface GetGamesByCreatorOutput {
-	/** List of games with management info */
-	games: GameManagementDto[];
+  /** List of games with management info */
+  games: GameManagementDto[];
 }
 
 /**
@@ -32,32 +32,30 @@ export interface GetGamesByCreatorOutput {
  * - Ordered by creation date (newest first)
  */
 export class GetGamesByCreator {
-	constructor(private readonly gameRepository: IGameRepository) {}
+  constructor(private readonly gameRepository: IGameRepository) {}
 
-	async execute(
-		input: GetGamesByCreatorInput,
-	): Promise<GetGamesByCreatorOutput> {
-		const { creatorId } = input;
+  async execute(input: GetGamesByCreatorInput): Promise<GetGamesByCreatorOutput> {
+    const { creatorId } = input;
 
-		// Get all games by creator
-		const games = await this.gameRepository.findByCreatorId(creatorId);
+    // Get all games by creator
+    const games = await this.gameRepository.findByCreatorId(creatorId);
 
-		// Map to GameManagementDto
-		const gameDtos: GameManagementDto[] = games.map((game) => ({
-			id: game.id.toString(),
-			name: game.name,
-			status: game.status.toString(),
-			maxPlayers: game.maxPlayers,
-			currentPlayers: game.currentPlayers,
-			availableSlots: game.maxPlayers - game.currentPlayers,
-		}));
+    // Map to GameManagementDto
+    const gameDtos: GameManagementDto[] = games.map((game) => ({
+      id: game.id.toString(),
+      name: game.name,
+      status: game.status.toString(),
+      maxPlayers: game.maxPlayers,
+      currentPlayers: game.currentPlayers,
+      availableSlots: game.maxPlayers - game.currentPlayers,
+    }));
 
-		// Sort by creation date (newest first)
-		gameDtos.sort((a, b) => {
-			// Note: We don't have createdAt in DTO, but games array is already sorted by repository
-			return 0;
-		});
+    // Sort by creation date (newest first)
+    gameDtos.sort((_a, _b) => {
+      // Note: We don't have createdAt in DTO, but games array is already sorted by repository
+      return 0;
+    });
 
-		return { games: gameDtos };
-	}
+    return { games: gameDtos };
+  }
 }

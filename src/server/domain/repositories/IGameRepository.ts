@@ -1,11 +1,11 @@
 // Game Repository Interface
 // Abstraction for game storage operations
 
+import type { Episode } from '../entities/Episode';
 import type { Game } from '../entities/Game';
+import type { Presenter } from '../entities/Presenter';
 import type { GameId } from '../value-objects/GameId';
 import type { GameStatus } from '../value-objects/GameStatus';
-import type { Presenter } from '../entities/Presenter';
-import type { Episode } from '../entities/Episode';
 
 /**
  * Game repository interface

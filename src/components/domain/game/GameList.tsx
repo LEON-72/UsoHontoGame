@@ -2,8 +2,8 @@
 // Feature: 002-game-preparation
 // List component for displaying multiple games
 
-import { GameCard } from './GameCard';
 import type { GameDto, GameManagementDto } from '@/server/application/dto/GameDto';
+import { GameCard } from './GameCard';
 
 export interface GameListProps {
   /** Array of games to display */
@@ -19,11 +19,7 @@ export interface GameListProps {
  * Displays a list of games with optional empty state
  * Supports both player and management views
  */
-export function GameList({
-  games,
-  managementView = false,
-  onGameClick,
-}: GameListProps) {
+export function GameList({ games, managementView = false, onGameClick }: GameListProps) {
   // Empty state
   if (games.length === 0) {
     return (
@@ -42,13 +38,11 @@ export function GameList({
             d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
           />
         </svg>
-        <h3 className="mt-2 text-sm font-medium text-gray-900">
-          ゲームがありません
-        </h3>
+        <h3 className="mt-2 text-sm font-medium text-gray-900">ゲームがありません</h3>
         <p className="mt-1 text-sm text-gray-500">
           {managementView
-            ? "新しいゲームを作成して始めましょう"
-            : "現在参加可能なゲームはありません"}
+            ? '新しいゲームを作成して始めましょう'
+            : '現在参加可能なゲームはありません'}
         </p>
         {managementView && (
           <div className="mt-6">
@@ -83,7 +77,7 @@ export function GameList({
     <div>
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-2xl font-bold text-gray-900">
-          {managementView ? "作成したゲーム" : "参加可能なゲーム"}
+          {managementView ? '作成したゲーム' : '参加可能なゲーム'}
         </h2>
         <span className="text-sm text-gray-600">{games.length}件</span>
       </div>

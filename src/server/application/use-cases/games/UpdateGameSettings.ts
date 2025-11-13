@@ -2,15 +2,15 @@
 // Feature: 002-game-preparation
 // Update game settings (player limit) when in preparation status
 
-import { GameId } from "@/server/domain/value-objects/GameId";
-import type { IGameRepository } from "@/server/domain/repositories/IGameRepository";
 import type {
-	UpdateGameSettingsInput,
-	UpdateGameSettingsOutput,
-	GameDetailDto,
-} from "@/server/application/dto/GameDetailDto";
-import { NotFoundError } from "@/server/domain/errors/NotFoundError";
-import { ValidationError } from "@/server/domain/errors/ValidationError";
+  GameDetailDto,
+  UpdateGameSettingsInput,
+  UpdateGameSettingsOutput,
+} from '@/server/application/dto/GameDetailDto';
+import { NotFoundError } from '@/server/domain/errors/NotFoundError';
+import { ValidationError } from '@/server/domain/errors/ValidationError';
+import type { IGameRepository } from '@/server/domain/repositories/IGameRepository';
+import { GameId } from '@/server/domain/value-objects/GameId';
 
 /**
  * UpdateGameSettings Use Case
@@ -24,69 +24,65 @@ import { ValidationError } from "@/server/domain/errors/ValidationError";
  * - New player limit must be >= current players
  */
 export class UpdateGameSettings {
-	constructor(private readonly gameRepository: IGameRepository) {}
+  constructor(private readonly gameRepository: IGameRepository) {}
 
-	async execute(
-		input: UpdateGameSettingsInput,
-	): Promise<UpdateGameSettingsOutput> {
-		const { gameId, playerLimit, requesterId } = input;
+  async execute(input: UpdateGameSettingsInput): Promise<UpdateGameSettingsOutput> {
+    const { gameId, playerLimit, requesterId } = input;
 
-		// Find game
-		const game = await this.gameRepository.findById(new GameId(gameId));
+    // Find game
+    const game = await this.gameRepository.findById(new GameId(gameId));
 
-		if (!game) {
-			throw new NotFoundError(`Game ${gameId} not found`);
-		}
+    if (!game) {
+      throw new NotFoundError(`Game ${gameId} not found`);
+    }
 
-		// Authorization: Only creator can update
-		if (game.creatorId !== requesterId) {
-			throw new Error("Unauthorized: You can only edit games you created");
-		}
+    // Authorization: Only creator can update
+    if (game.creatorId !== requesterId) {
+      throw new Error('Unauthorized: You can only edit games you created');
+    }
 
-		// Can only edit when in preparation status
-		if (game.status.toString() !== "準備中") {
-			throw new ValidationError(
-				"ゲームの設定を変更できるのは準備中のみです",
-			);
-		}
+    // Can only edit when in preparation status
+    if (game.status.toString() !== '準備中') {
+      throw new ValidationError('ゲームの設定を変更できるのは準備中のみです');
+    }
 
-		// Update player limit if provided
-		if (playerLimit !== undefined) {
-			// Validate player limit range
-			if (playerLimit < 1 || playerLimit > 100) {
-				throw new ValidationError("参加人数は1〜100人の範囲で指定してください");
-			}
+    // Update player limit if provided
+    if (playerLimit !== undefined) {
+      // Validate player limit range
+      if (playerLimit < 1 || playerLimit > 100) {
+        throw new ValidationError('参加人数は1〜100人の範囲で指定してください');
+      }
 
-			// New limit must be >= current players
-			if (playerLimit < game.currentPlayers) {
-				throw new ValidationError(
-					`参加人数は現在の参加者数(${game.currentPlayers}人)以上である必要があります`,
-				);
-			}
+      // New limit must be >= current players
+      if (playerLimit < game.currentPlayers) {
+        throw new ValidationError(
+          `参加人数は現在の参加者数(${game.currentPlayers}人)以上である必要があります`
+        );
+      }
 
-			// Update via entity method (uses updatePlayerLimit)
-			game.updatePlayerLimit(playerLimit);
-		}
+      // Update via entity method (uses updatePlayerLimit)
+      game.updatePlayerLimit(playerLimit);
+    }
 
-		// Save changes
-		await this.gameRepository.update(game);
+    // Save changes
+    await this.gameRepository.update(game);
 
-		// Map to DTO
-		const gameDetailDto: GameDetailDto = {
-			id: game.id.toString(),
-			name: game.name,
-			status: game.status.toString(),
-			maxPlayers: game.maxPlayers,
-			currentPlayers: game.currentPlayers,
-			availableSlots: game.availableSlots,
-			creatorId: game.creatorId,
-			createdAt: game.createdAt,
-			updatedAt: game.updatedAt,
-		};
+    // Map to DTO
+    const gameDetailDto: GameDetailDto = {
+      id: game.id.toString(),
+      name: game.name,
+      status: game.status.toString(),
+      maxPlayers: game.maxPlayers,
+      currentPlayers: game.currentPlayers,
+      availableSlots: game.availableSlots,
+      creatorId: game.creatorId,
+      createdAt: game.createdAt,
+      updatedAt: game.updatedAt,
+    };
 
-		return {
-			success: true,
-			game: gameDetailDto,
-		};
-	}
+    return {
+      success: true,
+      game: gameDetailDto,
+    };
+  }
 }

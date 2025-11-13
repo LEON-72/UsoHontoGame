@@ -2,17 +2,17 @@
 // Feature: 002-game-preparation
 // Business logic for removing a presenter from a game
 
-import type { IGameRepository } from "@/server/domain/repositories/IGameRepository";
-import { NotFoundError } from "@/server/domain/errors/NotFoundError";
+import { NotFoundError } from '@/server/domain/errors/NotFoundError';
+import type { IGameRepository } from '@/server/domain/repositories/IGameRepository';
 
 export interface RemovePresenterInput {
-	/** Presenter ID to remove */
-	presenterId: string;
+  /** Presenter ID to remove */
+  presenterId: string;
 }
 
 export interface RemovePresenterOutput {
-	/** Success flag */
-	success: boolean;
+  /** Success flag */
+  success: boolean;
 }
 
 /**
@@ -25,24 +25,23 @@ export interface RemovePresenterOutput {
  * - Can only remove presenters when game status is 準備中
  */
 export class RemovePresenter {
-	constructor(private gameRepository: IGameRepository) {}
+  constructor(private gameRepository: IGameRepository) {}
 
-	async execute(input: RemovePresenterInput): Promise<RemovePresenterOutput> {
-		const { presenterId } = input;
+  async execute(input: RemovePresenterInput): Promise<RemovePresenterOutput> {
+    const { presenterId } = input;
 
-		// Check if presenter exists
-		const presenter =
-			await this.gameRepository.findPresenterById(presenterId);
+    // Check if presenter exists
+    const presenter = await this.gameRepository.findPresenterById(presenterId);
 
-		if (!presenter) {
-			throw new NotFoundError(`Presenter ${presenterId} not found`);
-		}
+    if (!presenter) {
+      throw new NotFoundError(`Presenter ${presenterId} not found`);
+    }
 
-		// Remove presenter (cascade deletes episodes via Prisma)
-		await this.gameRepository.removePresenter(presenterId);
+    // Remove presenter (cascade deletes episodes via Prisma)
+    await this.gameRepository.removePresenter(presenterId);
 
-		return {
-			success: true,
-		};
-	}
+    return {
+      success: true,
+    };
+  }
 }

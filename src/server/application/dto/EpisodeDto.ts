@@ -11,15 +11,15 @@
  * For moderator/presenter views, use EpisodeWithLieDto
  */
 export interface EpisodeDto {
-	/** Episode UUID */
-	id: string;
+  /** Episode UUID */
+  id: string;
 
-	/** Presenter UUID this episode belongs to */
-	presenterId: string;
+  /** Presenter UUID this episode belongs to */
+  presenterId: string;
 
-	/** Episode text content (1-1000 characters) */
-	text: string;
+  /** Episode text content (1-1000 characters) */
+  text: string;
 
-	/** When episode was created */
-	createdAt: Date;
+  /** When episode was created */
+  createdAt: Date;
 }

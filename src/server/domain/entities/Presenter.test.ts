@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { Presenter } from '@/server/domain/entities/Presenter';
 import { Episode } from '@/server/domain/entities/Episode';
+import { Presenter } from '@/server/domain/entities/Presenter';
 import { ValidationError } from '@/server/domain/errors/ValidationError';
 
 describe('Presenter', () => {
@@ -82,7 +82,9 @@ describe('Presenter', () => {
       };
 
       expect(() => Presenter.create(props)).toThrow(ValidationError);
-      expect(() => Presenter.create(props)).toThrow('Presenter must have exactly 3 episodes (has 2)');
+      expect(() => Presenter.create(props)).toThrow(
+        'Presenter must have exactly 3 episodes (has 2)'
+      );
     });
 
     it('should throw ValidationError for more than 3 episodes', () => {
@@ -101,7 +103,9 @@ describe('Presenter', () => {
       };
 
       expect(() => Presenter.create(props)).toThrow(ValidationError);
-      expect(() => Presenter.create(props)).toThrow('Presenter must have exactly 3 episodes (has 4)');
+      expect(() => Presenter.create(props)).toThrow(
+        'Presenter must have exactly 3 episodes (has 4)'
+      );
     });
 
     it('should throw ValidationError for 0 lies (all truths)', () => {
@@ -119,7 +123,9 @@ describe('Presenter', () => {
       };
 
       expect(() => Presenter.create(props)).toThrow(ValidationError);
-      expect(() => Presenter.create(props)).toThrow('Presenter must have exactly 1 lie episode (has 0)');
+      expect(() => Presenter.create(props)).toThrow(
+        'Presenter must have exactly 1 lie episode (has 0)'
+      );
     });
 
     it('should throw ValidationError for 2 lies', () => {
@@ -137,7 +143,9 @@ describe('Presenter', () => {
       };
 
       expect(() => Presenter.create(props)).toThrow(ValidationError);
-      expect(() => Presenter.create(props)).toThrow('Presenter must have exactly 1 lie episode (has 2)');
+      expect(() => Presenter.create(props)).toThrow(
+        'Presenter must have exactly 1 lie episode (has 2)'
+      );
     });
 
     it('should throw ValidationError for 3 lies (all lies)', () => {
@@ -155,7 +163,9 @@ describe('Presenter', () => {
       };
 
       expect(() => Presenter.create(props)).toThrow(ValidationError);
-      expect(() => Presenter.create(props)).toThrow('Presenter must have exactly 1 lie episode (has 3)');
+      expect(() => Presenter.create(props)).toThrow(
+        'Presenter must have exactly 1 lie episode (has 3)'
+      );
     });
   });
 
@@ -253,7 +263,7 @@ describe('Presenter', () => {
       const truths = presenter.getTruthEpisodes();
 
       expect(truths).toHaveLength(2);
-      expect(truths.every(ep => !ep.isLie)).toBe(true);
+      expect(truths.every((ep) => !ep.isLie)).toBe(true);
     });
 
     it('should return empty array if all episodes are lies (invalid state)', () => {

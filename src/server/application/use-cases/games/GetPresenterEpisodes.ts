@@ -2,21 +2,21 @@
 // Feature: 002-game-preparation
 // Business logic for retrieving presenter's episodes with access control
 
-import type { IGameRepository } from "@/server/domain/repositories/IGameRepository";
-import { NotFoundError } from "@/server/domain/errors/NotFoundError";
-import type { EpisodeWithLieDto } from "../../dto/EpisodeWithLieDto";
-import type { PresenterWithLieDto } from "../../dto/PresenterWithLieDto";
+import { NotFoundError } from '@/server/domain/errors/NotFoundError';
+import type { IGameRepository } from '@/server/domain/repositories/IGameRepository';
+import type { EpisodeWithLieDto } from '../../dto/EpisodeWithLieDto';
+import type { PresenterWithLieDto } from '../../dto/PresenterWithLieDto';
 
 export interface GetPresenterEpisodesInput {
-	/** Presenter ID to get episodes for */
-	presenterId: string;
-	/** Requesting user's session ID (for access control) */
-	requesterId: string;
+  /** Presenter ID to get episodes for */
+  presenterId: string;
+  /** Requesting user's session ID (for access control) */
+  requesterId: string;
 }
 
 export interface GetPresenterEpisodesOutput {
-	/** Presenter with episodes (including lie markers if authorized) */
-	presenter: PresenterWithLieDto;
+  /** Presenter with episodes (including lie markers if authorized) */
+  presenter: PresenterWithLieDto;
 }
 
 /**
@@ -33,44 +33,40 @@ export interface GetPresenterEpisodesOutput {
  * to determine whether to return PresenterWithLieDto or a public version.
  */
 export class GetPresenterEpisodes {
-	constructor(private gameRepository: IGameRepository) {}
+  constructor(private gameRepository: IGameRepository) {}
 
-	async execute(
-		input: GetPresenterEpisodesInput,
-	): Promise<GetPresenterEpisodesOutput> {
-		const { presenterId } = input;
+  async execute(input: GetPresenterEpisodesInput): Promise<GetPresenterEpisodesOutput> {
+    const { presenterId } = input;
 
-		// Check if presenter exists
-		const presenterEntity =
-			await this.gameRepository.findPresenterById(presenterId);
+    // Check if presenter exists
+    const presenterEntity = await this.gameRepository.findPresenterById(presenterId);
 
-		if (!presenterEntity) {
-			throw new NotFoundError(`Presenter ${presenterId} not found`);
-		}
+    if (!presenterEntity) {
+      throw new NotFoundError(`Presenter ${presenterId} not found`);
+    }
 
-		// Get episodes
-		const episodes =
-			await this.gameRepository.findEpisodesByPresenterId(presenterId);
+    // Get episodes
+    const episodes = await this.gameRepository.findEpisodesByPresenterId(presenterId);
 
-		// Map to DTOs
-		const episodeDtos: EpisodeWithLieDto[] = episodes.map((episode) => ({
-			id: episode.id,
-			presenterId: episode.presenterId,
-			text: episode.text,
-			isLie: episode.isLie,
-			createdAt: episode.createdAt,
-		}));
+    // Map to DTOs
+    const episodeDtos: EpisodeWithLieDto[] = episodes.map((episode) => ({
+      id: episode.id,
+      presenterId: episode.presenterId,
+      text: episode.text,
+      isLie: episode.isLie,
+      createdAt: episode.createdAt,
+    }));
 
-		const presenter: PresenterWithLieDto = {
-			id: presenterEntity.id,
-			gameId: presenterEntity.gameId,
-			nickname: presenterEntity.nickname,
-			episodes: episodeDtos,
-			createdAt: presenterEntity.createdAt,
-		};
+    const presenter: PresenterWithLieDto = {
+      id: presenterEntity.id,
+      gameId: presenterEntity.gameId,
+      nickname: presenterEntity.nickname,
+      episodes: episodeDtos,
+      createdAt: presenterEntity.createdAt,
+    };
 
-		return {
-			presenter,
-		};
-	}
+    return {
+      presenter,
+    };
+  }
 }

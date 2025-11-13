@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 /**
  * E2E Tests for TOP Page
@@ -38,8 +38,8 @@ test.describe('TOP Page - Session Management', () => {
 
     // And: Session cookie should be set
     const cookies = await page.context().cookies();
-    const sessionCookie = cookies.find(c => c.name === 'sessionId');
-    const nicknameCookie = cookies.find(c => c.name === 'nickname');
+    const sessionCookie = cookies.find((c) => c.name === 'sessionId');
+    const nicknameCookie = cookies.find((c) => c.name === 'nickname');
 
     expect(sessionCookie).toBeDefined();
     expect(sessionCookie?.httpOnly).toBe(true); // FR-001: HTTP-only cookie
@@ -75,7 +75,10 @@ test.describe('TOP Page - Session Management', () => {
     await expect(page.getByText('ニックネームは50文字以内で入力してください')).toBeVisible();
   });
 
-  test('SC-002: Session persists across browser reloads (30-day cookie)', async ({ page, context }) => {
+  test('SC-002: Session persists across browser reloads (30-day cookie)', async ({
+    page,
+    context,
+  }) => {
     // Given: User has set nickname
     await page.goto('/');
     const nickname = 'テスト永続化';
@@ -91,8 +94,8 @@ test.describe('TOP Page - Session Management', () => {
 
     // And: Cookie should have 30-day expiration
     const cookies = await context.cookies();
-    const sessionCookie = cookies.find(c => c.name === 'sessionId');
-    const nicknameCookie = cookies.find(c => c.name === 'nickname');
+    const sessionCookie = cookies.find((c) => c.name === 'sessionId');
+    const nicknameCookie = cookies.find((c) => c.name === 'nickname');
 
     // Check maxAge is approximately 30 days (2592000 seconds ± 10 seconds for test execution time)
     expect(sessionCookie).toBeDefined();
@@ -117,7 +120,9 @@ test.describe('TOP Page - Game Browsing', () => {
     await page.goto('/');
     await page.getByPlaceholder('例: 田中太郎').fill('ゲームテストユーザー');
     await page.getByRole('button', { name: '設定する' }).click();
-    await expect(page.getByText('ようこそ、ゲームテストユーザーさん！')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('ようこそ、ゲームテストユーザーさん！')).toBeVisible({
+      timeout: 10000,
+    });
   });
 
   test('US2: User can browse available games with 出題中 status', async ({ page }) => {
@@ -134,7 +139,9 @@ test.describe('TOP Page - Game Browsing', () => {
     // Then: Game list should only show games with 出題中 status
     // Note: This test depends on test data being available
     // If no games are available, should show empty state message
-    const gameListSection = page.locator('[data-testid="game-list"]').or(page.getByText('参加可能なゲーム'));
+    const gameListSection = page
+      .locator('[data-testid="game-list"]')
+      .or(page.getByText('参加可能なゲーム'));
     await expect(gameListSection).toBeVisible();
   });
 
@@ -174,7 +181,10 @@ test.describe('TOP Page - No JavaScript Functionality (FR-016)', () => {
     await context.close();
   });
 
-  test('Game list renders server-side with existing session', async ({ browser, context: defaultContext }) => {
+  test('Game list renders server-side with existing session', async ({
+    browser,
+    context: defaultContext,
+  }) => {
     // First, create a session with nickname using JavaScript enabled
     const setupPage = await defaultContext.newPage();
     await setupPage.goto('/');
@@ -206,7 +216,9 @@ test.describe('TOP Page - No JavaScript Functionality (FR-016)', () => {
 });
 
 test.describe('TOP Page - Performance (SC-001)', () => {
-  test('SC-001: Session creation and nickname setup takes less than 30 seconds', async ({ page }) => {
+  test('SC-001: Session creation and nickname setup takes less than 30 seconds', async ({
+    page,
+  }) => {
     const startTime = Date.now();
 
     // Given: A first-time visitor
@@ -217,7 +229,9 @@ test.describe('TOP Page - Performance (SC-001)', () => {
     await page.getByRole('button', { name: '設定する' }).click();
 
     // Then: Should complete in less than 30 seconds
-    await expect(page.getByText('ようこそ、パフォーマンステストさん！')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('ようこそ、パフォーマンステストさん！')).toBeVisible({
+      timeout: 10000,
+    });
 
     const endTime = Date.now();
     const duration = (endTime - startTime) / 1000; // Convert to seconds

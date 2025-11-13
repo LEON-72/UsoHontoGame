@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
   GameStatus,
-  InvalidGameStatusError,
   type GameStatusValue,
+  InvalidGameStatusError,
 } from '@/server/domain/value-objects/GameStatus';
 
 describe('GameStatus', () => {

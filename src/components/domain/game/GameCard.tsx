@@ -2,8 +2,8 @@
 // Feature: 002-game-preparation
 // Card component for displaying game information
 
-import { Badge } from "@/components/ui/Badge";
-import { Card } from "@/components/ui/Card";
+import { Badge } from '@/components/ui/Badge';
+import { Card } from '@/components/ui/Card';
 import type { GameDto, GameManagementDto } from '@/server/application/dto/GameDto';
 
 export interface GameCardProps {
@@ -26,29 +26,32 @@ export function GameCard({ game, managementView = false, onClick }: GameCardProp
   };
 
   const getStatusBadgeVariant = (
-    status: string,
-  ): "default" | "primary" | "success" | "warning" | "danger" => {
+    status: string
+  ): 'default' | 'primary' | 'success' | 'warning' | 'danger' => {
     switch (status) {
-      case "準備中":
-        return "warning";
-      case "出題中":
-        return "success";
-      case "締切":
-        return "default";
+      case '準備中':
+        return 'warning';
+      case '出題中':
+        return 'success';
+      case '締切':
+        return 'default';
       default:
-        return "default";
+        return 'default';
     }
   };
 
   const managementGame = isManagementDto(game) ? game : null;
 
   return (
-    <Card className={onClick ? "cursor-pointer hover:shadow-md transition-shadow" : ""}>
+    <Card className={onClick ? 'cursor-pointer hover:shadow-md transition-shadow' : ''}>
       <div
-        onClick={onClick}
-        onKeyDown={onClick ? (e) => e.key === 'Enter' && onClick() : undefined}
-        role={onClick ? "button" : undefined}
-        tabIndex={onClick ? 0 : undefined}
+        role={onClick ? 'button' : undefined}
+        {...(onClick && {
+          onClick,
+          onKeyDown: (e: React.KeyboardEvent) => e.key === 'Enter' && onClick(),
+          tabIndex: 0,
+          'aria-label': `View details for ${game.name}`,
+        })}
       >
         {/* Header */}
         <div className="mb-4 flex items-center justify-between">
@@ -71,9 +74,7 @@ export function GameCard({ game, managementView = false, onClick }: GameCardProp
             </div>
             <div className="flex items-center justify-between text-sm">
               <span className="text-gray-600">残り枠:</span>
-              <span className="font-medium text-blue-600">
-                {game.availableSlots}人
-              </span>
+              <span className="font-medium text-blue-600">{game.availableSlots}人</span>
             </div>
           </div>
         ) : (

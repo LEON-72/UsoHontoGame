@@ -2,7 +2,7 @@
 // Feature: 002-game-preparation
 // DTO for presenter data including confidential lie markers (for moderators/presenters only)
 
-import type { EpisodeWithLieDto } from "./EpisodeWithLieDto";
+import type { EpisodeWithLieDto } from './EpisodeWithLieDto';
 
 /**
  * PresenterWithLieDto
@@ -12,18 +12,18 @@ import type { EpisodeWithLieDto } from "./EpisodeWithLieDto";
  * Security: Only expose this DTO to moderators or the presenter themselves
  */
 export interface PresenterWithLieDto {
-	/** Presenter UUID */
-	id: string;
+  /** Presenter UUID */
+  id: string;
 
-	/** Game UUID this presenter belongs to */
-	gameId: string;
+  /** Game UUID this presenter belongs to */
+  gameId: string;
 
-	/** Session nickname of the presenter */
-	nickname: string;
+  /** Session nickname of the presenter */
+  nickname: string;
 
-	/** Episodes with lie markers visible */
-	episodes: EpisodeWithLieDto[];
+  /** Episodes with lie markers visible */
+  episodes: EpisodeWithLieDto[];
 
-	/** When presenter was added to the game */
-	createdAt: Date;
+  /** When presenter was added to the game */
+  createdAt: Date;
 }

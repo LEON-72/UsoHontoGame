@@ -2,9 +2,9 @@
 // Feature: 001-session-top-page
 // Presentational components for the home/landing page
 
-import { NicknameInput } from "@/components/domain/session/NicknameInput";
-import { GameList } from "@/components/domain/game/GameList";
-import type { TopPageProps } from "./TopPage.types";
+import { GameList } from '@/components/domain/game/GameList';
+import { NicknameInput } from '@/components/domain/session/NicknameInput';
+import type { TopPageProps } from './TopPage.types';
 
 /**
  * TopPageNicknameSetup - Component for nickname setup state
@@ -12,11 +12,11 @@ import type { TopPageProps } from "./TopPage.types";
  * Pure presentational component with no business logic
  */
 export function TopPageNicknameSetup() {
-	return (
-		<div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
-			<NicknameInput />
-		</div>
-	);
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
+      <NicknameInput />
+    </div>
+  );
 }
 
 /**
@@ -27,17 +27,15 @@ export function TopPageNicknameSetup() {
  * @param props - Component props including nickname and games
  */
 export function TopPage({ nickname, games }: TopPageProps) {
-	return (
-		<div className="min-h-screen bg-gray-50 p-8">
-			<div className="mx-auto max-w-7xl">
-				<div className="mb-8 flex items-center justify-between">
-					<h1 className="text-3xl font-bold text-gray-900">
-						ようこそ、{nickname}さん!
-					</h1>
-				</div>
+  return (
+    <div className="min-h-screen bg-gray-50 p-8">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-8 flex items-center justify-between">
+          <h1 className="text-3xl font-bold text-gray-900">ようこそ、{nickname}さん!</h1>
+        </div>
 
-				<GameList games={games} />
-			</div>
-		</div>
-	);
+        <GameList games={games} />
+      </div>
+    </div>
+  );
 }

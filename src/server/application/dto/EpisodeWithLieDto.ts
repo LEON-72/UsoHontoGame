@@ -11,18 +11,18 @@
  * For public episode display, use EpisodeDto which excludes isLie
  */
 export interface EpisodeWithLieDto {
-	/** Episode UUID */
-	id: string;
+  /** Episode UUID */
+  id: string;
 
-	/** Presenter UUID this episode belongs to */
-	presenterId: string;
+  /** Presenter UUID this episode belongs to */
+  presenterId: string;
 
-	/** Episode text content (1-1000 characters) */
-	text: string;
+  /** Episode text content (1-1000 characters) */
+  text: string;
 
-	/** Truth/lie marker - CONFIDENTIAL (FR-006) */
-	isLie: boolean;
+  /** Truth/lie marker - CONFIDENTIAL (FR-006) */
+  isLie: boolean;
 
-	/** When episode was created */
-	createdAt: Date;
+  /** When episode was created */
+  createdAt: Date;
 }

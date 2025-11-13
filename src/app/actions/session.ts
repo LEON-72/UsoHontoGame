@@ -73,7 +73,7 @@ export async function setNicknameAction(nickname: string): Promise<SetNicknameRe
     const createSessionUseCase = new CreateSession(sessionRepository);
     const session = await createSessionUseCase.execute();
 
-      // Execute use case
+    // Execute use case
     const useCase = new SetNickname(sessionRepository);
     const result = await useCase.execute(session.sessionId, nickname);
 

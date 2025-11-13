@@ -2,12 +2,12 @@
 // Feature: 002-game-preparation
 // Server Component that delegates to GameCreatePage component
 
-import { GameCreatePage } from "@/components/pages/GameCreatePage";
-import type { Metadata } from "next";
+import type { Metadata } from 'next';
+import { GameCreatePage } from '@/components/pages/GameCreatePage';
 
 export const metadata: Metadata = {
-	title: "新しいゲームを作成 | ウソ？ホント？ゲーム",
-	description: "プレイヤー数上限を設定して新しいゲームを作成します",
+  title: '新しいゲームを作成 | ウソ？ホント？ゲーム',
+  description: 'プレイヤー数上限を設定して新しいゲームを作成します',
 };
 
 /**
@@ -15,5 +15,5 @@ export const metadata: Metadata = {
  * Thin wrapper that delegates to GameCreatePage component
  */
 export default function Page() {
-	return <GameCreatePage />;
+  return <GameCreatePage />;
 }

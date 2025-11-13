@@ -1,32 +1,37 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version Change: Initial (template) → 1.0.0
-Rationale: Initial constitution establishing core project principles
+Version Change: 1.0.0 → 1.1.0
+Rationale: Added new principle for code formatting discipline after task completion
 
 Modified Principles:
-- All principles defined from template placeholders
+- Principle 0 expanded to include Biome formatting requirement
 
 Added Sections:
-- Core Principles (7 principles defined)
-- Technology Standards (frontend, backend, testing)
-- Development Workflow
-- Governance
+- Code formatting requirement added to Principle 0 (Git commit)
 
 Removed Sections: None
 
 Templates Requiring Updates:
-✅ spec-template.md - Aligned with functional requirements and user story format
-✅ plan-template.md - Aligned with Clean Architecture and constitution check
-✅ tasks-template.md - Aligned with TDD requirement and component structure
+✅ spec-template.md - No changes required (formatting applies to implementation)
+✅ plan-template.md - No changes required (formatting applies to implementation)
+✅ tasks-template.md - No changes required (formatting will be part of task completion workflow)
+
+Follow-up Actions:
+- Development workflow now includes: complete task → run Biome format → commit
+-->
 
 # UsoHontoGame (Two Truths and a Lie) Project Constitution
 
 ## Core Principles
 
-### 0. Git commit (NON-NEGOTIATABLE)
+### 0. Git commit and Code Formatting (NON-NEGOTIABLE)
 
-When you complete each task, you must add all files and commit with suitable commit message.
+When you complete each task, you MUST:
+1. Run Biome formatting on all modified files: `npx biome format --write .`
+2. Add all files and commit with suitable commit message
+
+**Rationale**: Ensures consistent code style across the codebase, prevents formatting-related merge conflicts, and maintains professional code quality. Biome formatting MUST be applied before committing to keep the codebase in a style-compliant state at all times.
 
 ### I. Clean Architecture (NON-NEGOTIABLE)
 
@@ -158,6 +163,8 @@ tests/                    # Test files
    - Write tests first (failing)
    - Implement minimum code to pass
    - Refactor while maintaining green tests
+   - Run Biome formatting on all modified files
+   - Commit changes with descriptive message
 5. **Review**: Verify constitution compliance before merge
 
 ### Code Review Requirements
@@ -168,6 +175,7 @@ All pull requests MUST:
 - Include type definitions for all new code
 - Reference related requirements and user stories
 - Demonstrate TDD approach (tests written first)
+- Have consistent code formatting (Biome)
 
 ### Constitution Compliance
 Before implementing any feature:
@@ -202,4 +210,4 @@ Constitution changes MUST:
 ### Compliance Review
 All development work MUST verify compliance with this constitution. Non-compliance discovered during review MUST be addressed before merge or documented as technical debt with remediation plan.
 
-**Version**: 1.0.0 | **Ratified**: 2025-06-11 | **Last Amended**: 2025-06-11
+**Version**: 1.1.0 | **Ratified**: 2025-06-11 | **Last Amended**: 2025-01-13

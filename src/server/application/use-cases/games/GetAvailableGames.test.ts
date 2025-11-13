@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
 import { GetAvailableGames } from '@/server/application/use-cases/games/GetAvailableGames';
 import { Game } from '@/server/domain/entities/Game';
+import type { IGameRepository } from '@/server/domain/repositories/IGameRepository';
 import { GameId } from '@/server/domain/value-objects/GameId';
 import { GameStatus } from '@/server/domain/value-objects/GameStatus';
-import type { IGameRepository } from '@/server/domain/repositories/IGameRepository';
 
 describe('GetAvailableGames', () => {
   const createMockRepository = (): IGameRepository => ({
@@ -112,13 +112,7 @@ describe('GetAvailableGames', () => {
 
     it('should convert Game entities to GameDto correctly', async () => {
       const mockRepo = createMockRepository();
-      const game = createGame(
-        '550e8400-e29b-41d4-a716-446655440001',
-        'Test Game',
-        '出題中',
-        10,
-        3
-      );
+      const game = createGame('550e8400-e29b-41d4-a716-446655440001', 'Test Game', '出題中', 10, 3);
 
       vi.mocked(mockRepo.findByStatus).mockResolvedValue([game]);
 

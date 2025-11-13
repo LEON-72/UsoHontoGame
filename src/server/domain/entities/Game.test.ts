@@ -1,12 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import {
-  Game,
-  EmptyGameNameError,
-  InvalidPlayerCountError,
-} from '@/server/domain/entities/Game';
+import { EmptyGameNameError, Game, InvalidPlayerCountError } from '@/server/domain/entities/Game';
+import { InvalidStatusTransitionError } from '@/server/domain/errors/InvalidStatusTransitionError';
 import { GameId } from '@/server/domain/value-objects/GameId';
 import { GameStatus } from '@/server/domain/value-objects/GameStatus';
-import { InvalidStatusTransitionError } from '@/server/domain/errors/InvalidStatusTransitionError';
 
 describe('Game', () => {
   const validGameId = new GameId('550e8400-e29b-41d4-a716-446655440000');
@@ -29,39 +25,39 @@ describe('Game', () => {
     });
 
     it('should throw error for empty game name', () => {
-      expect(
-        () => new Game(validGameId, '', acceptingStatus, 10, 5, now, now)
-      ).toThrow(EmptyGameNameError);
+      expect(() => new Game(validGameId, '', acceptingStatus, 10, 5, now, now)).toThrow(
+        EmptyGameNameError
+      );
     });
 
     it('should throw error for whitespace-only game name', () => {
-      expect(
-        () => new Game(validGameId, '   ', acceptingStatus, 10, 5, now, now)
-      ).toThrow(EmptyGameNameError);
+      expect(() => new Game(validGameId, '   ', acceptingStatus, 10, 5, now, now)).toThrow(
+        EmptyGameNameError
+      );
     });
 
     it('should throw error for negative max players', () => {
-      expect(
-        () => new Game(validGameId, 'Test Game', acceptingStatus, -1, 0, now, now)
-      ).toThrow(InvalidPlayerCountError);
+      expect(() => new Game(validGameId, 'Test Game', acceptingStatus, -1, 0, now, now)).toThrow(
+        InvalidPlayerCountError
+      );
     });
 
     it('should throw error for zero max players', () => {
-      expect(
-        () => new Game(validGameId, 'Test Game', acceptingStatus, 0, 0, now, now)
-      ).toThrow(InvalidPlayerCountError);
+      expect(() => new Game(validGameId, 'Test Game', acceptingStatus, 0, 0, now, now)).toThrow(
+        InvalidPlayerCountError
+      );
     });
 
     it('should throw error for negative current players', () => {
-      expect(
-        () => new Game(validGameId, 'Test Game', acceptingStatus, 10, -1, now, now)
-      ).toThrow(InvalidPlayerCountError);
+      expect(() => new Game(validGameId, 'Test Game', acceptingStatus, 10, -1, now, now)).toThrow(
+        InvalidPlayerCountError
+      );
     });
 
     it('should throw error when current players exceeds max players', () => {
-      expect(
-        () => new Game(validGameId, 'Test Game', acceptingStatus, 10, 11, now, now)
-      ).toThrow(InvalidPlayerCountError);
+      expect(() => new Game(validGameId, 'Test Game', acceptingStatus, 10, 11, now, now)).toThrow(
+        InvalidPlayerCountError
+      );
     });
 
     it('should accept game with current players equal to max players', () => {
@@ -193,15 +189,15 @@ describe('Game', () => {
     });
 
     it('should throw for empty name', () => {
-      expect(
-        () => new Game(validGameId, '', acceptingStatus, 10, 5, now, now)
-      ).toThrow(EmptyGameNameError);
+      expect(() => new Game(validGameId, '', acceptingStatus, 10, 5, now, now)).toThrow(
+        EmptyGameNameError
+      );
     });
 
     it('should throw for invalid player counts', () => {
-      expect(
-        () => new Game(validGameId, 'Test', acceptingStatus, -1, 0, now, now)
-      ).toThrow(InvalidPlayerCountError);
+      expect(() => new Game(validGameId, 'Test', acceptingStatus, -1, 0, now, now)).toThrow(
+        InvalidPlayerCountError
+      );
     });
   });
 

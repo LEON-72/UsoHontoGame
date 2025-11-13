@@ -95,7 +95,9 @@ describe('GameId', () => {
     it('should generate a new valid GameId', () => {
       const gameId = GameId.generate();
       expect(gameId).toBeInstanceOf(GameId);
-      expect(gameId.value).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
+      expect(gameId.value).toMatch(
+        /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+      );
     });
 
     it('should generate unique IDs', () => {

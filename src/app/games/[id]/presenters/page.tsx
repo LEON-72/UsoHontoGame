@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
 // App Router Page: Presenter Management
 // Feature: 002-game-preparation
 // Thin wrapper that delegates to PresenterManagementPage component
 
-import { use } from "react";
-import { PresenterManagementPage } from "@/components/pages/PresenterManagementPage";
+import { use } from 'react';
+import { PresenterManagementPage } from '@/components/pages/PresenterManagementPage';
 
 interface PageProps {
-	params: Promise<{ id: string }>;
+  params: Promise<{ id: string }>;
 }
 
 /**
@@ -16,7 +16,7 @@ interface PageProps {
  * This is a thin wrapper that extracts params and passes them to the page component
  */
 export default function Page({ params }: PageProps) {
-	const { id: gameId } = use(params);
+  const { id: gameId } = use(params);
 
-	return <PresenterManagementPage gameId={gameId} />;
+  return <PresenterManagementPage gameId={gameId} />;
 }

@@ -1,12 +1,12 @@
 // InMemoryGameRepository
 // Implementation of IGameRepository using in-memory storage (MVP)
 
+import type { Episode } from '@/server/domain/entities/Episode';
 import { Game } from '@/server/domain/entities/Game';
+import type { Presenter } from '@/server/domain/entities/Presenter';
 import type { IGameRepository } from '@/server/domain/repositories/IGameRepository';
 import { GameId } from '@/server/domain/value-objects/GameId';
 import { GameStatus } from '@/server/domain/value-objects/GameStatus';
-import type { Presenter } from '@/server/domain/entities/Presenter';
-import type { Episode } from '@/server/domain/entities/Episode';
 
 /**
  * InMemoryGameRepository
@@ -139,7 +139,9 @@ export class InMemoryGameRepository implements IGameRepository {
    * @param presenterId Presenter ID to find episodes for
    */
   async findEpisodesByPresenterId(presenterId: string): Promise<Episode[]> {
-    return Array.from(this.episodes.values()).filter((episode) => episode.presenterId === presenterId);
+    return Array.from(this.episodes.values()).filter(
+      (episode) => episode.presenterId === presenterId
+    );
   }
 
   /**

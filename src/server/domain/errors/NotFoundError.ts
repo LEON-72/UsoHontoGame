@@ -7,12 +7,12 @@
  * Used for entities like Games, Presenters, Episodes, Sessions, etc.
  */
 export class NotFoundError extends Error {
-	/**
-	 * Creates a new NotFoundError
-	 * @param message Error message describing what was not found
-	 */
-	constructor(message: string) {
-		super(message);
-		this.name = "NotFoundError";
-	}
+  /**
+   * Creates a new NotFoundError
+   * @param message Error message describing what was not found
+   */
+  constructor(message: string) {
+    super(message);
+    this.name = 'NotFoundError';
+  }
 }

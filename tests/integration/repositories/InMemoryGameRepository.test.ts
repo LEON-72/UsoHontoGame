@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { InMemoryGameRepository } from '@/server/infrastructure/repositories/InMemoryGameRepository';
 import { Game } from '@/server/domain/entities/Game';
 import { GameId } from '@/server/domain/value-objects/GameId';
 import { GameStatus } from '@/server/domain/value-objects/GameStatus';
+import { InMemoryGameRepository } from '@/server/infrastructure/repositories/InMemoryGameRepository';
 
 describe('InMemoryGameRepository', () => {
   let repository: InMemoryGameRepository;
@@ -89,7 +89,7 @@ describe('InMemoryGameRepository', () => {
 
     it('should return empty array if no games match status', async () => {
       // First, clear any games with status we're testing
-      const testStatus = new GameStatus('出題中');
+      const _testStatus = new GameStatus('出題中');
 
       // Create a new game with different status to ensure we have something
       await repository.create(

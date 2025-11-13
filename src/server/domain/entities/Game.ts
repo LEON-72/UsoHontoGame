@@ -2,10 +2,10 @@
 // Feature: 002-game-preparation
 // Represents a game instance with status transitions and presenter management
 
-import type { GameId } from '../value-objects/GameId';
-import { GameStatus } from '../value-objects/GameStatus';
 import { InvalidStatusTransitionError } from '../errors/InvalidStatusTransitionError';
 import { ValidationError } from '../errors/ValidationError';
+import type { GameId } from '../value-objects/GameId';
+import { GameStatus } from '../value-objects/GameStatus';
 
 /**
  * Error thrown when game name is invalid
@@ -60,7 +60,7 @@ export class Game {
     currentPlayers: number,
     createdAt: Date,
     updatedAt: Date,
-    creatorId: string = ""
+    creatorId: string = ''
   ) {
     this._id = id;
     this._name = name;
