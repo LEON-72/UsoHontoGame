@@ -1,20 +1,46 @@
 // Game Detail/Edit Page Component
-// Feature: 002-game-preparation
+// Feature: 002-game-preparation, 004-status-transition
 // Presentational component for viewing and editing game details
 
+'use client';
+
+import { useState } from 'react';
 import { DeleteGameButton } from '@/components/domain/game/DeleteGameButton';
 import { GameForm } from '@/components/domain/game/GameForm';
+import { GameStatusBadge } from '@/components/domain/game/GameStatusBadge';
+import { StatusTransitionButton } from '@/components/domain/game/StatusTransitionButton';
 import type { GameDetailPageErrorProps, GameDetailPageProps } from './GameDetailPage.types';
+import { useGameStatus } from './hooks/useGameStatus';
 
 /**
  * GameDetailPage - Main component for displaying game details
- * Pure presentational component with no business logic
+ * Includes status transition functionality
  *
  * @param props - Component props including game data
  */
 export function GameDetailPage({ game }: GameDetailPageProps) {
+  const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
+  const [feedbackType, setFeedbackType] = useState<'success' | 'error'>('success');
+
+  // Status management hook
+  const { currentStatus, isLoading } = useGameStatus({
+    gameId: game.id,
+    initialStatus: game.status,
+    onSuccess: (newStatus) => {
+      const message = newStatus === '出題中' ? 'ゲームを開始しました' : 'ゲームを締切しました';
+      setFeedbackMessage(message);
+      setFeedbackType('success');
+      setTimeout(() => setFeedbackMessage(null), 5000);
+    },
+    onError: (error) => {
+      setFeedbackMessage(error);
+      setFeedbackType('error');
+      setTimeout(() => setFeedbackMessage(null), 8000);
+    },
+  });
+
   // Check if game can be edited (only 準備中 status)
-  const canEdit = game.status === '準備中';
+  const canEdit = currentStatus === '準備中';
 
   return (
     <div className="container mx-auto max-w-2xl px-4 py-8">
@@ -26,19 +52,42 @@ export function GameDetailPage({ game }: GameDetailPageProps) {
         >
           ← ゲーム一覧に戻る
         </a>
-        <h1 className="text-3xl font-bold text-gray-900">ゲーム詳細</h1>
-        <p className="mt-2 text-sm text-gray-600">ゲームの設定を確認・編集できます</p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">ゲーム詳細</h1>
+            <p className="mt-2 text-sm text-gray-600">ゲームの設定を確認・管理できます</p>
+          </div>
+          <div className="flex flex-col items-end space-y-3">
+            <GameStatusBadge status={currentStatus} />
+            <StatusTransitionButton
+              gameId={game.id}
+              currentStatus={currentStatus}
+              onSuccess={() => {}} // Handled by useGameStatus hook
+              onError={() => {}} // Handled by useGameStatus hook
+            />
+          </div>
+        </div>
       </div>
+
+      {/* Feedback Messages */}
+      {feedbackMessage && (
+        <div
+          className={`mb-6 rounded-lg border p-4 ${
+            feedbackType === 'success' ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'
+          }`}
+        >
+          <p
+            className={`text-sm ${feedbackType === 'success' ? 'text-green-800' : 'text-red-800'}`}
+          >
+            {feedbackMessage}
+          </p>
+        </div>
+      )}
 
       {/* Status Warning */}
       {!canEdit && (
         <div className="mb-6 rounded-lg border border-yellow-200 bg-yellow-50 p-4">
-          <p className="text-sm text-yellow-800">
-            現在のステータス: <span className="font-semibold">{game.status}</span>
-          </p>
-          <p className="mt-1 text-sm text-yellow-800">
-            ゲームの設定を変更できるのは準備中のみです。
-          </p>
+          <p className="text-sm text-yellow-800">ゲームの設定を変更できるのは準備中のみです。</p>
         </div>
       )}
 
@@ -51,7 +100,10 @@ export function GameDetailPage({ game }: GameDetailPageProps) {
           </div>
           <div>
             <dt className="text-sm font-medium text-gray-500">ステータス</dt>
-            <dd className="mt-1 text-base text-gray-900">{game.status}</dd>
+            <dd className="mt-1 flex items-center">
+              <GameStatusBadge status={currentStatus} className="mr-2" />
+              {isLoading && <span className="text-sm text-gray-500">(更新中...)</span>}
+            </dd>
           </div>
           <div>
             <dt className="text-sm font-medium text-gray-500">参加者</dt>
