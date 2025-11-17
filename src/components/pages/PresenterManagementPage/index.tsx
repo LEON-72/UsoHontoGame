@@ -21,12 +21,10 @@ import type { PresenterManagementPageProps } from './PresenterManagementPage.typ
 export function PresenterManagementPage({ gameId }: PresenterManagementPageProps) {
   const {
     presenters,
-    selectedPresenter,
     isLoading,
     error,
     handlePresenterAdded,
     handlePresenterRemoved,
-    handleEpisodeAdded,
     handlePresenterSelected,
   } = usePresenterManagementPage({ gameId });
 

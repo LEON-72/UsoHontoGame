@@ -62,9 +62,9 @@ describe('InMemoryGameRepository', () => {
       const games = await repository.findByStatus(acceptingStatus);
 
       expect(games.length).toBeGreaterThan(0);
-      games.forEach((game) => {
+      for (const game of games) {
         expect(game.status.value).toBe('出題中');
-      });
+      }
     });
 
     it('should return only games with 準備中 status', async () => {
@@ -72,9 +72,9 @@ describe('InMemoryGameRepository', () => {
       const games = await repository.findByStatus(preparingStatus);
 
       expect(games.length).toBeGreaterThan(0);
-      games.forEach((game) => {
+      for (const game of games) {
         expect(game.status.value).toBe('準備中');
-      });
+      }
     });
 
     it('should return only games with 締切 status', async () => {
@@ -82,9 +82,9 @@ describe('InMemoryGameRepository', () => {
       const games = await repository.findByStatus(closedStatus);
 
       expect(games.length).toBeGreaterThan(0);
-      games.forEach((game) => {
+      for (const game of games) {
         expect(game.status.value).toBe('締切');
-      });
+      }
     });
 
     it('should return empty array if no games match status', async () => {

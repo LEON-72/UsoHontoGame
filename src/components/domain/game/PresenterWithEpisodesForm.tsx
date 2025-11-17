@@ -78,7 +78,8 @@ export function PresenterWithEpisodesForm({ gameId, onSuccess }: PresenterWithEp
       {errors?._form && (
         <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
           {errors._form.map((error, idx) => (
-            <p key={idx} className="text-sm text-red-700">
+            // biome-ignore lint/suspicious/noArrayIndexKey: Fixed form errors array with stable order
+            <p key={`error-${error}-${idx}`} className="text-sm text-red-700">
               {error}
             </p>
           ))}
@@ -116,7 +117,8 @@ export function PresenterWithEpisodesForm({ gameId, onSuccess }: PresenterWithEp
           <h3 className="text-lg font-semibold text-gray-900">エピソード（3つ選択）</h3>
 
           {formState.episodes.map((episode, index) => (
-            <div key={index} className="border rounded-lg p-4 bg-gray-50">
+            // biome-ignore lint/suspicious/noArrayIndexKey: Fixed 3-episode form with stable order
+            <div key={`episode-${index}`} className="border rounded-lg p-4 bg-gray-50">
               {/* Episode Number */}
               <div className="mb-4">
                 <span className="inline-block px-3 py-1 bg-blue-100 text-blue-700 text-sm font-medium rounded">

@@ -127,12 +127,12 @@ export class InMemoryGameRepository implements IGameRepository {
   async createPresenterWithEpisodes(presenter: Presenter, episodes: Episode[]): Promise<Presenter> {
     // Store presenter
     this.presenters.set(presenter.id, presenter);
-    
+
     // Store all episodes
     for (const episode of episodes) {
       this.episodes.set(episode.id, episode);
     }
-    
+
     // Return the created presenter with episodes
     return presenter;
   }
@@ -150,7 +150,6 @@ export class InMemoryGameRepository implements IGameRepository {
     // Remove presenter
     this.presenters.delete(presenterId);
   }
-
 
   // Episode operations
 

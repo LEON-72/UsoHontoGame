@@ -7,7 +7,7 @@ import type { Game } from '@/server/domain/entities/Game';
  * Props for TopPageNicknameSetup component
  * Displayed when user doesn't have a nickname set
  */
-export type TopPageNicknameSetupProps = {};
+export type TopPageNicknameSetupProps = Record<string, never>;
 
 /**
  * Props for TopPage component

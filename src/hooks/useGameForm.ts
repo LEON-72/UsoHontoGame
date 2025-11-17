@@ -38,7 +38,7 @@ interface UseGameFormReturn {
  */
 export function useGameForm({
   mode = 'create',
-  gameId,
+  gameId: _gameId, // Currently not used directly but may be needed for edit mode validation
 }: UseGameFormParams = {}): UseGameFormReturn {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();

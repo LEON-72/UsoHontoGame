@@ -1,6 +1,7 @@
 // Test utilities and mock data factories for component testing
 
 import type { GameDetail } from '@/components/pages/GameDetailPage/GameDetailPage.types';
+import type { UsePresenterManagementPageReturn } from '@/components/pages/PresenterManagementPage/PresenterManagementPage.types';
 import type { GameDto } from '@/server/application/dto/responses/GameDto';
 import type { PresenterWithLieDto } from '@/server/application/dto/responses/PresenterWithLieDto';
 import type { Game } from '@/server/domain/entities/Game';
@@ -69,7 +70,9 @@ export const mockPresenterWithLieDto = (
 /**
  * Mock usePresenterManagementPage hook return value
  */
-export const mockUsePresenterManagementPageReturn = (overrides: Partial<any> = {}) => ({
+export const mockUsePresenterManagementPageReturn = (
+  overrides: Partial<UsePresenterManagementPageReturn> = {}
+) => ({
   presenters: [],
   selectedPresenter: undefined,
   isLoading: false,

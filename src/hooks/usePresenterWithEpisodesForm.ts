@@ -108,7 +108,7 @@ export function usePresenterWithEpisodesForm(gameId: string) {
         EpisodeFormValue,
         EpisodeFormValue,
       ];
-      
+
       if (isLie) {
         // If marking this episode as lie, set all others to false (exclusive selection)
         newEpisodes.forEach((episode, i) => {
@@ -124,7 +124,7 @@ export function usePresenterWithEpisodesForm(gameId: string) {
           isLie: false,
         };
       }
-      
+
       return {
         ...prev,
         episodes: newEpisodes,

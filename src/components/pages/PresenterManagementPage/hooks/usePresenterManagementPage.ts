@@ -2,7 +2,7 @@
 // Feature: 002-game-preparation
 // Manages state and business logic for presenter/episode management
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { getPresentersAction } from '@/app/actions/presenter';
 import type { PresenterWithLieDto } from '@/server/application/dto/PresenterWithLieDto';
 import type {
@@ -30,7 +30,7 @@ export function usePresenterManagementPage({
    * Load all presenters for the game
    * Fetches presenters from the server using getPresentersAction
    */
-  const loadPresenters = async () => {
+  const loadPresenters = useCallback(async () => {
     setIsLoading(true);
     setError(null);
 
@@ -49,13 +49,13 @@ export function usePresenterManagementPage({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [gameId]);
 
   // Load presenters on mount and when gameId changes
   useEffect(() => {
     loadPresenters();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gameId]);
+  }, [loadPresenters]);
 
   /**
    * Handler for when a new presenter is added

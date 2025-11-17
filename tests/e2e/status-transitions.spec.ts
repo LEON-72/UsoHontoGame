@@ -37,7 +37,7 @@ test.describe('Status Transition Flow', () => {
   });
 
   test('should show validation error when trying to start without complete presenter', async ({
-    page,
+    page: _page,
   }) => {
     // This test would require a management page where games are displayed
     // For now, we test the validation message via Server Action error
@@ -45,7 +45,9 @@ test.describe('Status Transition Flow', () => {
     expect(true).toBe(true);
   });
 
-  test('should transition from 準備中 to 出題中 when presenter is complete', async ({ page }) => {
+  test('should transition from 準備中 to 出題中 when presenter is complete', async ({
+    page: _page,
+  }) => {
     // This test would require:
     // 1. Creating a game
     // 2. Adding a complete presenter (3 episodes, 1 lie)
@@ -56,13 +58,13 @@ test.describe('Status Transition Flow', () => {
     expect(true).toBe(true);
   });
 
-  test('should show 締切 button when in 出題中 status', async ({ page }) => {
+  test('should show 締切 button when in 出題中 status', async ({ page: _page }) => {
     // This test would verify that games in 出題中 show the close button
     // Note: Requires game management interface
     expect(true).toBe(true);
   });
 
-  test('should transition from 出題中 to 締切', async ({ page }) => {
+  test('should transition from 出題中 to 締切', async ({ page: _page }) => {
     // This test would require:
     // 1. A game in 出題中 status
     // 2. Clicking "締切" button
@@ -73,13 +75,13 @@ test.describe('Status Transition Flow', () => {
     expect(true).toBe(true);
   });
 
-  test('should show confirmation dialog before status transitions', async ({ page }) => {
+  test('should show confirmation dialog before status transitions', async ({ page: _page }) => {
     // This test would verify confirmation dialogs appear
     // Note: Requires game management interface
     expect(true).toBe(true);
   });
 
-  test('should hide 締切 games from TOP page', async ({ page }) => {
+  test('should hide 締切 games from TOP page', async ({ page: _page }) => {
     // Given: A game transitioned to 締切
     // When: View TOP page
     // Then: Game should not appear in available games list
@@ -99,7 +101,7 @@ test.describe('Status Transition Flow', () => {
     await expect(page.locator('text=真実はどっち')).toBeVisible();
   });
 
-  test('should prevent transition if validation fails', async ({ page }) => {
+  test('should prevent transition if validation fails', async ({ page: _page }) => {
     // This test would verify error messages appear when:
     // - Trying to start without presenters
     // - Trying to start with incomplete presenters
@@ -109,7 +111,7 @@ test.describe('Status Transition Flow', () => {
     expect(true).toBe(true);
   });
 
-  test('should update UI immediately after successful transition', async ({ page }) => {
+  test('should update UI immediately after successful transition', async ({ page: _page }) => {
     // This test would verify:
     // - Status badge updates
     // - Available buttons change
@@ -119,7 +121,7 @@ test.describe('Status Transition Flow', () => {
     expect(true).toBe(true);
   });
 
-  test('should disable transition buttons during processing', async ({ page }) => {
+  test('should disable transition buttons during processing', async ({ page: _page }) => {
     // This test would verify:
     // - Buttons show "処理中..." text
     // - Buttons are disabled during transition
@@ -129,7 +131,7 @@ test.describe('Status Transition Flow', () => {
     expect(true).toBe(true);
   });
 
-  test('should show appropriate error message for invalid transitions', async ({ page }) => {
+  test('should show appropriate error message for invalid transitions', async ({ page: _page }) => {
     // This test would verify error messages for:
     // - Starting from 出題中
     // - Starting from 締切
