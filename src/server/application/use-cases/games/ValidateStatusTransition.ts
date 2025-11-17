@@ -107,7 +107,7 @@ export class ValidateStatusTransition {
     const currentStatus = game.status.value;
 
     if (currentStatus === '準備中' && targetStatus === '出題中') {
-      await this.validateStartGameTransition(game.id, errors);
+      await this.validateStartGameTransition(game.id.value, errors);
     } else if (currentStatus === '出題中' && targetStatus === '締切') {
       // No additional validation needed for closing - just confirmation (handled in UI)
     } else {

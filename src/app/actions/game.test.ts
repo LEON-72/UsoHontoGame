@@ -1,19 +1,44 @@
-import { beforeEach, describe, expect, it, type MockedFunction, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { closeGameAction, startGameAction } from './game';
 
-// Mock the dependencies
+// Create mock instances that will be reused
+const mockValidateStatusTransition = {
+  execute: vi.fn(),
+};
+
+const mockStartAcceptingResponses = {
+  execute: vi.fn(),
+};
+
+const mockCloseGame = {
+  execute: vi.fn(),
+};
+
+// Mock the use case classes with proper constructors
 vi.mock('@/server/application/use-cases/games/ValidateStatusTransition', () => ({
-  ValidateStatusTransition: vi.fn(),
+  ValidateStatusTransition: vi.fn().mockImplementation(function (this: any) {
+    Object.assign(this, mockValidateStatusTransition);
+  }),
 }));
+
 vi.mock('@/server/application/use-cases/games/StartAcceptingResponses', () => ({
-  StartAcceptingResponses: vi.fn(),
+  StartAcceptingResponses: vi.fn().mockImplementation(function (this: any) {
+    Object.assign(this, mockStartAcceptingResponses);
+  }),
 }));
+
 vi.mock('@/server/application/use-cases/games/CloseGame', () => ({
-  CloseGame: vi.fn(),
+  CloseGame: vi.fn().mockImplementation(function (this: any) {
+    Object.assign(this, mockCloseGame);
+  }),
 }));
+
+// Mock repository
 vi.mock('@/server/infrastructure/repositories', () => ({
   createGameRepository: vi.fn(),
 }));
+
+// Mock session service
 vi.mock('@/server/infrastructure/di/SessionServiceContainer', () => ({
   SessionServiceContainer: {
     getSessionService: vi.fn(),
@@ -36,6 +61,9 @@ describe('Status Transition Server Actions', () => {
       requireCurrentSession: vi.fn(),
     };
 
+    // Clear all mocks
+    vi.clearAllMocks();
+
     // Setup mocks
     const { createGameRepository } = await import('@/server/infrastructure/repositories');
     const {
@@ -47,59 +75,43 @@ describe('Status Transition Server Actions', () => {
   });
 
   describe('startGameAction', () => {
-    it.skip('should successfully start a game with valid data', async () => {
+    it('should successfully start a game with valid data', async () => {
       // Arrange
       const formData = new FormData();
       formData.append('gameId', 'game-123');
 
       mockSessionService.requireCurrentSession.mockResolvedValue('session-123');
 
-      const mockValidateStatusTransition = vi.fn().mockResolvedValue({
+      mockValidateStatusTransition.execute.mockResolvedValue({
         canTransition: true,
         currentStatus: '準備中',
         targetStatus: '出題中',
         errors: [],
       });
 
-      const mockStartAcceptingResponses = vi.fn().mockResolvedValue({ success: true });
-
-      // Mock the use case classes
-      const {
-        ValidateStatusTransition,
-      } = await import('@/server/application/use-cases/games/ValidateStatusTransition');
-      const {
-        StartAcceptingResponses,
-      } = await import('@/server/application/use-cases/games/StartAcceptingResponses');
-
-      vi.mocked(ValidateStatusTransition).mockImplementation(() => ({
-        execute: mockValidateStatusTransition,
-      }));
-
-      vi.mocked(StartAcceptingResponses).mockImplementation(() => ({
-        execute: mockStartAcceptingResponses,
-      }));
+      mockStartAcceptingResponses.execute.mockResolvedValue({ success: true });
 
       // Act
       const result = await startGameAction(formData);
 
       // Assert
       expect(result).toEqual({ success: true });
-      expect(mockValidateStatusTransition).toHaveBeenCalledWith(
+      expect(mockValidateStatusTransition.execute).toHaveBeenCalledWith(
         'game-123',
         '出題中',
         'session-123'
       );
-      expect(mockStartAcceptingResponses).toHaveBeenCalledWith({ gameId: 'game-123' });
+      expect(mockStartAcceptingResponses.execute).toHaveBeenCalledWith({ gameId: 'game-123' });
     });
 
-    it.skip('should return validation errors when transition is not allowed', async () => {
+    it('should return validation errors when transition is not allowed', async () => {
       // Arrange
       const formData = new FormData();
       formData.append('gameId', 'game-123');
 
       mockSessionService.requireCurrentSession.mockResolvedValue('session-123');
 
-      const mockValidateStatusTransition = vi.fn().mockResolvedValue({
+      mockValidateStatusTransition.execute.mockResolvedValue({
         canTransition: false,
         currentStatus: '準備中',
         targetStatus: '出題中',
@@ -110,14 +122,6 @@ describe('Status Transition Server Actions', () => {
           },
         ],
       });
-
-      const {
-        ValidateStatusTransition,
-      } = require('@/server/application/use-cases/games/ValidateStatusTransition');
-
-      ValidateStatusTransition.mockImplementation(() => ({
-        execute: mockValidateStatusTransition,
-      }));
 
       // Act
       const result = await startGameAction(formData);
@@ -165,7 +169,7 @@ describe('Status Transition Server Actions', () => {
   });
 
   describe('closeGameAction', () => {
-    it.skip('should successfully close a game with valid data', async () => {
+    it('should successfully close a game with valid data', async () => {
       // Arrange
       const formData = new FormData();
       formData.append('gameId', 'game-123');
@@ -173,39 +177,25 @@ describe('Status Transition Server Actions', () => {
 
       mockSessionService.requireCurrentSession.mockResolvedValue('session-123');
 
-      const mockValidateStatusTransition = vi.fn().mockResolvedValue({
+      mockValidateStatusTransition.execute.mockResolvedValue({
         canTransition: true,
         currentStatus: '出題中',
         targetStatus: '締切',
         errors: [],
       });
 
-      const mockCloseGame = vi.fn().mockResolvedValue({ success: true });
-
-      // Mock the use case classes
-      const {
-        ValidateStatusTransition,
-      } = require('@/server/application/use-cases/games/ValidateStatusTransition');
-      const { CloseGame } = require('@/server/application/use-cases/games/CloseGame');
-
-      ValidateStatusTransition.mockImplementation(() => ({
-        execute: mockValidateStatusTransition,
-      }));
-
-      CloseGame.mockImplementation(() => ({
-        execute: mockCloseGame,
-      }));
+      mockCloseGame.execute.mockResolvedValue({ success: true });
 
       // Act
       const result = await closeGameAction(formData);
 
       // Assert
       expect(result).toEqual({ success: true });
-      expect(mockValidateStatusTransition).toHaveBeenCalledWith('game-123', '締切', 'session-123');
-      expect(mockCloseGame).toHaveBeenCalledWith({ gameId: 'game-123' });
+      expect(mockValidateStatusTransition.execute).toHaveBeenCalledWith('game-123', '締切', 'session-123');
+      expect(mockCloseGame.execute).toHaveBeenCalledWith({ gameId: 'game-123' });
     });
 
-    it.skip('should return validation errors when transition is not allowed', async () => {
+    it('should return validation errors when transition is not allowed', async () => {
       // Arrange
       const formData = new FormData();
       formData.append('gameId', 'game-123');
@@ -213,7 +203,7 @@ describe('Status Transition Server Actions', () => {
 
       mockSessionService.requireCurrentSession.mockResolvedValue('session-123');
 
-      const mockValidateStatusTransition = vi.fn().mockResolvedValue({
+      mockValidateStatusTransition.execute.mockResolvedValue({
         canTransition: false,
         currentStatus: '締切',
         targetStatus: '出題中',
@@ -224,14 +214,6 @@ describe('Status Transition Server Actions', () => {
           },
         ],
       });
-
-      const {
-        ValidateStatusTransition,
-      } = require('@/server/application/use-cases/games/ValidateStatusTransition');
-
-      ValidateStatusTransition.mockImplementation(() => ({
-        execute: mockValidateStatusTransition,
-      }));
 
       // Act
       const result = await closeGameAction(formData);

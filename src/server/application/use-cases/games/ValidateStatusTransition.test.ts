@@ -27,7 +27,7 @@ describe('ValidateStatusTransition', () => {
   };
 
   const mockGameBase = {
-    id: 'game-123',
+    id: '550e8400-e29b-41d4-a716-446655440001',
     name: 'Test Game',
     playerLimit: 10,
     creatorId: 'session-123',
@@ -68,7 +68,7 @@ describe('ValidateStatusTransition', () => {
         presenters: [
           {
             id: 'presenter-1',
-            gameId: 'game-123',
+            gameId: '550e8400-e29b-41d4-a716-446655440001',
             nickname: 'Test Presenter',
             episodes: [
               { id: 'ep1', presenterId: 'presenter-1', text: 'Truth 1', isLie: false },
@@ -84,7 +84,7 @@ describe('ValidateStatusTransition', () => {
       mockGameRepository.findEpisodesByPresenterId.mockResolvedValue(game.presenters[0].episodes);
 
       // Act
-      const result = await validateStatusTransition.execute('game-123', '出題中', 'session-123');
+      const result = await validateStatusTransition.execute('550e8400-e29b-41d4-a716-446655440001', '出題中', 'session-123');
 
       // Assert
       expect(result.canTransition).toBe(true);
@@ -105,7 +105,7 @@ describe('ValidateStatusTransition', () => {
       mockGameRepository.findPresentersByGameId.mockResolvedValue([]);
 
       // Act
-      const result = await validateStatusTransition.execute('game-123', '出題中', 'session-123');
+      const result = await validateStatusTransition.execute('550e8400-e29b-41d4-a716-446655440001', '出題中', 'session-123');
 
       // Assert
       expect(result.canTransition).toBe(false);
@@ -122,7 +122,7 @@ describe('ValidateStatusTransition', () => {
         presenters: [
           {
             id: 'presenter-1',
-            gameId: 'game-123',
+            gameId: '550e8400-e29b-41d4-a716-446655440001',
             nickname: 'Incomplete Presenter',
             episodes: [
               { id: 'ep1', presenterId: 'presenter-1', text: 'Truth 1', isLie: false },
@@ -137,7 +137,7 @@ describe('ValidateStatusTransition', () => {
       mockGameRepository.findEpisodesByPresenterId.mockResolvedValue(game.presenters[0].episodes);
 
       // Act
-      const result = await validateStatusTransition.execute('game-123', '出題中', 'session-123');
+      const result = await validateStatusTransition.execute('550e8400-e29b-41d4-a716-446655440001', '出題中', 'session-123');
 
       // Assert
       expect(result.canTransition).toBe(false);
@@ -154,7 +154,7 @@ describe('ValidateStatusTransition', () => {
         presenters: [
           {
             id: 'presenter-1',
-            gameId: 'game-123',
+            gameId: '550e8400-e29b-41d4-a716-446655440001',
             nickname: 'No Lie Presenter',
             episodes: [
               { id: 'ep1', presenterId: 'presenter-1', text: 'Truth 1', isLie: false },
@@ -170,7 +170,7 @@ describe('ValidateStatusTransition', () => {
       mockGameRepository.findEpisodesByPresenterId.mockResolvedValue(game.presenters[0].episodes);
 
       // Act
-      const result = await validateStatusTransition.execute('game-123', '出題中', 'session-123');
+      const result = await validateStatusTransition.execute('550e8400-e29b-41d4-a716-446655440001', '出題中', 'session-123');
 
       // Assert
       expect(result.canTransition).toBe(false);
@@ -189,7 +189,7 @@ describe('ValidateStatusTransition', () => {
         presenters: [
           {
             id: 'presenter-1',
-            gameId: 'game-123',
+            gameId: '550e8400-e29b-41d4-a716-446655440001',
             nickname: 'Multiple Lies Presenter',
             episodes: [
               { id: 'ep1', presenterId: 'presenter-1', text: 'Lie 1', isLie: true },
@@ -205,7 +205,7 @@ describe('ValidateStatusTransition', () => {
       mockGameRepository.findEpisodesByPresenterId.mockResolvedValue(game.presenters[0].episodes);
 
       // Act
-      const result = await validateStatusTransition.execute('game-123', '出題中', 'session-123');
+      const result = await validateStatusTransition.execute('550e8400-e29b-41d4-a716-446655440001', '出題中', 'session-123');
 
       // Assert
       expect(result.canTransition).toBe(false);
@@ -228,7 +228,7 @@ describe('ValidateStatusTransition', () => {
       mockGameRepository.findById.mockResolvedValue(game);
 
       // Act
-      const result = await validateStatusTransition.execute('game-123', '締切', 'session-123');
+      const result = await validateStatusTransition.execute('550e8400-e29b-41d4-a716-446655440001', '締切', 'session-123');
 
       // Assert
       expect(result.canTransition).toBe(true);
@@ -249,7 +249,7 @@ describe('ValidateStatusTransition', () => {
       mockGameRepository.findById.mockResolvedValue(game);
 
       // Act
-      const result = await validateStatusTransition.execute('game-123', '出題中', 'session-123');
+      const result = await validateStatusTransition.execute('550e8400-e29b-41d4-a716-446655440001', '出題中', 'session-123');
 
       // Assert
       expect(result.canTransition).toBe(false);
@@ -269,7 +269,7 @@ describe('ValidateStatusTransition', () => {
 
       // Act & Assert
       await expect(
-        validateStatusTransition.execute('game-123', '準備中' as any, 'session-123')
+        validateStatusTransition.execute('550e8400-e29b-41d4-a716-446655440001', '準備中' as any, 'session-123')
       ).rejects.toThrow(StatusTransitionError);
     });
   });
@@ -286,7 +286,7 @@ describe('ValidateStatusTransition', () => {
       mockGameRepository.findById.mockResolvedValue(game);
 
       // Act
-      const result = await validateStatusTransition.execute('game-123', '出題中', 'session-123');
+      const result = await validateStatusTransition.execute('550e8400-e29b-41d4-a716-446655440001', '出題中', 'session-123');
 
       // Assert
       expect(result.canTransition).toBe(false);
@@ -303,7 +303,7 @@ describe('ValidateStatusTransition', () => {
 
       // Act & Assert
       await expect(
-        validateStatusTransition.execute('non-existent', '出題中', 'session-123')
+        validateStatusTransition.execute('550e8400-e29b-41d4-a716-446655440999', '出題中', 'session-123')
       ).rejects.toThrow('ゲームが見つかりません');
     });
   });

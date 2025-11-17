@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { GameStatusValue } from '@/server/domain/value-objects/GameStatus';
 import { StatusTransitionButton } from './StatusTransitionButton';
@@ -39,7 +39,10 @@ describe('StatusTransitionButton', () => {
       render(<StatusTransitionButton {...defaultProps} />);
 
       const startButton = screen.getByRole('button', { name: /ゲームを開始/i });
-      fireEvent.click(startButton);
+      
+      await act(async () => {
+        fireEvent.click(startButton);
+      });
 
       await waitFor(() => {
         expect(mockStartGameAction).toHaveBeenCalled();
@@ -111,7 +114,10 @@ describe('StatusTransitionButton', () => {
       render(<StatusTransitionButton {...acceptingProps} />);
 
       const closeButton = screen.getByRole('button', { name: /ゲームを締切/i });
-      fireEvent.click(closeButton);
+      
+      await act(async () => {
+        fireEvent.click(closeButton);
+      });
 
       expect(confirmSpy).toHaveBeenCalledWith('本当にゲームを締切しますか？');
 
