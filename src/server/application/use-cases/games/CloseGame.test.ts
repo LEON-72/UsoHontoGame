@@ -7,17 +7,17 @@ import { CloseGame } from '@/server/application/use-cases/games/CloseGame';
 import { Game } from '@/server/domain/entities/Game';
 import { InvalidStatusTransitionError } from '@/server/domain/errors/InvalidStatusTransitionError';
 import { NotFoundError } from '@/server/domain/errors/NotFoundError';
+import type { IGameRepository } from '@/server/domain/repositories/IGameRepository';
 import { GameId } from '@/server/domain/value-objects/GameId';
 import { GameStatus } from '@/server/domain/value-objects/GameStatus';
-import { InMemoryGameRepository } from '@/server/infrastructure/repositories/InMemoryGameRepository';
+import { createMockGameRepository } from '../../../../../tests/utils/mockRepositories';
 
 describe('CloseGame Use Case', () => {
-  let repository: InMemoryGameRepository;
+  let repository: IGameRepository;
   let useCase: CloseGame;
 
   beforeEach(() => {
-    repository = InMemoryGameRepository.getInstance();
-    repository.clear();
+    repository = createMockGameRepository();
     useCase = new CloseGame(repository);
   });
 

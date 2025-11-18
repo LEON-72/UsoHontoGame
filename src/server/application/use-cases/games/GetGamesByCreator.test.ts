@@ -4,17 +4,17 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { GetGamesByCreator } from '@/server/application/use-cases/games/GetGamesByCreator';
 import { Game } from '@/server/domain/entities/Game';
+import type { IGameRepository } from '@/server/domain/repositories/IGameRepository';
 import { GameId } from '@/server/domain/value-objects/GameId';
 import { GameStatus } from '@/server/domain/value-objects/GameStatus';
-import { InMemoryGameRepository } from '@/server/infrastructure/repositories/InMemoryGameRepository';
+import { createMockGameRepository } from '../../../../../tests/utils/mockRepositories';
 
 describe('GetGamesByCreator', () => {
-  let repository: InMemoryGameRepository;
+  let repository: IGameRepository;
   let useCase: GetGamesByCreator;
 
   beforeEach(() => {
-    repository = InMemoryGameRepository.getInstance();
-    repository.clear(); // Clear state between tests
+    repository = createMockGameRepository();
     useCase = new GetGamesByCreator(repository);
   });
 

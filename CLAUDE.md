@@ -6,7 +6,8 @@ Auto-generated from all feature plans. Last updated: 2025-11-11
 - TypeScript 5 (strict mode) + Next.js 16.0.1, React 19.2.0, Prisma 6.19.0, Zod 4.1.12 (002-game-preparation)
 - SQLite via Prisma (existing database at `prisma/dev.db`) (002-game-preparation)
 - TypeScript 5 with strict mode enabled + Next.js 16.0.1, React 19.2.0, Tailwind CSS v4, Zod 3.x for validation, nanoid 5.1.6 for ID generation (003-presenter-episode-inline)
-- InMemoryGameRepository (singleton pattern for MVP) (003-presenter-episode-inline)
+- TypeScript 5 (strict mode) + Next.js 16.0.1, React 19.2.0, Tailwind CSS v4, Zod 4.1.12 (004-status-transition)
+- SQLite via Prisma 6.19.0 (existing database at `prisma/dev.db`) (004-status-transition)
 
 **Language & Framework**:
 - TypeScript 5 with strict mode enabled
@@ -127,23 +128,36 @@ npx prisma generate        # Generate Prisma Client
 
 **Testing**:
 ```bash
-npm test                   # Run unit tests (Vitest)
-npm run test:ui            # Run tests with UI
-npm run test:coverage      # Run tests with coverage report
-npm run test:e2e           # Run E2E tests (Playwright)
-npm run test:e2e:ui        # Run E2E tests with UI
-npm run test:e2e:debug     # Debug E2E tests
+npm test                    # Run all tests (unit + integration) in parallel - 515 tests
+npm run test:unit           # Run unit/component tests only (486 tests)
+npm run test:integration    # Run database integration tests (29 tests)
+npm run test:ui             # Run tests with UI
+npm run test:coverage       # Run tests with coverage report
+npm run test:e2e            # Run E2E tests (Playwright)
+npm run test:e2e:ui         # Run E2E tests with UI
+npm run test:e2e:debug      # Debug E2E tests
 ```
 
+**Testing Strategy**:
+- **Unit/Component Tests (486 tests)**: Fast, reliable, using mocks and test utilities
+- **Integration Tests (29 tests)**: Database tests with isolated SQLite files per test file
+- **Parallel Execution**: All tests now run safely in parallel with proper database isolation
+- **Database Isolation**: Each integration test file uses its own SQLite database file
+
 **Test Organization**:
-- **All Unit Tests**: Co-located with their implementation files using `.test.ts` or `.test.tsx` extension
+- **Unit/Component Tests (486)**: Co-located with their implementation files using `.test.ts` or `.test.tsx` extension
   - Component tests: `src/components/pages/MyPage/MyPage.test.tsx`
   - Domain entity tests: `src/server/domain/entities/Game.test.ts`
   - Value object tests: `src/server/domain/value-objects/GameId.test.ts`
   - Schema tests: `src/server/domain/schemas/gameSchemas.test.ts`
   - Use case tests: `src/server/application/use-cases/games/CreateGame.test.ts`
+  - Server action tests: `src/app/actions/game.test.ts`
+- **Integration Tests (29)**: `tests/integration/` directory with database isolation
+  - Database repository tests: `tests/integration/repositories/PrismaGameRepository.test.ts` (20 tests)
+  - Status transition tests: `tests/integration/status-transition.test.ts` (9 tests)
+  - Each test file uses isolated SQLite database for parallel execution
+  - Automatic database cleanup after test completion
 - **E2E Tests**: `tests/e2e/` directory (Playwright)
-- **Integration Tests**: `tests/integration/` directory
 - **Test Utilities**: `tests/utils/` for shared mocks and helpers
 
 **Code Quality**:
@@ -244,9 +258,8 @@ npm run check              # Lint and format with Biome
 - Connection string: `file:./dev.db` (relative to prisma directory)
 
 **Repository Pattern**:
-- Default: PrismaGameRepository (SQLite)
-- Fallback: InMemoryGameRepository (for testing)
-- Configuration: Set `REPOSITORY_TYPE=memory` to use in-memory storage
+- Uses PrismaGameRepository with SQLite persistence
+- Repository factory pattern for dependency injection
 
 ## Features Implemented
 
@@ -264,10 +277,10 @@ npm run check              # Lint and format with Biome
    - Game status management (準備中/出題中/締切)
 
 ## Recent Changes
+- 004-status-transition: Added TypeScript 5 (strict mode) + Next.js 16.0.1, React 19.2.0, Tailwind CSS v4, Zod 4.1.12
 - 003-presenter-episode-inline: Added TypeScript 5 with strict mode enabled + Next.js 16.0.1, React 19.2.0, Tailwind CSS v4, Zod 3.x for validation, nanoid 5.1.6 for ID generation
 - 002-game-preparation: Added TypeScript 5 (strict mode) + Next.js 16.0.1, React 19.2.0, Prisma 6.19.0, Zod 4.1.12
 
-- 2025-11-11: Migrated from in-memory to SQLite persistence
   - Added Prisma ORM integration
   - Database schema with migrations
   - Repository pattern with SQLite implementation

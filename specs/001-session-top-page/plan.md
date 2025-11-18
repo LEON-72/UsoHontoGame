@@ -13,7 +13,7 @@ This feature implements the foundational session management infrastructure and T
 
 **Language/Version**: TypeScript 5 with strict mode enabled
 **Primary Dependencies**: Next.js 16.0.1, React 19.2.0, Tailwind CSS v4, nanoid 5.1.6
-**Storage**: In-memory storage for MVP (game state), Cookie storage (session management)
+**Storage**: SQLite database via Prisma ORM (game state), Cookie storage (session management)
 **Testing**: Vitest 4.0.7, React Testing Library 16.3.0, Playwright 1.56.1
 **Target Platform**: Web (Next.js App Router with React Server Components)
 **Project Type**: Single web application (Next.js full-stack)
@@ -129,7 +129,7 @@ src/
 │   └── infrastructure/          # Infrastructure Layer
 │       └── repositories/
 │           ├── CookieSessionRepository.ts     # Cookie-based session storage
-│           └── InMemoryGameRepository.ts      # In-memory game storage
+│           └── PrismaGameRepository.ts        # SQLite game storage via Prisma
 ├── hooks/                       # Custom React hooks (global)
 ├── lib/                         # Utilities and configurations
 │   ├── cookies.ts               # Cookie helper functions
@@ -198,7 +198,7 @@ The following design artifacts have been created:
 | Pattern | Compliance | Design Location |
 |---------|-----------|-----------------|
 | **Value Object Pattern** | ✅ PASS | data-model.md: SessionId, Nickname, GameId, GameStatus all immutable VOs with validation |
-| **Repository Pattern** | ✅ PASS | data-model.md: ISessionRepository, IGameRepository interfaces. Implementations in infrastructure layer (CookieSessionRepository, InMemoryGameRepository) |
+| **Repository Pattern** | ✅ PASS | data-model.md: ISessionRepository, IGameRepository interfaces. Implementations in infrastructure layer (CookieSessionRepository, PrismaGameRepository) |
 | **Use Case Pattern** | ✅ PASS | data-model.md and quickstart.md: CreateSession, ValidateSession, SetNickname, GetAvailableGames use cases. Single responsibility, testable in isolation |
 | **DTO Pattern** | ✅ PASS | data-model.md: SessionDto, GameDto separate from domain entities. Prevents domain leakage to presentation |
 | **Server Actions Pattern** | ✅ PASS | session-actions.yaml: 'use server' functions with clear input/output contracts. Error handling strategy defined |

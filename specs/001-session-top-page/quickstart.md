@@ -61,7 +61,7 @@ src/
 │   └── infrastructure/
 │       └── repositories/
 │           ├── CookieSessionRepository.ts  # Day 3
-│           └── InMemoryGameRepository.ts
+│           └── PrismaGameRepository.ts
 ├── lib/
 │   ├── cookies.ts          # Cookie helper functions
 │   └── constants.ts        # Cookie names, expiration
@@ -102,7 +102,7 @@ tests/
 ├── integration/
 │   ├── repositories/
 │   │   ├── CookieSessionRepository.test.ts   # Day 3
-│   │   └── InMemoryGameRepository.test.ts
+│   │   └── PrismaGameRepository.test.ts
 │   └── actions/
 │       └── session.test.ts                   # Day 4
 └── e2e/
@@ -149,8 +149,8 @@ tests/
 - [ ] Implement cookie helpers (`lib/cookies.ts`)
 - [ ] Write `CookieSessionRepository.test.ts` - Mock next/headers
 - [ ] Implement `CookieSessionRepository`
-- [ ] Write `InMemoryGameRepository.test.ts` - Test filtering
-- [ ] Implement `InMemoryGameRepository` with singleton pattern
+- [ ] Write `PrismaGameRepository.test.ts` - Test database filtering
+- [ ] Implement `PrismaGameRepository` with SQLite database access
 
 **Commit**: "feat: add repository implementations for session and game storage"
 

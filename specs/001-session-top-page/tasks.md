@@ -132,7 +132,7 @@ Single web application with Next.js App Router:
 - [ ] T048 [P] [US2] Unit test for GameStatus value object validation in tests/unit/domain/GameStatus.test.ts (NOT CREATED - value objects are simple)
 - [ ] T049 [P] [US2] Unit test for Game entity invariants in tests/unit/domain/Game.test.ts (NOT CREATED - entity logic covered by use case tests)
 - [ ] T050 [P] [US2] Unit test for GetAvailableGames use case in tests/unit/use-cases/GetAvailableGames.test.ts (NOT CREATED - logic straightforward)
-- [ ] T051 [P] [US2] Integration test for InMemoryGameRepository in tests/integration/repositories/InMemoryGameRepository.test.ts (NOT CREATED - in-memory implementation)
+- [ ] T051 [P] [US2] Integration test for PrismaGameRepository in tests/integration/repositories/PrismaGameRepository.test.ts (NOT CREATED - database integration covered by unit tests)
 - [X] T052 [US2] E2E test for game browsing flow in tests/e2e/top-page.spec.ts (CREATED - tests written, see T027 notes)
 
 ### Implementation for User Story 2 (TDD: GREEN phase)
@@ -149,7 +149,7 @@ Single web application with Next.js App Router:
 
 #### Infrastructure Layer
 
-- [X] T057 [US2] Implement InMemoryGameRepository with singleton pattern in src/server/infrastructure/repositories/InMemoryGameRepository.ts
+- [X] T057 [US2] Implement PrismaGameRepository for SQLite database access in src/server/infrastructure/repositories/PrismaGameRepository.ts
 
 #### Presentation Layer
 
@@ -275,7 +275,7 @@ Task: "Unit test for GameId value object validation in tests/unit/domain/GameId.
 Task: "Unit test for GameStatus value object validation in tests/unit/domain/GameStatus.test.ts"
 Task: "Unit test for Game entity invariants in tests/unit/domain/Game.test.ts"
 Task: "Unit test for GetAvailableGames use case in tests/unit/use-cases/GetAvailableGames.test.ts"
-Task: "Integration test for InMemoryGameRepository in tests/integration/repositories/InMemoryGameRepository.test.ts"
+Task: "Integration test for PrismaGameRepository with database setup/cleanup"
 
 # GREEN phase: Launch parallel implementations
 Task: "Implement GameId value object with validation in src/server/domain/value-objects/GameId.ts"

@@ -1,28 +1,30 @@
-import { PrismaClient } from '@prisma/client';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { Game } from '@/server/domain/entities/Game';
 import { GameId } from '@/server/domain/value-objects/GameId';
 import { GameStatus } from '@/server/domain/value-objects/GameStatus';
 import { PrismaGameRepository } from '@/server/infrastructure/repositories/PrismaGameRepository';
+import { createTestDatabase, type TestDatabase } from '../../utils/test-database';
 
-// Skip Prisma tests for now - they require running migrations
-// Run with: npm run test -- --run tests/integration/repositories/PrismaGameRepository.test.ts
-describe.skip('PrismaGameRepository', () => {
-  let prisma: PrismaClient;
+describe('PrismaGameRepository', () => {
+  let testDb: TestDatabase;
   let repository: PrismaGameRepository;
 
-  beforeAll(() => {
-    prisma = new PrismaClient();
-    repository = new PrismaGameRepository(prisma);
+  beforeAll(async () => {
+    // Create isolated test database for this test file
+    testDb = await createTestDatabase('PrismaGameRepository.test.ts');
+    repository = new PrismaGameRepository(testDb.prisma);
   });
 
   beforeEach(async () => {
-    // Clean up database before each test
-    await prisma.game.deleteMany();
+    // Clean up database before each test (in order due to foreign keys)
+    await testDb.prisma.episode.deleteMany();
+    await testDb.prisma.presenter.deleteMany();
+    await testDb.prisma.game.deleteMany();
   });
 
   afterAll(async () => {
-    await prisma.$disconnect();
+    // Clean up isolated test database
+    await testDb.cleanup();
   });
 
   const createGame = (
@@ -94,27 +96,33 @@ describe.skip('PrismaGameRepository', () => {
     });
 
     it('should return games ordered by creation date (newest first)', async () => {
-      const game1 = createGame(
-        '550e8400-e29b-41d4-a716-446655440001',
+      const now = new Date();
+      const earlier = new Date(now.getTime() - 1000); // 1 second earlier
+
+      const game1 = new Game(
+        new GameId('550e8400-e29b-41d4-a716-446655440001'),
         'Older Game',
-        '出題中',
+        new GameStatus('出題中'),
         10,
-        5
+        5,
+        earlier,
+        earlier
       );
-      const game2 = createGame(
-        '550e8400-e29b-41d4-a716-446655440002',
+      const game2 = new Game(
+        new GameId('550e8400-e29b-41d4-a716-446655440002'),
         'Newer Game',
-        '出題中',
+        new GameStatus('出題中'),
         10,
-        5
+        5,
+        now,
+        now
       );
 
       await repository.create(game1);
-      // Small delay to ensure different timestamps
-      await new Promise((resolve) => setTimeout(resolve, 10));
       await repository.create(game2);
 
       const games = await repository.findAll();
+      expect(games).toHaveLength(2);
       expect(games[0].name).toBe('Newer Game');
       expect(games[1].name).toBe('Older Game');
     });
@@ -159,7 +167,7 @@ describe.skip('PrismaGameRepository', () => {
     });
 
     it('should return empty array for status with no games', async () => {
-      await prisma.game.deleteMany();
+      await testDb.prisma.game.deleteMany();
       const status = new GameStatus('出題中');
       const games = await repository.findByStatus(status);
 

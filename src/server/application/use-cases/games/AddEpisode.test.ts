@@ -7,16 +7,16 @@ import { AddEpisode } from '@/server/application/use-cases/games/AddEpisode';
 import { Presenter } from '@/server/domain/entities/Presenter';
 import { NotFoundError } from '@/server/domain/errors/NotFoundError';
 import { ValidationError } from '@/server/domain/errors/ValidationError';
-import { InMemoryGameRepository } from '@/server/infrastructure/repositories/InMemoryGameRepository';
+import type { IGameRepository } from '@/server/domain/repositories/IGameRepository';
+import { createMockGameRepository } from '../../../../../tests/utils/mockRepositories';
 
 describe('AddEpisode Use Case', () => {
-  let repository: InMemoryGameRepository;
+  let repository: IGameRepository;
   let useCase: AddEpisode;
   let testPresenterId: string;
 
   beforeEach(async () => {
-    repository = InMemoryGameRepository.getInstance();
-    repository.clear();
+    repository = createMockGameRepository();
     useCase = new AddEpisode(repository);
 
     // Create a test presenter

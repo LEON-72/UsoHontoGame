@@ -78,8 +78,8 @@ This feature follows **Clean Architecture** with strict layer separation:
                      │
 ┌────────────────────▼────────────────────────────────────┐
 │  Infrastructure Layer (src/server/infrastructure/)      │
-│  - PrismaGameRepository, PrismaPresenterRepository      │
-│  - Database access and external integrations            │
+│  - PrismaGameRepository implementation                  │
+│  - Database access via Prisma ORM with SQLite           │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -708,14 +708,22 @@ Create `tests/unit/use-cases/CreateGame.test.ts`:
 ```typescript
 import { describe, it, expect, beforeEach } from 'vitest';
 import { CreateGame } from '@/server/application/use-cases/games/CreateGame';
-import { InMemoryGameRepository } from '../../test-doubles/InMemoryGameRepository';
+import { PrismaGameRepository } from '@/server/infrastructure/repositories/PrismaGameRepository';
+import { PrismaClient } from '@prisma/client';
 
 describe('CreateGame Use Case', () => {
-  let repository: InMemoryGameRepository;
+  let repository: PrismaGameRepository;
+  let prisma: PrismaClient;
   let useCase: CreateGame;
 
   beforeEach(() => {
-    repository = new InMemoryGameRepository();
+    prisma = new PrismaClient();
+    repository = new PrismaGameRepository(prisma);
+    
+    // Clean database before each test
+    await prisma.episode.deleteMany();
+    await prisma.presenter.deleteMany();
+    await prisma.game.deleteMany();
     useCase = new CreateGame(repository);
   });
 

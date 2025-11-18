@@ -414,7 +414,7 @@ interface IGameRepository {
 }
 ```
 
-**Implementation Note**: InMemoryGameRepository will use a Map<string, Game> for MVP storage.
+**Implementation Note**: PrismaGameRepository will use SQLite database via Prisma ORM for persistent storage.
 
 ---
 
@@ -463,22 +463,25 @@ interface IGameRepository {
 
 **Rationale**: Session ID must be HTTP-only for security (prevents XSS), but nickname can be readable by client since it's non-sensitive display data.
 
-### In-Memory Storage (Game)
+### SQLite Database Storage (Game)
 
 **Structure**:
 ```typescript
-// InMemoryGameRepository implementation
-class InMemoryGameRepository implements IGameRepository {
-  private games: Map<string, Game> = new Map();
+// PrismaGameRepository implementation
+class PrismaGameRepository implements IGameRepository {
+  constructor(private prisma: PrismaClient) {}
 
   async findByStatus(status: GameStatus): Promise<Game[]> {
-    return Array.from(this.games.values())
-      .filter(game => game.status.equals(status));
+    const games = await this.prisma.game.findMany({
+      where: { status: status.value },
+      include: { presenters: { include: { episodes: true } } }
+    });
+    return games.map(game => this.toDomain(game));
   }
 }
 ```
 
-**Singleton**: Game repository will be a singleton instance to maintain state across requests in MVP.
+**Database**: SQLite file-based database at `prisma/dev.db` with Prisma ORM for type-safe queries.
 
 ---
 

@@ -124,7 +124,8 @@ export async function addPresenterWithEpisodesAction(
   }
 
   // 4. Execute use case
-  const repository = InMemoryGameRepository.getInstance();
+  const prisma = new PrismaClient();
+  const repository = new PrismaGameRepository(prisma);
   const useCase = new AddPresenterWithEpisodes(repository);
   const result = await useCase.execute(validationResult.data);
 
@@ -280,7 +281,8 @@ export function PresenterWithEpisodesForm({ gameId, onPresenterAdded }: Props) {
 // tests/unit/use-cases/AddPresenterWithEpisodes.test.ts
 describe('AddPresenterWithEpisodes', () => {
   it('should create presenter with 3 episodes atomically', async () => {
-    const repository = new InMemoryGameRepository();
+    const prisma = new PrismaClient();
+    const repository = new PrismaGameRepository(prisma);
     const useCase = new AddPresenterWithEpisodes(repository);
 
     const result = await useCase.execute({

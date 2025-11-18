@@ -1,14 +1,14 @@
 // Type definitions for GameListPage
 // Feature: 002-game-preparation
 
-import type { GameDto } from '@/server/application/dto/responses/GameDto';
+import type { GameManagementDto } from '@/server/application/dto/GameDto';
 
 /**
  * Props for GameListPage component
  */
 export interface GameListPageProps {
   /** List of games to display */
-  games: GameDto[];
+  games: GameManagementDto[];
 }
 
 /**

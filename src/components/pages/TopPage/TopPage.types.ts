@@ -1,7 +1,7 @@
 // Type definitions for TopPage
 // Feature: 001-session-top-page
 
-import type { Game } from '@/server/domain/entities/Game';
+import type { GameDto } from '@/server/application/dto/GameDto';
 
 /**
  * Props for TopPageNicknameSetup component
@@ -17,5 +17,5 @@ export interface TopPageProps {
   /** User's nickname */
   nickname: string;
   /** List of available games */
-  games: Game[];
+  games: GameDto[];
 }

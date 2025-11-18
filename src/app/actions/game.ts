@@ -5,6 +5,7 @@
 // Server Actions with Zod validation for game management
 
 import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
 import type { GameDetailDto } from '@/server/application/dto/GameDetailDto';
 import type { CreateGameOutput, GameManagementDto } from '@/server/application/dto/GameDto';
 import { CloseGame } from '@/server/application/use-cases/games/CloseGame';
@@ -13,10 +14,13 @@ import { DeleteGame } from '@/server/application/use-cases/games/DeleteGame';
 import { GetGamesByCreator } from '@/server/application/use-cases/games/GetGamesByCreator';
 import { StartAcceptingResponses } from '@/server/application/use-cases/games/StartAcceptingResponses';
 import { UpdateGameSettings } from '@/server/application/use-cases/games/UpdateGameSettings';
+import { ValidateStatusTransition } from '@/server/application/use-cases/games/ValidateStatusTransition';
 import {
+  CloseGameSchema,
   CreateGameSchema,
   DeleteGameSchema,
   StartAcceptingSchema,
+  StartGameSchema,
   UpdateGameSchema,
 } from '@/server/domain/schemas/gameSchemas';
 import { GameId } from '@/server/domain/value-objects/GameId';
@@ -87,6 +91,10 @@ export async function createGameAction(
       name: validationResult.data.name,
       playerLimit: validationResult.data.playerLimit,
     });
+
+    // Revalidate paths for cache management
+    revalidatePath('/');
+    revalidatePath('/games');
 
     return {
       success: true,
@@ -165,6 +173,10 @@ export async function startAcceptingAction(
       gameId: validationResult.data.gameId,
     });
 
+    // Revalidate paths for cache management
+    revalidatePath('/games');
+    revalidatePath(`/games/${validationResult.data.gameId}`);
+
     return { success: true };
   } catch (error) {
     console.error('Failed to start accepting responses:', error);
@@ -172,62 +184,6 @@ export async function startAcceptingAction(
       success: false,
       errors: {
         _form: [error instanceof Error ? error.message : 'ステータスの変更に失敗しました'],
-      },
-    };
-  }
-}
-
-/**
- * Server Action: Close game
- * Transitions game from 出題中 to 締切
- * @param formData Form data with gameId
- * @returns Success status or validation errors
- */
-export async function closeGameAction(
-  formData: FormData
-): Promise<{ success: true } | { success: false; errors: Record<string, string[]> }> {
-  try {
-    // Extract and validate form data
-    const rawData = {
-      gameId: formData.get('gameId'),
-    };
-
-    const validationResult = StartAcceptingSchema.safeParse(rawData);
-
-    if (!validationResult.success) {
-      return {
-        success: false,
-        errors: validationResult.error.flatten().fieldErrors,
-      };
-    }
-
-    // Get session ID (for authorization)
-    const sessionIdResult = await getSessionIdOrError();
-    if (typeof sessionIdResult === 'object' && !sessionIdResult.success) {
-      return {
-        success: false,
-        errors: {
-          _form: ['セッションが見つかりません。ログインし直してください。'],
-        },
-      };
-    }
-    const _sessionId = sessionIdResult as string;
-
-    // Execute use case
-    const repository = createGameRepository();
-    const useCase = new CloseGame(repository);
-
-    await useCase.execute({
-      gameId: validationResult.data.gameId,
-    });
-
-    return { success: true };
-  } catch (error) {
-    console.error('Failed to close game:', error);
-    return {
-      success: false,
-      errors: {
-        _form: [error instanceof Error ? error.message : 'ゲームの締切に失敗しました'],
       },
     };
   }
@@ -411,6 +367,10 @@ export async function updateGameAction(
       };
     }
 
+    // Revalidate paths for cache management
+    revalidatePath('/games');
+    revalidatePath(`/games/${validationResult.data.gameId}`);
+
     return {
       success: true,
       game: result.game,
@@ -471,6 +431,10 @@ export async function deleteGameAction(
       requesterId: sessionId,
     });
 
+    // Revalidate paths for cache management
+    revalidatePath('/');
+    revalidatePath('/games');
+
     return { success: true };
   } catch (error) {
     console.error('Failed to delete game:', error);
@@ -478,6 +442,157 @@ export async function deleteGameAction(
       success: false,
       errors: {
         _form: [error instanceof Error ? error.message : 'ゲームの削除に失敗しました'],
+      },
+    };
+  }
+}
+
+/**
+ * Server Action: Start Game (Status Transition)
+ * Feature: 004-status-transition
+ * Validates and transitions game from 準備中 to 出題中 with presenter validation
+ * @param formData Form data with gameId
+ * @returns Success status or validation errors
+ */
+export async function startGameAction(
+  formData: FormData
+): Promise<{ success: true } | { success: false; errors: Record<string, string[]> }> {
+  try {
+    // Extract and validate form data
+    const rawData = {
+      gameId: formData.get('gameId'),
+      sessionId: '', // Will be filled below
+    };
+
+    // Get session ID
+    const sessionIdResult = await getSessionIdOrError();
+    if (typeof sessionIdResult === 'object' && !sessionIdResult.success) {
+      return sessionIdResult;
+    }
+    rawData.sessionId = sessionIdResult as string;
+
+    const validationResult = StartGameSchema.safeParse(rawData);
+
+    if (!validationResult.success) {
+      return {
+        success: false,
+        errors: validationResult.error.flatten().fieldErrors,
+      };
+    }
+
+    // Validate status transition first
+    const repository = createGameRepository();
+    const validateUseCase = new ValidateStatusTransition(repository);
+
+    const validationResponse = await validateUseCase.execute(
+      validationResult.data.gameId,
+      '出題中',
+      validationResult.data.sessionId
+    );
+
+    if (!validationResponse.canTransition) {
+      return {
+        success: false,
+        errors: {
+          _form: validationResponse.errors.map((err) => err.message),
+        },
+      };
+    }
+
+    // Execute the status transition
+    const startUseCase = new StartAcceptingResponses(repository);
+    await startUseCase.execute({
+      gameId: validationResult.data.gameId,
+    });
+
+    // Revalidate paths for cache management
+    revalidatePath('/games');
+    revalidatePath(`/games/${validationResult.data.gameId}`);
+    revalidatePath(`/games/${validationResult.data.gameId}/presenters`);
+
+    return { success: true };
+  } catch (error) {
+    console.error('Failed to start game:', error);
+    return {
+      success: false,
+      errors: {
+        _form: [error instanceof Error ? error.message : 'ゲームの開始に失敗しました'],
+      },
+    };
+  }
+}
+
+/**
+ * Server Action: Close Game (Status Transition)
+ * Feature: 004-status-transition
+ * Validates and transitions game from 出題中 to 締切 with confirmation
+ * @param formData Form data with gameId and confirmed
+ * @returns Success status or validation errors
+ */
+export async function closeGameAction(
+  formData: FormData
+): Promise<{ success: true } | { success: false; errors: Record<string, string[]> }> {
+  try {
+    // Extract and validate form data
+    const rawData = {
+      gameId: formData.get('gameId'),
+      sessionId: '', // Will be filled below
+      confirmed: formData.get('confirmed') === 'true',
+    };
+
+    // Get session ID
+    const sessionIdResult = await getSessionIdOrError();
+    if (typeof sessionIdResult === 'object' && !sessionIdResult.success) {
+      return sessionIdResult;
+    }
+    rawData.sessionId = sessionIdResult as string;
+
+    const validationResult = CloseGameSchema.safeParse(rawData);
+
+    if (!validationResult.success) {
+      return {
+        success: false,
+        errors: validationResult.error.flatten().fieldErrors,
+      };
+    }
+
+    // Validate status transition first
+    const repository = createGameRepository();
+    const validateUseCase = new ValidateStatusTransition(repository);
+
+    const validationResponse = await validateUseCase.execute(
+      validationResult.data.gameId,
+      '締切',
+      validationResult.data.sessionId
+    );
+
+    if (!validationResponse.canTransition) {
+      return {
+        success: false,
+        errors: {
+          _form: validationResponse.errors.map((err) => err.message),
+        },
+      };
+    }
+
+    // Execute the status transition
+    const closeUseCase = new CloseGame(repository);
+    await closeUseCase.execute({
+      gameId: validationResult.data.gameId,
+    });
+
+    // Revalidate paths for cache management
+    revalidatePath('/games');
+    revalidatePath(`/games/${validationResult.data.gameId}`);
+    revalidatePath(`/games/${validationResult.data.gameId}/presenters`);
+
+    return { success: true };
+  } catch (error) {
+    console.error('Failed to close game:', error);
+    return {
+      success: false,
+      errors: {
+        _form: [error instanceof Error ? error.message : 'ゲームの締切に失敗しました'],
       },
     };
   }

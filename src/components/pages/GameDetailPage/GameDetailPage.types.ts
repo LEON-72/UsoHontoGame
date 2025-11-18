@@ -6,11 +6,12 @@
  */
 export interface GameDetail {
   id: string;
-  name: string;
+  name: string | null;
   status: string;
   maxPlayers: number;
   currentPlayers: number;
   availableSlots: number;
+  creatorId: string;
   createdAt: string | Date;
   updatedAt: string | Date;
 }

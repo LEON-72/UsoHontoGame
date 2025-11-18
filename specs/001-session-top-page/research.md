@@ -138,7 +138,7 @@ export function NicknameInput() {
 ## 4. Game Filtering and Data Access Pattern
 
 ### Decision
-Implement Repository pattern with an in-memory game repository that filters by status at the data access layer.
+Implement Repository pattern with a Prisma-based game repository that filters by status at the data access layer using SQLite database.
 
 ### Rationale
 - **Clean Architecture Compliance**: Follows constitution's Clean Architecture principle (I) - repository implements IGameRepository interface
@@ -151,8 +151,8 @@ Implement Repository pattern with an in-memory game repository that filters by s
 **Alternative 1: Filter in UI component**
 - **Rejected Because**: Violates Clean Architecture. Business logic (what games are "available") should be in application/domain layer, not presentation layer.
 
-**Alternative 2: Database query with WHERE clause**
-- **Rejected Because**: Spec mandates in-memory storage for MVP. However, repository pattern makes future migration to database seamless - just swap implementation.
+**Alternative 2: In-memory storage with singleton pattern**
+- **Rejected Because**: While simpler for initial development, database persistence provides better reliability and supports concurrent access patterns needed for production use.
 
 ### Implementation Approach
 
@@ -164,10 +164,16 @@ export interface IGameRepository {
   findById(id: string): Promise<Game | null>;
 }
 
-// server/infrastructure/repositories/InMemoryGameRepository.ts
-export class InMemoryGameRepository implements IGameRepository {
+// server/infrastructure/repositories/PrismaGameRepository.ts
+export class PrismaGameRepository implements IGameRepository {
+  constructor(private prisma: PrismaClient) {}
+  
   async findByStatus(status: GameStatus): Promise<Game[]> {
-    return this.games.filter(game => game.status === status);
+    const games = await this.prisma.game.findMany({
+      where: { status: status.value },
+      include: { presenters: { include: { episodes: true } } }
+    });
+    return games.map(game => this.toDomain(game));
   }
 }
 

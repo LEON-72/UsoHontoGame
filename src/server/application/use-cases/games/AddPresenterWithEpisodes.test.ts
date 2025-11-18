@@ -3,16 +3,16 @@
 
 import { beforeEach, describe, expect, it } from 'vitest';
 import { ValidationError } from '@/server/domain/errors/ValidationError';
-import { InMemoryGameRepository } from '@/server/infrastructure/repositories/InMemoryGameRepository';
+import type { IGameRepository } from '@/server/domain/repositories/IGameRepository';
+import { createMockGameRepository } from '../../../../../tests/utils/mockRepositories';
 import { AddPresenterWithEpisodes } from './AddPresenterWithEpisodes';
 
 describe('AddPresenterWithEpisodes', () => {
-  let repository: InMemoryGameRepository;
+  let repository: IGameRepository;
   let useCase: AddPresenterWithEpisodes;
 
   beforeEach(() => {
-    repository = InMemoryGameRepository.getInstance();
-    repository.clear(); // Start with clean state
+    repository = createMockGameRepository();
     useCase = new AddPresenterWithEpisodes(repository);
   });
 

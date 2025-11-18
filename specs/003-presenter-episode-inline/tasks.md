@@ -32,7 +32,7 @@ Transform presenter registration from a 2-step process to a single-form submissi
 - [X] T009 Create AddPresenterWithEpisodesSchema in src/server/domain/schemas/gameSchemas.ts with cross-field validation
 - [X] T010 Write unit tests for AddPresenterWithEpisodesSchema validation in tests/unit/schemas/AddPresenterWithEpisodesSchema.test.ts
 - [X] T011 Add createPresenterWithEpisodes method to IGameRepository interface
-- [X] T012 Implement createPresenterWithEpisodes in InMemoryGameRepository with atomic save logic
+- [X] T012 Implement createPresenterWithEpisodes in PrismaGameRepository with atomic save logic
 
 ## Phase 3: User Story 1 - Single-Form Presenter Registration (P1) [US1]
 

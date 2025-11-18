@@ -7,15 +7,15 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { GetPresentersByGameId } from '@/server/application/use-cases/games/GetPresentersByGameId';
 import { Episode } from '@/server/domain/entities/Episode';
 import { Presenter } from '@/server/domain/entities/Presenter';
-import { InMemoryGameRepository } from '@/server/infrastructure/repositories/InMemoryGameRepository';
+import type { IGameRepository } from '@/server/domain/repositories/IGameRepository';
+import { createMockGameRepository } from '../../../../../tests/utils/mockRepositories';
 
 describe('GetPresentersByGameId Use Case', () => {
-  let repository: InMemoryGameRepository;
+  let repository: IGameRepository;
   let useCase: GetPresentersByGameId;
 
   beforeEach(() => {
-    repository = InMemoryGameRepository.getInstance();
-    repository.clear(); // Clear repository before each test
+    repository = createMockGameRepository();
     useCase = new GetPresentersByGameId(repository);
   });
 

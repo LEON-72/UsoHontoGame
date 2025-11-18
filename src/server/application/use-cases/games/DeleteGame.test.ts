@@ -5,19 +5,19 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { DeleteGame } from '@/server/application/use-cases/games/DeleteGame';
 import { Game } from '@/server/domain/entities/Game';
 import { NotFoundError } from '@/server/domain/errors/NotFoundError';
+import type { IGameRepository } from '@/server/domain/repositories/IGameRepository';
 import { GameId } from '@/server/domain/value-objects/GameId';
 import { GameStatus } from '@/server/domain/value-objects/GameStatus';
-import { InMemoryGameRepository } from '@/server/infrastructure/repositories/InMemoryGameRepository';
+import { createMockGameRepository } from '../../../../../tests/utils/mockRepositories';
 
 describe('DeleteGame', () => {
-  let repository: InMemoryGameRepository;
+  let repository: IGameRepository;
   let useCase: DeleteGame;
   const creatorId = 'creator-session-123';
   const otherUserId = 'other-session-456';
 
   beforeEach(() => {
-    repository = InMemoryGameRepository.getInstance();
-    repository.clear();
+    repository = createMockGameRepository();
     useCase = new DeleteGame(repository);
   });
 

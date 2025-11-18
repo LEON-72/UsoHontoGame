@@ -13,7 +13,7 @@ Transform the current 2-step presenter registration process (register presenter 
 
 **Language/Version**: TypeScript 5 with strict mode enabled
 **Primary Dependencies**: Next.js 16.0.1, React 19.2.0, Tailwind CSS v4, Zod 3.x for validation, nanoid 5.1.6 for ID generation
-**Storage**: InMemoryGameRepository (singleton pattern for MVP)
+**Storage**: SQLite database via Prisma ORM (existing database at prisma/dev.db)
 **Testing**: Vitest for unit/integration tests, React Testing Library for component tests
 **Target Platform**: Web browser (modern browsers supporting ES2020+)
 **Project Type**: Web application (Next.js App Router with Server Components)

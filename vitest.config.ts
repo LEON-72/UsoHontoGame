@@ -9,6 +9,9 @@ export default defineConfig({
     globals: true,
     setupFiles: ['./tests/setup.ts'],
     exclude: ['**/node_modules/**', '**/dist/**', '**/e2e/**', '**/*.spec.ts'],
+    // Enable parallel execution but with proper isolation
+    pool: 'threads',
+    maxConcurrency: 2, // Limit concurrency for integration tests
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
