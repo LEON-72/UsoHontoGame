@@ -36,7 +36,7 @@ export type CloseGameRequest = z.infer<typeof closeGameRequestSchema>;
 export const validateTransitionRequestSchema = z.object({
   gameId: z.string().uuid('Invalid game ID format'),
   targetStatus: z.enum(['出題中', '締切'], {
-    errorMap: () => ({ message: 'Invalid target status' }),
+    message: 'Invalid target status',
   }),
 });
 
@@ -82,7 +82,7 @@ export const validationResultSchema = z.object({
           'INVALID_STATUS_TRANSITION',
         ]),
         message: z.string(),
-        details: z.record(z.unknown()).optional(),
+        details: z.record(z.string(), z.unknown()).optional(),
       })
     )
     .optional(),
@@ -121,7 +121,7 @@ export const statusTransitionErrorSchema = z.object({
     ]),
     message: z.string(),
     currentStatus: gameStatusSchema,
-    details: z.record(z.unknown()).optional(),
+    details: z.record(z.string(), z.unknown()).optional(),
   }),
 });
 
