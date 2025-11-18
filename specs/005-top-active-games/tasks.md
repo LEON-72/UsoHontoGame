@@ -112,20 +112,20 @@ Each phase delivers independently testable value, allowing for early validation 
 
 ### Tests (TDD)
 
-- [ ] T035 [P] [US4] Write test for useActiveGames hook with refetchInterval in src/components/pages/TopPage/hooks/useActiveGames.test.ts
-- [ ] T036 [P] [US4] Write test for auto-refresh not causing scroll jump in src/components/pages/TopPage/hooks/useActiveGames.test.ts
+- [x] T035 [P] [US4] Write test for useActiveGames hook with refetchInterval in src/components/pages/TopPage/hooks/useActiveGames.test.ts
+- [x] T036 [P] [US4] Write test for auto-refresh not causing scroll jump in src/components/pages/TopPage/hooks/useActiveGames.test.ts
 
 ### Implementation
 
-- [ ] T037 [US4] Create useActiveGames custom hook in src/components/pages/TopPage/hooks/useActiveGames.ts
-- [ ] T038 [US4] Update TopPage to use useActiveGames hook with 30-second interval
-- [ ] T039 [US4] Add loading state indicator for refresh in TopPage
-- [ ] T040 [US4] Implement optimistic updates to prevent UI flicker
+- [x] T037 [US4] Create useActiveGames custom hook in src/components/pages/TopPage/hooks/useActiveGames.ts
+- [x] T038 [US4] Update TopPage to use useActiveGames hook with 30-second interval
+- [x] T039 [US4] Add loading state indicator for refresh in TopPage
+- [x] T040 [US4] Implement optimistic updates to prevent UI flicker
 
 ### Integration
 
-- [ ] T041 [US4] Run tests and verify all US4 tests pass
-- [ ] T042 [US4] Manual test: Verify auto-refresh works without UI issues
+- [x] T041 [US4] Run tests and verify all US4 tests pass
+- [x] T042 [US4] Manual test: Verify auto-refresh works without UI issues
 
 ## Phase 7: Polish & Performance
 
