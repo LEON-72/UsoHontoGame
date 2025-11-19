@@ -1,0 +1,103 @@
+/**
+ * useActiveGames Hook
+ * Feature: 005-top-active-games (User Story 4)
+ *
+ * Custom hook for fetching active games with auto-refresh capability
+ * Uses React Query for caching, background refetching, and optimistic updates
+ */
+
+'use client';
+
+import { useQuery } from '@tanstack/react-query';
+import { getActiveGamesAction } from '@/app/actions/game';
+import type { ActiveGameListItem } from '@/types/game';
+
+export interface UseActiveGamesOptions {
+  /** Refetch interval in milliseconds (default: 30000 / 30 seconds) */
+  refetchInterval?: number;
+  /** Number of games to fetch per page */
+  limit?: number;
+}
+
+export interface UseActiveGamesResult {
+  /** Array of active games */
+  games: ActiveGameListItem[];
+  /** Whether initial load is in progress */
+  isLoading: boolean;
+  /** Whether any fetch (including background) is in progress */
+  isFetching: boolean;
+  /** Error object if fetch failed */
+  error: Error | null;
+  /** Function to manually trigger refetch */
+  refetch: () => Promise<void>;
+  /** Whether there are more games to load */
+  hasMore: boolean;
+  /** Total count of active games */
+  total: number;
+}
+
+/**
+ * Hook for fetching active games with auto-refresh
+ *
+ * @param options - Configuration options
+ * @returns Active games data and query state
+ *
+ * @example
+ * ```tsx
+ * function TopPage() {
+ *   const { games, isLoading, error, refetch } = useActiveGames();
+ *
+ *   if (isLoading) return <LoadingSkeleton />;
+ *   if (error) return <ErrorState onRetry={refetch} />;
+ *
+ *   return <ActiveGamesList games={games} />;
+ * }
+ * ```
+ */
+export function useActiveGames(options: UseActiveGamesOptions = {}): UseActiveGamesResult {
+  const { refetchInterval = 30000, limit = 20 } = options;
+
+  const {
+    data,
+    isLoading,
+    isFetching,
+    error,
+    refetch: queryRefetch,
+  } = useQuery({
+    queryKey: ['activeGames', { limit }],
+    queryFn: async () => {
+      const result = await getActiveGamesAction({ limit });
+
+      if (!result.success) {
+        throw new Error(result.message || 'Failed to fetch active games');
+      }
+
+      return {
+        games: result.games,
+        hasMore: result.hasMore,
+        nextCursor: result.nextCursor,
+        total: result.total,
+      };
+    },
+    refetchInterval,
+    refetchIntervalInBackground: true,
+    staleTime: 30000, // Consider data stale after 30 seconds
+    gcTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
+    refetchOnWindowFocus: true, // Refetch when user returns to tab
+    refetchOnReconnect: true, // Refetch when network reconnects
+  });
+
+  const refetch = async () => {
+    await queryRefetch();
+  };
+
+  return {
+    games: data?.games ?? [],
+    isLoading,
+    isFetching,
+    error: error as Error | null,
+    refetch,
+    hasMore: data?.hasMore ?? false,
+    total: data?.total ?? 0,
+  };
+}

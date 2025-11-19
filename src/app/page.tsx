@@ -1,13 +1,16 @@
 // App Router Page: TOP/Home
-// Feature: 001-session-top-page
+// Feature: 001-session-top-page, 005-top-active-games
 // Server Component that handles session management and delegates to TopPage components
 
 import { createSessionAction, validateSessionAction } from '@/app/actions/session';
-import { TopPage, TopPageNicknameSetup } from '@/components/pages/TopPage';
+import { TopPageNicknameSetup } from '@/components/pages/TopPage';
+import { TopPageWithData } from '@/components/pages/TopPage/TopPageWithData';
 
 /**
  * Next.js App Router page for /
  * Handles session validation, session creation, and state routing
+ *
+ * Feature 005: Now uses TopPageWithData with auto-refresh capability
  */
 export default async function Page() {
   // 1. Validate existing session
@@ -26,16 +29,7 @@ export default async function Page() {
     return <TopPageNicknameSetup />;
   }
 
-  // 4. Fetch available games
-  const { GetAvailableGames } = await import(
-    '@/server/application/use-cases/games/GetAvailableGames'
-  );
-  const { createGameRepository } = await import('@/server/infrastructure/repositories');
-
-  const gameRepository = createGameRepository();
-  const getGamesUseCase = new GetAvailableGames(gameRepository);
-  const games = await getGamesUseCase.execute();
-
-  // 5. Render page component with session and games data
-  return <TopPage nickname={session.nickname || ''} games={games} />;
+  // 4. Render page component with auto-refresh (Feature 005)
+  // Data fetching now happens in Client Component with React Query
+  return <TopPageWithData nickname={session.nickname || ''} />;
 }

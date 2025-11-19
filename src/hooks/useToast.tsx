@@ -35,7 +35,7 @@ export function useToast(): UseToastReturn {
 
   const addToast = useCallback((options: AddToastOptions): string => {
     const id = `toast-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-    
+
     const newToast: ToastProps = {
       id,
       type: options.type,
@@ -45,7 +45,7 @@ export function useToast(): UseToastReturn {
       onClose: removeToast,
     };
 
-    setToasts(prev => {
+    setToasts((prev) => {
       // Limit to 5 toasts maximum
       const updatedToasts = [newToast, ...prev].slice(0, 5);
       return updatedToasts;
@@ -55,7 +55,7 @@ export function useToast(): UseToastReturn {
   }, []);
 
   const removeToast = useCallback((id: string) => {
-    setToasts(prev => prev.filter(toast => toast.id !== id));
+    setToasts((prev) => prev.filter((toast) => toast.id !== id));
   }, []);
 
   const clearAllToasts = useCallback(() => {
@@ -63,21 +63,33 @@ export function useToast(): UseToastReturn {
   }, []);
 
   // Convenience methods for different toast types
-  const showSuccess = useCallback((message: string, title?: string): string => {
-    return addToast({ type: 'success', message, title });
-  }, [addToast]);
+  const showSuccess = useCallback(
+    (message: string, title?: string): string => {
+      return addToast({ type: 'success', message, title });
+    },
+    [addToast]
+  );
 
-  const showError = useCallback((message: string, title?: string): string => {
-    return addToast({ type: 'error', message, title });
-  }, [addToast]);
+  const showError = useCallback(
+    (message: string, title?: string): string => {
+      return addToast({ type: 'error', message, title });
+    },
+    [addToast]
+  );
 
-  const showInfo = useCallback((message: string, title?: string): string => {
-    return addToast({ type: 'info', message, title });
-  }, [addToast]);
+  const showInfo = useCallback(
+    (message: string, title?: string): string => {
+      return addToast({ type: 'info', message, title });
+    },
+    [addToast]
+  );
 
-  const showWarning = useCallback((message: string, title?: string): string => {
-    return addToast({ type: 'warning', message, title });
-  }, [addToast]);
+  const showWarning = useCallback(
+    (message: string, title?: string): string => {
+      return addToast({ type: 'warning', message, title });
+    },
+    [addToast]
+  );
 
   return {
     toasts,
@@ -99,11 +111,7 @@ const ToastContext = createContext<UseToastReturn | null>(null);
 export function ToastProvider({ children }: { children: React.ReactNode }) {
   const toast = useToast();
 
-  return (
-    <ToastContext.Provider value={toast}>
-      {children}
-    </ToastContext.Provider>
-  );
+  return <ToastContext.Provider value={toast}>{children}</ToastContext.Provider>;
 }
 
 export function useGlobalToast(): UseToastReturn {
@@ -123,19 +131,19 @@ export const statusTransitionToasts = {
     title,
     message: 'ゲームが正常に開始されました',
   }),
-  
+
   gameClosed: (title: string = 'ゲーム締切') => ({
     type: 'success' as ToastType,
     title,
     message: 'ゲームが正常に締切されました',
   }),
-  
+
   gameStartError: (error: string) => ({
     type: 'error' as ToastType,
     title: 'ゲーム開始エラー',
     message: error,
   }),
-  
+
   gameCloseError: (error: string) => ({
     type: 'error' as ToastType,
     title: 'ゲーム締切エラー',

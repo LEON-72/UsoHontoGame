@@ -12,16 +12,18 @@ import { GameStatus, type GameStatusValue } from '@/server/domain/value-objects/
 /**
  * Mock Game entity factory
  */
-export const mockGame = (overrides: Partial<{
-  id: string;
-  name: string | null;
-  status: string;
-  maxPlayers: number;
-  currentPlayers: number;
-  createdAt: Date;
-  updatedAt: Date;
-  creatorId: string;
-}> = {}): Game => {
+export const mockGame = (
+  overrides: Partial<{
+    id: string;
+    name: string | null;
+    status: string;
+    maxPlayers: number;
+    currentPlayers: number;
+    createdAt: Date;
+    updatedAt: Date;
+    creatorId: string;
+  }> = {}
+): Game => {
   const defaults = {
     id: 'test-game-id',
     name: 'Test Game' as string | null,
