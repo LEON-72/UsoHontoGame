@@ -139,7 +139,7 @@ This is a full-stack Next.js application with Clean Architecture:
 
 ### E2E Tests
 
-- [ ] T047 [US1] Write and run E2E test for participant journey in tests/e2e/answer-submission.spec.ts (TOP → game → select → submit → verify redirect)
+- [X] T047 [US1] Write and run E2E test for participant journey in tests/e2e/answer-submission.spec.ts (TOP → game → select → submit → verify redirect)
 
 **Checkpoint**: At this point, User Story 1 (core answer submission) should be fully functional and testable independently. This is the MVP.
 
