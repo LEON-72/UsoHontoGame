@@ -67,15 +67,15 @@ This is a full-stack Next.js application with Clean Architecture:
 
 ### DTOs & Schemas
 
-- [ ] T017 [P] Create SubmitAnswerRequest DTO in src/server/application/dto/requests/SubmitAnswerRequest.ts
-- [ ] T018 [P] Create AnswerResponse DTO in src/server/application/dto/responses/AnswerResponse.ts
-- [ ] T019 [P] Write failing tests for answer schemas in src/server/domain/schemas/answerSchemas.test.ts
-- [ ] T020 [P] Create Zod schemas in src/server/domain/schemas/answerSchemas.ts to pass T019 tests
+- [x] T017 [P] Create SubmitAnswerRequest DTO in src/server/application/dto/requests/SubmitAnswerRequest.ts
+- [x] T018 [P] Create AnswerResponse DTO in src/server/application/dto/responses/AnswerResponse.ts
+- [x] T019 [P] Write failing tests for answer schemas in src/server/domain/schemas/answerSchemas.test.ts
+- [x] T020 [P] Create Zod schemas in src/server/domain/schemas/answerSchemas.ts to pass T019 tests
 
 ### Shared Hooks (TDD)
 
-- [ ] T021 Write failing tests for useParticipantSession hook in src/hooks/useParticipantSession.test.ts
-- [ ] T022 Implement useParticipantSession hook in src/hooks/useParticipantSession.ts to pass T021 tests
+- [x] T021 Write failing tests for useParticipantSession hook in src/hooks/useParticipantSession.test.ts
+- [x] T022 Implement useParticipantSession hook in src/hooks/useParticipantSession.ts to pass T021 tests
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
