@@ -9,7 +9,7 @@
 
 import type { FC } from 'react';
 import { GameAnswerForm } from '@/components/domain/answer/GameAnswerForm';
-import { useAnswerSubmission } from './hooks/useAnswerSubmission';
+import { useAnswerSubmissionPage } from './hooks/useAnswerSubmissionPage';
 import type { AnswerSubmissionPageProps } from './AnswerSubmissionPage.types';
 
 /**
@@ -21,7 +21,7 @@ import type { AnswerSubmissionPageProps } from './AnswerSubmissionPage.types';
  * - Reset their selections
  *
  * This is a pure presentational component; all logic is handled by the
- * useAnswerSubmission custom hook.
+ * useAnswerSubmissionPage custom hook.
  */
 export const AnswerSubmissionPage: FC<AnswerSubmissionPageProps> = ({ gameId }) => {
 	const {
@@ -32,7 +32,7 @@ export const AnswerSubmissionPage: FC<AnswerSubmissionPageProps> = ({ gameId }) 
 		handleSelectEpisode,
 		handleSubmit,
 		handleReset,
-	} = useAnswerSubmission({ gameId });
+	} = useAnswerSubmissionPage({ gameId });
 
 	// Error state (check error first before loading check)
 	if (error) {
