@@ -238,10 +238,7 @@ describe('usePresenterManagementPage', () => {
         expect(result.current.error).toBe('プレゼンターの読み込みに失敗しました');
       });
 
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        'Failed to load presenters:',
-        expect.any(Error)
-      );
+      expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to load presenters:', expect.any(Error));
 
       consoleErrorSpy.mockRestore();
     });

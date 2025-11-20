@@ -12,12 +12,12 @@ import { useAnswerSubmission } from './hooks/useAnswerSubmission';
 
 // Mock dependencies
 vi.mock('@/components/domain/answer/GameAnswerForm', () => ({
-	GameAnswerForm: ({ onSubmit, onReset, ...props }: any) => (
-		<div data-testid="game-answer-form" data-props={JSON.stringify(props)}>
-			<button onClick={onSubmit}>Submit</button>
-			<button onClick={onReset}>Reset</button>
-		</div>
-	),
+  GameAnswerForm: ({ onSubmit, onReset, ...props }: any) => (
+    <div data-testid="game-answer-form" data-props={JSON.stringify(props)}>
+      <button onClick={onSubmit}>Submit</button>
+      <button onClick={onReset}>Reset</button>
+    </div>
+  ),
 }));
 
 vi.mock('./hooks/useAnswerSubmission');
@@ -26,457 +26,457 @@ const mockUseAnswerSubmission = vi.mocked(useAnswerSubmission);
 
 // Test wrapper with AccessibilityProvider
 const TestWrapper = ({ children }: { children: React.ReactNode }) => (
-	<AccessibilityProvider>{children}</AccessibilityProvider>
+  <AccessibilityProvider>{children}</AccessibilityProvider>
 );
 
 describe('AnswerSubmissionPage', () => {
-	const mockGameId = 'game-123';
+  const mockGameId = 'game-123';
 
-	beforeEach(() => {
-		vi.clearAllMocks();
-	});
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
-	describe('Loading State', () => {
-		it('should display loading message when data is being fetched', () => {
-			mockUseAnswerSubmission.mockReturnValue({
-				formData: null,
-				isLoading: true,
-				error: null,
-				successMessage: null,
-				handleSelectEpisode: vi.fn(),
-				handleSubmit: vi.fn(),
-				handleReset: vi.fn(),
-			});
+  describe('Loading State', () => {
+    it('should display loading message when data is being fetched', () => {
+      mockUseAnswerSubmission.mockReturnValue({
+        formData: null,
+        isLoading: true,
+        error: null,
+        successMessage: null,
+        handleSelectEpisode: vi.fn(),
+        handleSubmit: vi.fn(),
+        handleReset: vi.fn(),
+      });
 
-			render(
-				<TestWrapper>
-					<AnswerSubmissionPage gameId={mockGameId} />
-				</TestWrapper>,
-			);
+      render(
+        <TestWrapper>
+          <AnswerSubmissionPage gameId={mockGameId} />
+        </TestWrapper>
+      );
 
-			expect(screen.getByText(/読み込み中/i)).toBeInTheDocument();
-		});
+      expect(screen.getByText(/読み込み中/i)).toBeInTheDocument();
+    });
 
-		it('should render loading state in main container', () => {
-			mockUseAnswerSubmission.mockReturnValue({
-				formData: null,
-				isLoading: true,
-				error: null,
-				successMessage: null,
-				handleSelectEpisode: vi.fn(),
-				handleSubmit: vi.fn(),
-				handleReset: vi.fn(),
-			});
+    it('should render loading state in main container', () => {
+      mockUseAnswerSubmission.mockReturnValue({
+        formData: null,
+        isLoading: true,
+        error: null,
+        successMessage: null,
+        handleSelectEpisode: vi.fn(),
+        handleSubmit: vi.fn(),
+        handleReset: vi.fn(),
+      });
 
-			const { container } = render(
-				<TestWrapper>
-					<AnswerSubmissionPage gameId={mockGameId} />
-				</TestWrapper>,
-			);
+      const { container } = render(
+        <TestWrapper>
+          <AnswerSubmissionPage gameId={mockGameId} />
+        </TestWrapper>
+      );
 
-			const mainElement = container.querySelector('main');
-			expect(mainElement).toBeInTheDocument();
-			expect(mainElement).toHaveClass('min-h-screen');
-		});
-	});
+      const mainElement = container.querySelector('main');
+      expect(mainElement).toBeInTheDocument();
+      expect(mainElement).toHaveClass('min-h-screen');
+    });
+  });
 
-	describe('Error State', () => {
-		it('should display error message when loading fails', () => {
-			mockUseAnswerSubmission.mockReturnValue({
-				formData: null,
-				isLoading: false,
-				error: 'ゲームが見つかりませんでした',
-				successMessage: null,
-				handleSelectEpisode: vi.fn(),
-				handleSubmit: vi.fn(),
-				handleReset: vi.fn(),
-			});
+  describe('Error State', () => {
+    it('should display error message when loading fails', () => {
+      mockUseAnswerSubmission.mockReturnValue({
+        formData: null,
+        isLoading: false,
+        error: 'ゲームが見つかりませんでした',
+        successMessage: null,
+        handleSelectEpisode: vi.fn(),
+        handleSubmit: vi.fn(),
+        handleReset: vi.fn(),
+      });
 
-			render(
-				<TestWrapper>
-					<AnswerSubmissionPage gameId={mockGameId} />
-				</TestWrapper>,
-			);
+      render(
+        <TestWrapper>
+          <AnswerSubmissionPage gameId={mockGameId} />
+        </TestWrapper>
+      );
 
-			expect(screen.getByText('ゲームが見つかりませんでした')).toBeInTheDocument();
-		});
+      expect(screen.getByText('ゲームが見つかりませんでした')).toBeInTheDocument();
+    });
 
-		it('should display game status error appropriately', () => {
-			mockUseAnswerSubmission.mockReturnValue({
-				formData: null,
-				isLoading: false,
-				error: 'このゲームは既に締め切られました',
-				successMessage: null,
-				handleSelectEpisode: vi.fn(),
-				handleSubmit: vi.fn(),
-				handleReset: vi.fn(),
-			});
+    it('should display game status error appropriately', () => {
+      mockUseAnswerSubmission.mockReturnValue({
+        formData: null,
+        isLoading: false,
+        error: 'このゲームは既に締め切られました',
+        successMessage: null,
+        handleSelectEpisode: vi.fn(),
+        handleSubmit: vi.fn(),
+        handleReset: vi.fn(),
+      });
 
-			render(
-				<TestWrapper>
-					<AnswerSubmissionPage gameId={mockGameId} />
-				</TestWrapper>,
-			);
+      render(
+        <TestWrapper>
+          <AnswerSubmissionPage gameId={mockGameId} />
+        </TestWrapper>
+      );
 
-			expect(screen.getByText('このゲームは既に締め切られました')).toBeInTheDocument();
-		});
+      expect(screen.getByText('このゲームは既に締め切られました')).toBeInTheDocument();
+    });
 
-		it('should display participant limit error', () => {
-			mockUseAnswerSubmission.mockReturnValue({
-				formData: null,
-				isLoading: false,
-				error: '参加人数が上限に達しました',
-				successMessage: null,
-				handleSelectEpisode: vi.fn(),
-				handleSubmit: vi.fn(),
-				handleReset: vi.fn(),
-			});
+    it('should display participant limit error', () => {
+      mockUseAnswerSubmission.mockReturnValue({
+        formData: null,
+        isLoading: false,
+        error: '参加人数が上限に達しました',
+        successMessage: null,
+        handleSelectEpisode: vi.fn(),
+        handleSubmit: vi.fn(),
+        handleReset: vi.fn(),
+      });
 
-			render(
-				<TestWrapper>
-					<AnswerSubmissionPage gameId={mockGameId} />
-				</TestWrapper>,
-			);
+      render(
+        <TestWrapper>
+          <AnswerSubmissionPage gameId={mockGameId} />
+        </TestWrapper>
+      );
 
-			expect(screen.getByText('参加人数が上限に達しました')).toBeInTheDocument();
-		});
+      expect(screen.getByText('参加人数が上限に達しました')).toBeInTheDocument();
+    });
 
-		it('should have error role for accessibility', () => {
-			mockUseAnswerSubmission.mockReturnValue({
-				formData: null,
-				isLoading: false,
-				error: 'エラーが発生しました',
-				successMessage: null,
-				handleSelectEpisode: vi.fn(),
-				handleSubmit: vi.fn(),
-				handleReset: vi.fn(),
-			});
+    it('should have error role for accessibility', () => {
+      mockUseAnswerSubmission.mockReturnValue({
+        formData: null,
+        isLoading: false,
+        error: 'エラーが発生しました',
+        successMessage: null,
+        handleSelectEpisode: vi.fn(),
+        handleSubmit: vi.fn(),
+        handleReset: vi.fn(),
+      });
 
-			render(
-				<TestWrapper>
-					<AnswerSubmissionPage gameId={mockGameId} />
-				</TestWrapper>,
-			);
+      render(
+        <TestWrapper>
+          <AnswerSubmissionPage gameId={mockGameId} />
+        </TestWrapper>
+      );
 
-			const errorMessage = screen.getByText('エラーが発生しました');
-			expect(errorMessage.closest('[role="alert"]')).toBeInTheDocument();
-		});
-	});
+      const errorMessage = screen.getByText('エラーが発生しました');
+      expect(errorMessage.closest('[role="alert"]')).toBeInTheDocument();
+    });
+  });
 
-	describe('Form Rendering', () => {
-		const mockFormData: GameAnswerFormData = {
-			presenters: [
-				{
-					id: 'presenter-1',
-					name: '山田太郎',
-					episodes: [
-						{ id: 'episode-1-1', text: 'エピソード1' },
-						{ id: 'episode-1-2', text: 'エピソード2' },
-					],
-				},
-			],
-			selections: {},
-			isComplete: false,
-			isSubmitting: false,
-		};
+  describe('Form Rendering', () => {
+    const mockFormData: GameAnswerFormData = {
+      presenters: [
+        {
+          id: 'presenter-1',
+          name: '山田太郎',
+          episodes: [
+            { id: 'episode-1-1', text: 'エピソード1' },
+            { id: 'episode-1-2', text: 'エピソード2' },
+          ],
+        },
+      ],
+      selections: {},
+      isComplete: false,
+      isSubmitting: false,
+    };
 
-		it('should render GameAnswerForm when data is loaded', () => {
-			mockUseAnswerSubmission.mockReturnValue({
-				formData: mockFormData,
-				isLoading: false,
-				error: null,
-				successMessage: null,
-				handleSelectEpisode: vi.fn(),
-				handleSubmit: vi.fn(),
-				handleReset: vi.fn(),
-			});
+    it('should render GameAnswerForm when data is loaded', () => {
+      mockUseAnswerSubmission.mockReturnValue({
+        formData: mockFormData,
+        isLoading: false,
+        error: null,
+        successMessage: null,
+        handleSelectEpisode: vi.fn(),
+        handleSubmit: vi.fn(),
+        handleReset: vi.fn(),
+      });
 
-			render(
-				<TestWrapper>
-					<AnswerSubmissionPage gameId={mockGameId} />
-				</TestWrapper>,
-			);
+      render(
+        <TestWrapper>
+          <AnswerSubmissionPage gameId={mockGameId} />
+        </TestWrapper>
+      );
 
-			expect(screen.getByTestId('game-answer-form')).toBeInTheDocument();
-		});
+      expect(screen.getByTestId('game-answer-form')).toBeInTheDocument();
+    });
 
-		it('should pass correct props to GameAnswerForm', () => {
-			mockUseAnswerSubmission.mockReturnValue({
-				formData: mockFormData,
-				isLoading: false,
-				error: null,
-				successMessage: null,
-				handleSelectEpisode: vi.fn(),
-				handleSubmit: vi.fn(),
-				handleReset: vi.fn(),
-			});
+    it('should pass correct props to GameAnswerForm', () => {
+      mockUseAnswerSubmission.mockReturnValue({
+        formData: mockFormData,
+        isLoading: false,
+        error: null,
+        successMessage: null,
+        handleSelectEpisode: vi.fn(),
+        handleSubmit: vi.fn(),
+        handleReset: vi.fn(),
+      });
 
-			render(
-				<TestWrapper>
-					<AnswerSubmissionPage gameId={mockGameId} />
-				</TestWrapper>,
-			);
+      render(
+        <TestWrapper>
+          <AnswerSubmissionPage gameId={mockGameId} />
+        </TestWrapper>
+      );
 
-			const formElement = screen.getByTestId('game-answer-form');
-			const props = JSON.parse(formElement.getAttribute('data-props') || '{}');
+      const formElement = screen.getByTestId('game-answer-form');
+      const props = JSON.parse(formElement.getAttribute('data-props') || '{}');
 
-			expect(props.presenters).toEqual(mockFormData.presenters);
-			expect(props.selections).toEqual(mockFormData.selections);
-			expect(props.isComplete).toBe(false);
-			expect(props.isSubmitting).toBe(false);
-		});
+      expect(props.presenters).toEqual(mockFormData.presenters);
+      expect(props.selections).toEqual(mockFormData.selections);
+      expect(props.isComplete).toBe(false);
+      expect(props.isSubmitting).toBe(false);
+    });
 
-		it('should display page header', () => {
-			mockUseAnswerSubmission.mockReturnValue({
-				formData: mockFormData,
-				isLoading: false,
-				error: null,
-				successMessage: null,
-				handleSelectEpisode: vi.fn(),
-				handleSubmit: vi.fn(),
-				handleReset: vi.fn(),
-			});
+    it('should display page header', () => {
+      mockUseAnswerSubmission.mockReturnValue({
+        formData: mockFormData,
+        isLoading: false,
+        error: null,
+        successMessage: null,
+        handleSelectEpisode: vi.fn(),
+        handleSubmit: vi.fn(),
+        handleReset: vi.fn(),
+      });
 
-			render(
-				<TestWrapper>
-					<AnswerSubmissionPage gameId={mockGameId} />
-				</TestWrapper>,
-			);
+      render(
+        <TestWrapper>
+          <AnswerSubmissionPage gameId={mockGameId} />
+        </TestWrapper>
+      );
 
-			expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
-		});
-	});
+      expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
+    });
+  });
 
-	describe('Event Handlers', () => {
-		const mockFormData: GameAnswerFormData = {
-			presenters: [
-				{
-					id: 'presenter-1',
-					name: '山田太郎',
-					episodes: [
-						{ id: 'episode-1-1', text: 'エピソード1' },
-						{ id: 'episode-1-2', text: 'エピソード2' },
-					],
-				},
-			],
-			selections: {},
-			isComplete: false,
-			isSubmitting: false,
-		};
+  describe('Event Handlers', () => {
+    const mockFormData: GameAnswerFormData = {
+      presenters: [
+        {
+          id: 'presenter-1',
+          name: '山田太郎',
+          episodes: [
+            { id: 'episode-1-1', text: 'エピソード1' },
+            { id: 'episode-1-2', text: 'エピソード2' },
+          ],
+        },
+      ],
+      selections: {},
+      isComplete: false,
+      isSubmitting: false,
+    };
 
-		it('should call handleSubmit when form is submitted', async () => {
-			const mockHandleSubmit = vi.fn();
-			mockUseAnswerSubmission.mockReturnValue({
-				formData: mockFormData,
-				isLoading: false,
-				error: null,
-				successMessage: null,
-				handleSelectEpisode: vi.fn(),
-				handleSubmit: mockHandleSubmit,
-				handleReset: vi.fn(),
-			});
+    it('should call handleSubmit when form is submitted', async () => {
+      const mockHandleSubmit = vi.fn();
+      mockUseAnswerSubmission.mockReturnValue({
+        formData: mockFormData,
+        isLoading: false,
+        error: null,
+        successMessage: null,
+        handleSelectEpisode: vi.fn(),
+        handleSubmit: mockHandleSubmit,
+        handleReset: vi.fn(),
+      });
 
-			const user = userEvent.setup();
+      const user = userEvent.setup();
 
-			render(
-				<TestWrapper>
-					<AnswerSubmissionPage gameId={mockGameId} />
-				</TestWrapper>,
-			);
+      render(
+        <TestWrapper>
+          <AnswerSubmissionPage gameId={mockGameId} />
+        </TestWrapper>
+      );
 
-			const submitButton = screen.getByRole('button', { name: /submit/i });
-			await user.click(submitButton);
+      const submitButton = screen.getByRole('button', { name: /submit/i });
+      await user.click(submitButton);
 
-			expect(mockHandleSubmit).toHaveBeenCalledTimes(1);
-		});
+      expect(mockHandleSubmit).toHaveBeenCalledTimes(1);
+    });
 
-		it('should call handleReset when reset button is clicked', async () => {
-			const mockHandleReset = vi.fn();
-			mockUseAnswerSubmission.mockReturnValue({
-				formData: mockFormData,
-				isLoading: false,
-				error: null,
-				successMessage: null,
-				handleSelectEpisode: vi.fn(),
-				handleSubmit: vi.fn(),
-				handleReset: mockHandleReset,
-			});
+    it('should call handleReset when reset button is clicked', async () => {
+      const mockHandleReset = vi.fn();
+      mockUseAnswerSubmission.mockReturnValue({
+        formData: mockFormData,
+        isLoading: false,
+        error: null,
+        successMessage: null,
+        handleSelectEpisode: vi.fn(),
+        handleSubmit: vi.fn(),
+        handleReset: mockHandleReset,
+      });
 
-			const user = userEvent.setup();
+      const user = userEvent.setup();
 
-			render(
-				<TestWrapper>
-					<AnswerSubmissionPage gameId={mockGameId} />
-				</TestWrapper>,
-			);
+      render(
+        <TestWrapper>
+          <AnswerSubmissionPage gameId={mockGameId} />
+        </TestWrapper>
+      );
 
-			const resetButton = screen.getByRole('button', { name: /reset/i });
-			await user.click(resetButton);
+      const resetButton = screen.getByRole('button', { name: /reset/i });
+      await user.click(resetButton);
 
-			expect(mockHandleReset).toHaveBeenCalledTimes(1);
-		});
-	});
+      expect(mockHandleReset).toHaveBeenCalledTimes(1);
+    });
+  });
 
-	describe('Accessibility', () => {
-		const mockFormData: GameAnswerFormData = {
-			presenters: [
-				{
-					id: 'presenter-1',
-					name: '山田太郎',
-					episodes: [{ id: 'episode-1-1', text: 'エピソード1' }],
-				},
-			],
-			selections: {},
-			isComplete: false,
-			isSubmitting: false,
-		};
+  describe('Accessibility', () => {
+    const mockFormData: GameAnswerFormData = {
+      presenters: [
+        {
+          id: 'presenter-1',
+          name: '山田太郎',
+          episodes: [{ id: 'episode-1-1', text: 'エピソード1' }],
+        },
+      ],
+      selections: {},
+      isComplete: false,
+      isSubmitting: false,
+    };
 
-		it('should use semantic main element', () => {
-			mockUseAnswerSubmission.mockReturnValue({
-				formData: mockFormData,
-				isLoading: false,
-				error: null,
-				successMessage: null,
-				handleSelectEpisode: vi.fn(),
-				handleSubmit: vi.fn(),
-				handleReset: vi.fn(),
-			});
+    it('should use semantic main element', () => {
+      mockUseAnswerSubmission.mockReturnValue({
+        formData: mockFormData,
+        isLoading: false,
+        error: null,
+        successMessage: null,
+        handleSelectEpisode: vi.fn(),
+        handleSubmit: vi.fn(),
+        handleReset: vi.fn(),
+      });
 
-			const { container } = render(
-				<TestWrapper>
-					<AnswerSubmissionPage gameId={mockGameId} />
-				</TestWrapper>,
-			);
+      const { container } = render(
+        <TestWrapper>
+          <AnswerSubmissionPage gameId={mockGameId} />
+        </TestWrapper>
+      );
 
-			expect(container.querySelector('main')).toBeInTheDocument();
-		});
+      expect(container.querySelector('main')).toBeInTheDocument();
+    });
 
-		it('should have proper heading hierarchy', () => {
-			mockUseAnswerSubmission.mockReturnValue({
-				formData: mockFormData,
-				isLoading: false,
-				error: null,
-				successMessage: null,
-				handleSelectEpisode: vi.fn(),
-				handleSubmit: vi.fn(),
-				handleReset: vi.fn(),
-			});
+    it('should have proper heading hierarchy', () => {
+      mockUseAnswerSubmission.mockReturnValue({
+        formData: mockFormData,
+        isLoading: false,
+        error: null,
+        successMessage: null,
+        handleSelectEpisode: vi.fn(),
+        handleSubmit: vi.fn(),
+        handleReset: vi.fn(),
+      });
 
-			render(
-				<TestWrapper>
-					<AnswerSubmissionPage gameId={mockGameId} />
-				</TestWrapper>,
-			);
+      render(
+        <TestWrapper>
+          <AnswerSubmissionPage gameId={mockGameId} />
+        </TestWrapper>
+      );
 
-			const heading = screen.getByRole('heading', { level: 1 });
-			expect(heading).toBeInTheDocument();
-		});
-	});
+      const heading = screen.getByRole('heading', { level: 1 });
+      expect(heading).toBeInTheDocument();
+    });
+  });
 
-	describe('Layout and Styling', () => {
-		const mockFormData: GameAnswerFormData = {
-			presenters: [
-				{
-					id: 'presenter-1',
-					name: '山田太郎',
-					episodes: [{ id: 'episode-1-1', text: 'エピソード1' }],
-				},
-			],
-			selections: {},
-			isComplete: false,
-			isSubmitting: false,
-		};
+  describe('Layout and Styling', () => {
+    const mockFormData: GameAnswerFormData = {
+      presenters: [
+        {
+          id: 'presenter-1',
+          name: '山田太郎',
+          episodes: [{ id: 'episode-1-1', text: 'エピソード1' }],
+        },
+      ],
+      selections: {},
+      isComplete: false,
+      isSubmitting: false,
+    };
 
-		it('should apply correct styling classes to main container', () => {
-			mockUseAnswerSubmission.mockReturnValue({
-				formData: mockFormData,
-				isLoading: false,
-				error: null,
-				successMessage: null,
-				handleSelectEpisode: vi.fn(),
-				handleSubmit: vi.fn(),
-				handleReset: vi.fn(),
-			});
+    it('should apply correct styling classes to main container', () => {
+      mockUseAnswerSubmission.mockReturnValue({
+        formData: mockFormData,
+        isLoading: false,
+        error: null,
+        successMessage: null,
+        handleSelectEpisode: vi.fn(),
+        handleSubmit: vi.fn(),
+        handleReset: vi.fn(),
+      });
 
-			const { container } = render(
-				<TestWrapper>
-					<AnswerSubmissionPage gameId={mockGameId} />
-				</TestWrapper>,
-			);
+      const { container } = render(
+        <TestWrapper>
+          <AnswerSubmissionPage gameId={mockGameId} />
+        </TestWrapper>
+      );
 
-			const mainElement = container.querySelector('main');
-			expect(mainElement).toHaveClass('min-h-screen', 'bg-gray-50', 'py-8');
-		});
+      const mainElement = container.querySelector('main');
+      expect(mainElement).toHaveClass('min-h-screen', 'bg-gray-50', 'py-8');
+    });
 
-		it('should use constrained width container for content', () => {
-			mockUseAnswerSubmission.mockReturnValue({
-				formData: mockFormData,
-				isLoading: false,
-				error: null,
-				successMessage: null,
-				handleSelectEpisode: vi.fn(),
-				handleSubmit: vi.fn(),
-				handleReset: vi.fn(),
-			});
+    it('should use constrained width container for content', () => {
+      mockUseAnswerSubmission.mockReturnValue({
+        formData: mockFormData,
+        isLoading: false,
+        error: null,
+        successMessage: null,
+        handleSelectEpisode: vi.fn(),
+        handleSubmit: vi.fn(),
+        handleReset: vi.fn(),
+      });
 
-			const { container } = render(
-				<TestWrapper>
-					<AnswerSubmissionPage gameId={mockGameId} />
-				</TestWrapper>,
-			);
+      const { container } = render(
+        <TestWrapper>
+          <AnswerSubmissionPage gameId={mockGameId} />
+        </TestWrapper>
+      );
 
-			const contentContainer = container.querySelector('.max-w-4xl');
-			expect(contentContainer).toBeInTheDocument();
-		});
-	});
+      const contentContainer = container.querySelector('.max-w-4xl');
+      expect(contentContainer).toBeInTheDocument();
+    });
+  });
 
-	describe('Edge Cases', () => {
-		it('should handle empty presenters list', () => {
-			const emptyFormData: GameAnswerFormData = {
-				presenters: [],
-				selections: {},
-				isComplete: false,
-				isSubmitting: false,
-			};
+  describe('Edge Cases', () => {
+    it('should handle empty presenters list', () => {
+      const emptyFormData: GameAnswerFormData = {
+        presenters: [],
+        selections: {},
+        isComplete: false,
+        isSubmitting: false,
+      };
 
-			mockUseAnswerSubmission.mockReturnValue({
-				formData: emptyFormData,
-				isLoading: false,
-				error: null,
-				successMessage: null,
-				handleSelectEpisode: vi.fn(),
-				handleSubmit: vi.fn(),
-				handleReset: vi.fn(),
-			});
+      mockUseAnswerSubmission.mockReturnValue({
+        formData: emptyFormData,
+        isLoading: false,
+        error: null,
+        successMessage: null,
+        handleSelectEpisode: vi.fn(),
+        handleSubmit: vi.fn(),
+        handleReset: vi.fn(),
+      });
 
-			render(
-				<TestWrapper>
-					<AnswerSubmissionPage gameId={mockGameId} />
-				</TestWrapper>,
-			);
+      render(
+        <TestWrapper>
+          <AnswerSubmissionPage gameId={mockGameId} />
+        </TestWrapper>
+      );
 
-			expect(screen.getByTestId('game-answer-form')).toBeInTheDocument();
-		});
+      expect(screen.getByTestId('game-answer-form')).toBeInTheDocument();
+    });
 
-		it('should handle null formData gracefully', () => {
-			mockUseAnswerSubmission.mockReturnValue({
-				formData: null,
-				isLoading: false,
-				error: null,
-				successMessage: null,
-				handleSelectEpisode: vi.fn(),
-				handleSubmit: vi.fn(),
-				handleReset: vi.fn(),
-			});
+    it('should handle null formData gracefully', () => {
+      mockUseAnswerSubmission.mockReturnValue({
+        formData: null,
+        isLoading: false,
+        error: null,
+        successMessage: null,
+        handleSelectEpisode: vi.fn(),
+        handleSubmit: vi.fn(),
+        handleReset: vi.fn(),
+      });
 
-			const { container } = render(
-				<TestWrapper>
-					<AnswerSubmissionPage gameId={mockGameId} />
-				</TestWrapper>,
-			);
+      const { container } = render(
+        <TestWrapper>
+          <AnswerSubmissionPage gameId={mockGameId} />
+        </TestWrapper>
+      );
 
-			// Should render loading state when formData is null
-			expect(container.querySelector('main')).toBeInTheDocument();
-		});
-	});
+      // Should render loading state when formData is null
+      expect(container.querySelector('main')).toBeInTheDocument();
+    });
+  });
 });

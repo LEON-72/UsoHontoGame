@@ -31,9 +31,27 @@ describe('PresenterList', () => {
       gameId: 'game-123',
       nickname: '太郎',
       episodes: [
-        { id: 'ep1', presenterId: 'presenter-1', text: 'エピソード1', isLie: false, createdAt: new Date() },
-        { id: 'ep2', presenterId: 'presenter-1', text: 'エピソード2', isLie: true, createdAt: new Date() },
-        { id: 'ep3', presenterId: 'presenter-1', text: 'エピソード3', isLie: false, createdAt: new Date() },
+        {
+          id: 'ep1',
+          presenterId: 'presenter-1',
+          text: 'エピソード1',
+          isLie: false,
+          createdAt: new Date(),
+        },
+        {
+          id: 'ep2',
+          presenterId: 'presenter-1',
+          text: 'エピソード2',
+          isLie: true,
+          createdAt: new Date(),
+        },
+        {
+          id: 'ep3',
+          presenterId: 'presenter-1',
+          text: 'エピソード3',
+          isLie: false,
+          createdAt: new Date(),
+        },
       ],
       createdAt: new Date(),
     },
@@ -45,7 +63,13 @@ describe('PresenterList', () => {
       gameId: 'game-123',
       nickname: '花子',
       episodes: [
-        { id: 'ep4', presenterId: 'presenter-2', text: 'エピソード1', isLie: false, createdAt: new Date() },
+        {
+          id: 'ep4',
+          presenterId: 'presenter-2',
+          text: 'エピソード1',
+          isLie: false,
+          createdAt: new Date(),
+        },
       ],
       createdAt: new Date(),
     },
@@ -125,9 +149,27 @@ describe('PresenterList', () => {
           gameId: 'game-123',
           nickname: '次郎',
           episodes: [
-            { id: 'ep5', presenterId: 'presenter-3', text: 'エピソード1', isLie: false, createdAt: new Date() },
-            { id: 'ep6', presenterId: 'presenter-3', text: 'エピソード2', isLie: false, createdAt: new Date() },
-            { id: 'ep7', presenterId: 'presenter-3', text: 'エピソード3', isLie: false, createdAt: new Date() },
+            {
+              id: 'ep5',
+              presenterId: 'presenter-3',
+              text: 'エピソード1',
+              isLie: false,
+              createdAt: new Date(),
+            },
+            {
+              id: 'ep6',
+              presenterId: 'presenter-3',
+              text: 'エピソード2',
+              isLie: false,
+              createdAt: new Date(),
+            },
+            {
+              id: 'ep7',
+              presenterId: 'presenter-3',
+              text: 'エピソード3',
+              isLie: false,
+              createdAt: new Date(),
+            },
           ],
           createdAt: new Date(),
         },
@@ -288,12 +330,7 @@ describe('PresenterList', () => {
       mockRemovePresenterAction.mockResolvedValue({ success: true });
 
       const user = userEvent.setup();
-      render(
-        <PresenterList
-          {...defaultProps}
-          onPresenterRemoved={mockOnPresenterRemoved}
-        />
-      );
+      render(<PresenterList {...defaultProps} onPresenterRemoved={mockOnPresenterRemoved} />);
 
       await user.click(screen.getByRole('button', { name: '削除' }));
 
@@ -408,12 +445,7 @@ describe('PresenterList', () => {
       });
 
       const user = userEvent.setup();
-      render(
-        <PresenterList
-          {...defaultProps}
-          onPresenterRemoved={mockOnPresenterRemoved}
-        />
-      );
+      render(<PresenterList {...defaultProps} onPresenterRemoved={mockOnPresenterRemoved} />);
 
       await user.click(screen.getByRole('button', { name: '削除' }));
 

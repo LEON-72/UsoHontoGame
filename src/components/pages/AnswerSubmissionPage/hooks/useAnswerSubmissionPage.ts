@@ -13,22 +13,22 @@ import { useAnswerSubmission, type Presenter } from './useAnswerSubmission';
 import type { PresenterWithLieDto } from '@/server/application/dto/PresenterWithLieDto';
 
 export interface UseAnswerSubmissionPageOptions {
-	gameId: string;
+  gameId: string;
 }
 
 export interface UseAnswerSubmissionPageReturn {
-	formData: {
-		presenters: Presenter[];
-		selections: Record<string, string>;
-		isComplete: boolean;
-		isSubmitting: boolean;
-	} | null;
-	isLoading: boolean;
-	error: string | null;
-	successMessage: string | null;
-	handleSelectEpisode: (presenterId: string, episodeId: string) => void;
-	handleSubmit: () => Promise<void>;
-	handleReset: () => void;
+  formData: {
+    presenters: Presenter[];
+    selections: Record<string, string>;
+    isComplete: boolean;
+    isSubmitting: boolean;
+  } | null;
+  isLoading: boolean;
+  error: string | null;
+  successMessage: string | null;
+  handleSelectEpisode: (presenterId: string, episodeId: string) => void;
+  handleSubmit: () => Promise<void>;
+  handleReset: () => void;
 }
 
 /**
@@ -36,15 +36,15 @@ export interface UseAnswerSubmissionPageReturn {
  * This ensures participants cannot see which episodes are lies
  */
 function transformPresenter(dto: PresenterWithLieDto): Presenter {
-	return {
-		id: dto.id,
-		name: dto.nickname,
-		episodes: dto.episodes.map((episode) => ({
-			id: episode.id,
-			text: episode.text,
-			// isLie is intentionally excluded for participants
-		})),
-	};
+  return {
+    id: dto.id,
+    name: dto.nickname,
+    episodes: dto.episodes.map((episode) => ({
+      id: episode.id,
+      text: episode.text,
+      // isLie is intentionally excluded for participants
+    })),
+  };
 }
 
 /**
@@ -52,108 +52,108 @@ function transformPresenter(dto: PresenterWithLieDto): Presenter {
  * Provides the API expected by AnswerSubmissionPage component
  */
 export function useAnswerSubmissionPage({
-	gameId,
+  gameId,
 }: UseAnswerSubmissionPageOptions): UseAnswerSubmissionPageReturn {
-	const router = useRouter();
-	const [presenters, setPresenters] = useState<Presenter[]>([]);
-	const [isLoading, setIsLoading] = useState(true);
-	const [fetchError, setFetchError] = useState<string | null>(null);
+  const router = useRouter();
+  const [presenters, setPresenters] = useState<Presenter[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
-	// Fetch presenters on mount
-	useEffect(() => {
-		let isMounted = true;
+  // Fetch presenters on mount
+  useEffect(() => {
+    let isMounted = true;
 
-		async function fetchPresenters() {
-			try {
-				setIsLoading(true);
-				setFetchError(null);
+    async function fetchPresenters() {
+      try {
+        setIsLoading(true);
+        setFetchError(null);
 
-				const result = await getPresentersAction(gameId);
+        const result = await getPresentersAction(gameId);
 
-				if (!isMounted) return;
+        if (!isMounted) return;
 
-				if (result.success) {
-					// Transform DTO to remove isLie flag
-					const transformed = result.presenters.map(transformPresenter);
-					setPresenters(transformed);
-				} else {
-					setFetchError(result.error);
-				}
-			} catch (err) {
-				if (!isMounted) return;
-				setFetchError('プレゼンターの取得に失敗しました');
-			} finally {
-				if (isMounted) {
-					setIsLoading(false);
-				}
-			}
-		}
+        if (result.success) {
+          // Transform DTO to remove isLie flag
+          const transformed = result.presenters.map(transformPresenter);
+          setPresenters(transformed);
+        } else {
+          setFetchError(result.error);
+        }
+      } catch (err) {
+        if (!isMounted) return;
+        setFetchError('プレゼンターの取得に失敗しました');
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    }
 
-		fetchPresenters();
+    fetchPresenters();
 
-		return () => {
-			isMounted = false;
-		};
-	}, [gameId]);
+    return () => {
+      isMounted = false;
+    };
+  }, [gameId]);
 
-	// Handle successful submission - redirect to top page
-	const handleSuccess = useCallback(() => {
-		router.push('/');
-	}, [router]);
+  // Handle successful submission - redirect to top page
+  const handleSuccess = useCallback(() => {
+    router.push('/');
+  }, [router]);
 
-	// Use answer submission hook (only after presenters are loaded)
-	const {
-		selections,
-		selectEpisode,
-		isComplete,
-		isSubmitting,
-		error: submissionError,
-		successMessage,
-		submit,
-		reset,
-	} = useAnswerSubmission({
-		gameId,
-		presenters,
-		onSuccess: handleSuccess,
-	});
+  // Use answer submission hook (only after presenters are loaded)
+  const {
+    selections,
+    selectEpisode,
+    isComplete,
+    isSubmitting,
+    error: submissionError,
+    successMessage,
+    submit,
+    reset,
+  } = useAnswerSubmission({
+    gameId,
+    presenters,
+    onSuccess: handleSuccess,
+  });
 
-	// Combine errors (fetch error takes precedence)
-	const error = fetchError || submissionError;
+  // Combine errors (fetch error takes precedence)
+  const error = fetchError || submissionError;
 
-	// Wrap handlers to match component's expected API
-	const handleSelectEpisode = useCallback(
-		(presenterId: string, episodeId: string) => {
-			selectEpisode(presenterId, episodeId);
-		},
-		[selectEpisode],
-	);
+  // Wrap handlers to match component's expected API
+  const handleSelectEpisode = useCallback(
+    (presenterId: string, episodeId: string) => {
+      selectEpisode(presenterId, episodeId);
+    },
+    [selectEpisode]
+  );
 
-	const handleSubmit = useCallback(async () => {
-		await submit();
-	}, [submit]);
+  const handleSubmit = useCallback(async () => {
+    await submit();
+  }, [submit]);
 
-	const handleReset = useCallback(() => {
-		reset();
-	}, [reset]);
+  const handleReset = useCallback(() => {
+    reset();
+  }, [reset]);
 
-	// Build formData object
-	const formData =
-		!isLoading && presenters.length > 0
-			? {
-					presenters,
-					selections,
-					isComplete,
-					isSubmitting,
-				}
-			: null;
+  // Build formData object
+  const formData =
+    !isLoading && presenters.length > 0
+      ? {
+          presenters,
+          selections,
+          isComplete,
+          isSubmitting,
+        }
+      : null;
 
-	return {
-		formData,
-		isLoading,
-		error,
-		successMessage,
-		handleSelectEpisode,
-		handleSubmit,
-		handleReset,
-	};
+  return {
+    formData,
+    isLoading,
+    error,
+    successMessage,
+    handleSelectEpisode,
+    handleSubmit,
+    handleReset,
+  };
 }

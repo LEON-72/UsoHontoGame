@@ -409,7 +409,9 @@ describe('DeleteGameButton', () => {
       mockDeleteGameAction.mockResolvedValue({ success: true });
 
       const user = userEvent.setup();
-      const { rerender, unmount } = render(<DeleteGameButton {...defaultProps} gameId="game-123" />);
+      const { rerender, unmount } = render(
+        <DeleteGameButton {...defaultProps} gameId="game-123" />
+      );
 
       await user.click(screen.getByRole('button', { name: 'ゲームを削除' }));
       await user.click(screen.getByRole('button', { name: '削除する' }));

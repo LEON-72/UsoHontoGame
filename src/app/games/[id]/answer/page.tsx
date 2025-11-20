@@ -5,7 +5,7 @@
 import { AnswerSubmissionPage } from '@/components/pages/AnswerSubmissionPage';
 
 interface PageProps {
-	params: Promise<{ id: string }>;
+  params: Promise<{ id: string }>;
 }
 
 /**
@@ -19,10 +19,10 @@ interface PageProps {
  * - Participant limit validation (FR-008, FR-009)
  */
 export default async function Page({ params }: PageProps) {
-	// Extract game ID from route params
-	const { id: gameId } = await params;
+  // Extract game ID from route params
+  const { id: gameId } = await params;
 
-	// Delegate to AnswerSubmissionPage component
-	// All validation and business logic handled by useGameValidation hook
-	return <AnswerSubmissionPage gameId={gameId} />;
+  // Delegate to AnswerSubmissionPage component
+  // All validation and business logic handled by useGameValidation hook
+  return <AnswerSubmissionPage gameId={gameId} />;
 }

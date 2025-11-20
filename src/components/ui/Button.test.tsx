@@ -52,14 +52,24 @@ describe('Button', () => {
       render(<Button variant="primary">Primary</Button>);
 
       const button = screen.getByRole('button');
-      expect(button).toHaveClass('bg-blue-600', 'text-white', 'hover:bg-blue-700', 'focus:ring-blue-500');
+      expect(button).toHaveClass(
+        'bg-blue-600',
+        'text-white',
+        'hover:bg-blue-700',
+        'focus:ring-blue-500'
+      );
     });
 
     it('should apply secondary variant styles', () => {
       render(<Button variant="secondary">Secondary</Button>);
 
       const button = screen.getByRole('button');
-      expect(button).toHaveClass('bg-gray-200', 'text-gray-900', 'hover:bg-gray-300', 'focus:ring-gray-500');
+      expect(button).toHaveClass(
+        'bg-gray-200',
+        'text-gray-900',
+        'hover:bg-gray-300',
+        'focus:ring-gray-500'
+      );
     });
 
     it('should not have primary styles when secondary variant', () => {
@@ -147,14 +157,22 @@ describe('Button', () => {
     });
 
     it('should apply disabled hover styles for primary variant', () => {
-      render(<Button variant="primary" disabled>Disabled Primary</Button>);
+      render(
+        <Button variant="primary" disabled>
+          Disabled Primary
+        </Button>
+      );
 
       const button = screen.getByRole('button');
       expect(button).toHaveClass('disabled:hover:bg-blue-600');
     });
 
     it('should apply disabled hover styles for secondary variant', () => {
-      render(<Button variant="secondary" disabled>Disabled Secondary</Button>);
+      render(
+        <Button variant="secondary" disabled>
+          Disabled Secondary
+        </Button>
+      );
 
       const button = screen.getByRole('button');
       expect(button).toHaveClass('disabled:hover:bg-gray-200');
@@ -162,7 +180,11 @@ describe('Button', () => {
 
     it('should not call onClick when disabled', () => {
       const handleClick = vi.fn();
-      render(<Button disabled onClick={handleClick}>Disabled</Button>);
+      render(
+        <Button disabled onClick={handleClick}>
+          Disabled
+        </Button>
+      );
 
       const button = screen.getByRole('button');
       fireEvent.click(button);
@@ -282,7 +304,11 @@ describe('Button', () => {
 
   describe('Variant and Size Combinations', () => {
     it('should combine primary variant with small size', () => {
-      render(<Button variant="primary" size="sm">Primary Small</Button>);
+      render(
+        <Button variant="primary" size="sm">
+          Primary Small
+        </Button>
+      );
 
       const button = screen.getByRole('button');
       expect(button).toHaveClass('bg-blue-600'); // Primary variant
@@ -290,7 +316,11 @@ describe('Button', () => {
     });
 
     it('should combine secondary variant with large size', () => {
-      render(<Button variant="secondary" size="lg">Secondary Large</Button>);
+      render(
+        <Button variant="secondary" size="lg">
+          Secondary Large
+        </Button>
+      );
 
       const button = screen.getByRole('button');
       expect(button).toHaveClass('bg-gray-200'); // Secondary variant

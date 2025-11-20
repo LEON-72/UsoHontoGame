@@ -429,12 +429,7 @@ describe('Input', () => {
 
     it('should handle undefined props', () => {
       render(
-        <Input
-          label={undefined}
-          error={undefined}
-          helperText={undefined}
-          className={undefined}
-        />
+        <Input label={undefined} error={undefined} helperText={undefined} className={undefined} />
       );
 
       const input = screen.getByRole('textbox');

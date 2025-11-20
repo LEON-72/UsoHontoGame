@@ -3,7 +3,11 @@
 
 import { render, screen, renderHook } from '@testing-library/react';
 import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest';
-import { AccessibilityProvider, useAccessibility, useConditionalAnnouncement } from './AccessibilityProvider';
+import {
+  AccessibilityProvider,
+  useAccessibility,
+  useConditionalAnnouncement,
+} from './AccessibilityProvider';
 import { type ReactNode } from 'react';
 import { act } from 'react';
 
@@ -211,7 +215,9 @@ describe('AccessibilityProvider', () => {
       });
 
       const politeRegion = document.querySelector('[aria-live="polite"]');
-      expect(politeRegion?.textContent).toBe('ゲームステータスが「準備中」から「出題中」に変更されました');
+      expect(politeRegion?.textContent).toBe(
+        'ゲームステータスが「準備中」から「出題中」に変更されました'
+      );
     });
 
     it('should use polite priority', () => {
@@ -232,7 +238,9 @@ describe('AccessibilityProvider', () => {
       const politeRegion = document.querySelector('[aria-live="polite"]');
       const assertiveRegion = document.querySelector('[aria-live="assertive"]');
 
-      expect(politeRegion?.textContent).toBe('ゲームステータスが「出題中」から「締切」に変更されました');
+      expect(politeRegion?.textContent).toBe(
+        'ゲームステータスが「出題中」から「締切」に変更されました'
+      );
       expect(assertiveRegion?.textContent).toBe('');
     });
 
@@ -252,7 +260,9 @@ describe('AccessibilityProvider', () => {
       });
 
       const politeRegion = document.querySelector('[aria-live="polite"]');
-      expect(politeRegion?.textContent).toBe('ゲームステータスが「active」から「closed」に変更されました');
+      expect(politeRegion?.textContent).toBe(
+        'ゲームステータスが「active」から「closed」に変更されました'
+      );
     });
   });
 
@@ -294,7 +304,9 @@ describe('AccessibilityProvider', () => {
       const politeRegion = document.querySelector('[aria-live="polite"]');
       const assertiveRegion = document.querySelector('[aria-live="assertive"]');
 
-      expect(assertiveRegion?.textContent).toBe('エラーが発生しました: データの読み込みに失敗しました');
+      expect(assertiveRegion?.textContent).toBe(
+        'エラーが発生しました: データの読み込みに失敗しました'
+      );
       expect(politeRegion?.textContent).toBe('');
     });
 

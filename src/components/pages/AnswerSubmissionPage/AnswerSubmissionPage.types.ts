@@ -6,6 +6,6 @@
  * Props for AnswerSubmissionPage component
  */
 export interface AnswerSubmissionPageProps {
-	/** Game ID to submit answers for */
-	gameId: string;
+  /** Game ID to submit answers for */
+  gameId: string;
 }

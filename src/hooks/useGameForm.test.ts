@@ -41,9 +41,7 @@ describe('useGameForm', () => {
     });
 
     it('should initialize with default values for edit mode', () => {
-      const { result} = renderHook(() =>
-        useGameForm({ mode: 'edit', gameId: 'game-123' })
-      );
+      const { result } = renderHook(() => useGameForm({ mode: 'edit', gameId: 'game-123' }));
 
       expect(result.current.isSubmitting).toBe(false);
       expect(result.current.errors).toEqual({});
@@ -66,9 +64,7 @@ describe('useGameForm', () => {
     });
 
     it('should accept edit mode with gameId', () => {
-      const { result } = renderHook(() =>
-        useGameForm({ mode: 'edit', gameId: 'game-123' })
-      );
+      const { result } = renderHook(() => useGameForm({ mode: 'edit', gameId: 'game-123' }));
       expect(typeof result.current.handleSubmit).toBe('function');
     });
   });
@@ -90,7 +86,9 @@ describe('useGameForm', () => {
       expect(typeof result.current.handleSubmit).toBe('function');
       expect(typeof result.current.isSubmitting).toBe('boolean');
       expect(typeof result.current.errors).toBe('object');
-      expect(result.current.createdGame === null || typeof result.current.createdGame === 'object').toBe(true);
+      expect(
+        result.current.createdGame === null || typeof result.current.createdGame === 'object'
+      ).toBe(true);
       expect(typeof result.current.isSuccess).toBe('boolean');
     });
   });

@@ -214,7 +214,7 @@ describe('Card', () => {
     });
 
     it('should handle whitespace children', () => {
-      const { container } = render(<Card>   </Card>);
+      const { container } = render(<Card> </Card>);
 
       const card = container.querySelector('div');
       expect(card).toBeInTheDocument();

@@ -158,9 +158,7 @@ describe('usePresenterForm', () => {
 
     it('should call onSuccess callback with presenter', async () => {
       const onSuccess = vi.fn();
-      const { result } = renderHook(() =>
-        usePresenterForm({ gameId: 'game-123', onSuccess })
-      );
+      const { result } = renderHook(() => usePresenterForm({ gameId: 'game-123', onSuccess }));
       const mockEvent = createFormEvent({ nickname: '太郎' });
 
       await act(async () => {

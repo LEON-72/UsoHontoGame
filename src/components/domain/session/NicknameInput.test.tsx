@@ -13,22 +13,24 @@ vi.mock('./hooks/useNicknameForm', () => ({
 
 // Mock the Input component
 vi.mock('@/components/ui/Input', () => ({
-  Input: vi.fn(({ label, placeholder, value, onChange, error, disabled, maxLength, required, type }) => (
-    <div data-testid="input-wrapper">
-      <label>{label}</label>
-      <input
-        type={type}
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-        disabled={disabled}
-        maxLength={maxLength}
-        required={required}
-        data-error={error}
-      />
-      {error && <span data-testid="input-error">{error}</span>}
-    </div>
-  )),
+  Input: vi.fn(
+    ({ label, placeholder, value, onChange, error, disabled, maxLength, required, type }) => (
+      <div data-testid="input-wrapper">
+        <label>{label}</label>
+        <input
+          type={type}
+          placeholder={placeholder}
+          value={value}
+          onChange={onChange}
+          disabled={disabled}
+          maxLength={maxLength}
+          required={required}
+          data-error={error}
+        />
+        {error && <span data-testid="input-error">{error}</span>}
+      </div>
+    )
+  ),
 }));
 
 // Mock the Button component
@@ -79,7 +81,9 @@ describe('NicknameInput', () => {
     it('should render the form instructions', () => {
       render(<NicknameInput />);
 
-      expect(screen.getByText('ゲームに参加するためにニックネームを設定してください')).toBeInTheDocument();
+      expect(
+        screen.getByText('ゲームに参加するためにニックネームを設定してください')
+      ).toBeInTheDocument();
     });
 
     it('should render the form container with correct styling', () => {
@@ -87,7 +91,13 @@ describe('NicknameInput', () => {
 
       const formContainer = container.querySelector('.mx-auto.max-w-md.rounded-lg');
       expect(formContainer).toBeInTheDocument();
-      expect(formContainer).toHaveClass('border', 'border-gray-200', 'bg-white', 'p-6', 'shadow-sm');
+      expect(formContainer).toHaveClass(
+        'border',
+        'border-gray-200',
+        'bg-white',
+        'p-6',
+        'shadow-sm'
+      );
     });
 
     it('should render a form element', () => {

@@ -35,7 +35,9 @@ describe('GameForm', () => {
 
       // Game name field
       expect(screen.getByLabelText(/ゲーム名/)).toBeInTheDocument();
-      expect(screen.getByPlaceholderText('未入力の場合はゲームIDが表示されます')).toBeInTheDocument();
+      expect(
+        screen.getByPlaceholderText('未入力の場合はゲームIDが表示されます')
+      ).toBeInTheDocument();
 
       // Player limit field
       const playerLimitInput = screen.getByLabelText(/プレイヤー数上限/);
@@ -124,7 +126,9 @@ describe('GameForm', () => {
     it('should show hint text when currentPlayers > 0', () => {
       render(<GameForm mode="edit" gameId="game-123" currentPlayers={7} />);
 
-      expect(screen.getByText(/現在7人が参加しているため、7人以上の値を設定してください/)).toBeInTheDocument();
+      expect(
+        screen.getByText(/現在7人が参加しているため、7人以上の値を設定してください/)
+      ).toBeInTheDocument();
     });
 
     it('should not show hint text when currentPlayers = 0', () => {
@@ -142,7 +146,10 @@ describe('GameForm', () => {
     it('should have cancel link to game detail page', () => {
       render(<GameForm mode="edit" gameId="game-123" />);
 
-      expect(screen.getByRole('link', { name: 'キャンセル' })).toHaveAttribute('href', '/games/game-123');
+      expect(screen.getByRole('link', { name: 'キャンセル' })).toHaveAttribute(
+        'href',
+        '/games/game-123'
+      );
     });
   });
 
@@ -175,7 +182,9 @@ describe('GameForm', () => {
 
       render(<GameForm mode="create" />);
 
-      expect(screen.getByText('プレイヤー数は1以上100以下でなければなりません')).toBeInTheDocument();
+      expect(
+        screen.getByText('プレイヤー数は1以上100以下でなければなりません')
+      ).toBeInTheDocument();
 
       const playerLimitInput = screen.getByLabelText(/プレイヤー数上限/);
       expect(playerLimitInput).toHaveAttribute('aria-invalid', 'true');
@@ -277,7 +286,9 @@ describe('GameForm', () => {
 
       render(<GameForm mode="create" />);
 
-      const successMessage = screen.getByText('ゲームを作成しました！ゲーム一覧にリダイレクトしています...');
+      const successMessage = screen.getByText(
+        'ゲームを作成しました！ゲーム一覧にリダイレクトしています...'
+      );
       expect(successMessage).toBeInTheDocument();
       expect(successMessage.closest('div')).toHaveAttribute('role', 'alert');
     });
@@ -318,7 +329,9 @@ describe('GameForm', () => {
     it('should have descriptive helper text', () => {
       render(<GameForm mode="create" />);
 
-      expect(screen.getByText('ゲームを識別しやすい名前を付けることができます')).toBeInTheDocument();
+      expect(
+        screen.getByText('ゲームを識別しやすい名前を付けることができます')
+      ).toBeInTheDocument();
     });
   });
 

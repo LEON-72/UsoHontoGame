@@ -291,9 +291,7 @@ describe('PresenterForm', () => {
     it('should have error message with alert role', () => {
       render(<PresenterForm {...defaultProps} />);
 
-      const errorMessage = screen.getByText(
-        'ニックネームは1文字以上50文字以内で入力してください'
-      );
+      const errorMessage = screen.getByText('ニックネームは1文字以上50文字以内で入力してください');
       expect(errorMessage).toHaveAttribute('role', 'alert');
     });
 
@@ -314,18 +312,14 @@ describe('PresenterForm', () => {
     it('should have error message with correct id', () => {
       render(<PresenterForm {...defaultProps} />);
 
-      const errorMessage = screen.getByText(
-        'ニックネームは1文字以上50文字以内で入力してください'
-      );
+      const errorMessage = screen.getByText('ニックネームは1文字以上50文字以内で入力してください');
       expect(errorMessage).toHaveAttribute('id', 'nickname-error');
     });
 
     it('should style error message appropriately', () => {
       render(<PresenterForm {...defaultProps} />);
 
-      const errorMessage = screen.getByText(
-        'ニックネームは1文字以上50文字以内で入力してください'
-      );
+      const errorMessage = screen.getByText('ニックネームは1文字以上50文字以内で入力してください');
       expect(errorMessage).toHaveClass('text-red-600');
     });
   });

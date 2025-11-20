@@ -431,9 +431,27 @@ describe('PresenterWithEpisodesForm', () => {
           gameId: 'game-123',
           nickname: 'テスト太郎',
           episodes: [
-            { id: 'ep1', presenterId: 'presenter-1', text: 'エピソード1', isLie: false, createdAt: new Date() },
-            { id: 'ep2', presenterId: 'presenter-1', text: 'エピソード2', isLie: false, createdAt: new Date() },
-            { id: 'ep3', presenterId: 'presenter-1', text: 'エピソード3', isLie: true, createdAt: new Date() },
+            {
+              id: 'ep1',
+              presenterId: 'presenter-1',
+              text: 'エピソード1',
+              isLie: false,
+              createdAt: new Date(),
+            },
+            {
+              id: 'ep2',
+              presenterId: 'presenter-1',
+              text: 'エピソード2',
+              isLie: false,
+              createdAt: new Date(),
+            },
+            {
+              id: 'ep3',
+              presenterId: 'presenter-1',
+              text: 'エピソード3',
+              isLie: true,
+              createdAt: new Date(),
+            },
           ],
           createdAt: new Date(),
         },
@@ -529,9 +547,27 @@ describe('PresenterWithEpisodesForm', () => {
         gameId: 'game-123',
         nickname: 'テスト太郎',
         episodes: [
-          { id: 'ep1', presenterId: 'presenter-1', text: 'エピソード1', isLie: false, createdAt: new Date() },
-          { id: 'ep2', presenterId: 'presenter-1', text: 'エピソード2', isLie: false, createdAt: new Date() },
-          { id: 'ep3', presenterId: 'presenter-1', text: 'エピソード3', isLie: true, createdAt: new Date() },
+          {
+            id: 'ep1',
+            presenterId: 'presenter-1',
+            text: 'エピソード1',
+            isLie: false,
+            createdAt: new Date(),
+          },
+          {
+            id: 'ep2',
+            presenterId: 'presenter-1',
+            text: 'エピソード2',
+            isLie: false,
+            createdAt: new Date(),
+          },
+          {
+            id: 'ep3',
+            presenterId: 'presenter-1',
+            text: 'エピソード3',
+            isLie: true,
+            createdAt: new Date(),
+          },
         ],
         createdAt: new Date(),
       };
@@ -542,7 +578,9 @@ describe('PresenterWithEpisodesForm', () => {
       });
 
       const onSuccess = vi.fn();
-      const { rerender } = render(<PresenterWithEpisodesForm {...defaultProps} onSuccess={onSuccess} />);
+      const { rerender } = render(
+        <PresenterWithEpisodesForm {...defaultProps} onSuccess={onSuccess} />
+      );
 
       const user = userEvent.setup();
       const nicknameInput = screen.getByPlaceholderText(/例：田中太郎/);
@@ -781,9 +819,27 @@ describe('PresenterWithEpisodesForm', () => {
           gameId: 'game-123',
           nickname: 'テスト太郎',
           episodes: [
-            { id: 'ep1', presenterId: 'presenter-1', text: 'エピソード1', isLie: false, createdAt: new Date() },
-            { id: 'ep2', presenterId: 'presenter-1', text: 'エピソード2', isLie: false, createdAt: new Date() },
-            { id: 'ep3', presenterId: 'presenter-1', text: 'エピソード3', isLie: true, createdAt: new Date() },
+            {
+              id: 'ep1',
+              presenterId: 'presenter-1',
+              text: 'エピソード1',
+              isLie: false,
+              createdAt: new Date(),
+            },
+            {
+              id: 'ep2',
+              presenterId: 'presenter-1',
+              text: 'エピソード2',
+              isLie: false,
+              createdAt: new Date(),
+            },
+            {
+              id: 'ep3',
+              presenterId: 'presenter-1',
+              text: 'エピソード3',
+              isLie: true,
+              createdAt: new Date(),
+            },
           ],
           createdAt: new Date(),
         },

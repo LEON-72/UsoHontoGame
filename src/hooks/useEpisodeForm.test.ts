@@ -56,9 +56,7 @@ describe('useEpisodeForm', () => {
 
   describe('Initial State', () => {
     it('should return initial state values', () => {
-      const { result } = renderHook(() =>
-        useEpisodeForm({ presenterId: 'presenter-123' })
-      );
+      const { result } = renderHook(() => useEpisodeForm({ presenterId: 'presenter-123' }));
 
       expect(result.current.isSubmitting).toBe(false);
       expect(result.current.errors).toEqual({});
@@ -67,17 +65,13 @@ describe('useEpisodeForm', () => {
     });
 
     it('should provide handleSubmit function', () => {
-      const { result } = renderHook(() =>
-        useEpisodeForm({ presenterId: 'presenter-123' })
-      );
+      const { result } = renderHook(() => useEpisodeForm({ presenterId: 'presenter-123' }));
 
       expect(result.current.handleSubmit).toBeInstanceOf(Function);
     });
 
     it('should provide reset function', () => {
-      const { result } = renderHook(() =>
-        useEpisodeForm({ presenterId: 'presenter-123' })
-      );
+      const { result } = renderHook(() => useEpisodeForm({ presenterId: 'presenter-123' }));
 
       expect(result.current.reset).toBeInstanceOf(Function);
     });
@@ -100,9 +94,7 @@ describe('useEpisodeForm', () => {
     });
 
     it('should call preventDefault on form event', async () => {
-      const { result } = renderHook(() =>
-        useEpisodeForm({ presenterId: 'presenter-123' })
-      );
+      const { result } = renderHook(() => useEpisodeForm({ presenterId: 'presenter-123' }));
       const mockEvent = createFormEvent({
         text: '昔、犬を飼っていた',
         isLie: 'false',
@@ -116,9 +108,7 @@ describe('useEpisodeForm', () => {
     });
 
     it('should perform client-side validation', async () => {
-      const { result } = renderHook(() =>
-        useEpisodeForm({ presenterId: 'presenter-123' })
-      );
+      const { result } = renderHook(() => useEpisodeForm({ presenterId: 'presenter-123' }));
       const mockEvent = createFormEvent({
         text: '昔、犬を飼っていた',
         isLie: 'false',
@@ -136,9 +126,7 @@ describe('useEpisodeForm', () => {
     });
 
     it('should parse isLie as boolean', async () => {
-      const { result } = renderHook(() =>
-        useEpisodeForm({ presenterId: 'presenter-123' })
-      );
+      const { result } = renderHook(() => useEpisodeForm({ presenterId: 'presenter-123' }));
       const mockEvent = createFormEvent({
         text: 'これは嘘です',
         isLie: 'true',
@@ -156,9 +144,7 @@ describe('useEpisodeForm', () => {
     });
 
     it('should call server action with FormData', async () => {
-      const { result } = renderHook(() =>
-        useEpisodeForm({ presenterId: 'presenter-123' })
-      );
+      const { result } = renderHook(() => useEpisodeForm({ presenterId: 'presenter-123' }));
       const mockEvent = createFormEvent({
         text: '昔、犬を飼っていた',
         isLie: 'false',
@@ -178,9 +164,7 @@ describe('useEpisodeForm', () => {
     });
 
     it('should set createdEpisode on success', async () => {
-      const { result } = renderHook(() =>
-        useEpisodeForm({ presenterId: 'presenter-123' })
-      );
+      const { result } = renderHook(() => useEpisodeForm({ presenterId: 'presenter-123' }));
       const mockEvent = createFormEvent({
         text: '昔、犬を飼っていた',
         isLie: 'false',
@@ -196,9 +180,7 @@ describe('useEpisodeForm', () => {
     });
 
     it('should set isSuccess to true on success', async () => {
-      const { result } = renderHook(() =>
-        useEpisodeForm({ presenterId: 'presenter-123' })
-      );
+      const { result } = renderHook(() => useEpisodeForm({ presenterId: 'presenter-123' }));
       const mockEvent = createFormEvent({
         text: '昔、犬を飼っていた',
         isLie: 'false',
@@ -233,9 +215,7 @@ describe('useEpisodeForm', () => {
     });
 
     it('should work without onSuccess callback', async () => {
-      const { result } = renderHook(() =>
-        useEpisodeForm({ presenterId: 'presenter-123' })
-      );
+      const { result } = renderHook(() => useEpisodeForm({ presenterId: 'presenter-123' }));
       const mockEvent = createFormEvent({
         text: '昔、犬を飼っていた',
         isLie: 'false',
@@ -251,9 +231,7 @@ describe('useEpisodeForm', () => {
     });
 
     it('should reset form automatically after success', async () => {
-      const { result } = renderHook(() =>
-        useEpisodeForm({ presenterId: 'presenter-123' })
-      );
+      const { result } = renderHook(() => useEpisodeForm({ presenterId: 'presenter-123' }));
       const mockEvent = createFormEvent({
         text: '昔、犬を飼っていた',
         isLie: 'false',
@@ -288,9 +266,7 @@ describe('useEpisodeForm', () => {
     });
 
     it('should set field errors on validation failure', async () => {
-      const { result } = renderHook(() =>
-        useEpisodeForm({ presenterId: 'presenter-123' })
-      );
+      const { result } = renderHook(() => useEpisodeForm({ presenterId: 'presenter-123' }));
       const mockEvent = createFormEvent({ text: '', isLie: 'false' });
 
       await act(async () => {
@@ -303,9 +279,7 @@ describe('useEpisodeForm', () => {
     });
 
     it('should not call server action on validation failure', async () => {
-      const { result } = renderHook(() =>
-        useEpisodeForm({ presenterId: 'presenter-123' })
-      );
+      const { result } = renderHook(() => useEpisodeForm({ presenterId: 'presenter-123' }));
       const mockEvent = createFormEvent({ text: '', isLie: 'false' });
 
       await act(async () => {
@@ -316,9 +290,7 @@ describe('useEpisodeForm', () => {
     });
 
     it('should not set isSuccess on validation failure', async () => {
-      const { result } = renderHook(() =>
-        useEpisodeForm({ presenterId: 'presenter-123' })
-      );
+      const { result } = renderHook(() => useEpisodeForm({ presenterId: 'presenter-123' }));
       const mockEvent = createFormEvent({ text: '', isLie: 'false' });
 
       await act(async () => {
@@ -360,9 +332,7 @@ describe('useEpisodeForm', () => {
         },
       });
 
-      const { result } = renderHook(() =>
-        useEpisodeForm({ presenterId: 'presenter-123' })
-      );
+      const { result } = renderHook(() => useEpisodeForm({ presenterId: 'presenter-123' }));
       const mockEvent = createFormEvent({ text: '', isLie: 'false' });
 
       await act(async () => {
@@ -379,9 +349,7 @@ describe('useEpisodeForm', () => {
     });
 
     it('should clear createdEpisode', () => {
-      const { result } = renderHook(() =>
-        useEpisodeForm({ presenterId: 'presenter-123' })
-      );
+      const { result } = renderHook(() => useEpisodeForm({ presenterId: 'presenter-123' }));
 
       act(() => {
         result.current.reset();
@@ -391,9 +359,7 @@ describe('useEpisodeForm', () => {
     });
 
     it('should clear isSuccess', () => {
-      const { result } = renderHook(() =>
-        useEpisodeForm({ presenterId: 'presenter-123' })
-      );
+      const { result } = renderHook(() => useEpisodeForm({ presenterId: 'presenter-123' }));
 
       act(() => {
         result.current.reset();
@@ -424,9 +390,7 @@ describe('useEpisodeForm', () => {
         },
       });
 
-      const { result } = renderHook(() =>
-        useEpisodeForm({ presenterId: 'presenter-123' })
-      );
+      const { result } = renderHook(() => useEpisodeForm({ presenterId: 'presenter-123' }));
       const mockEvent1 = createFormEvent({ text: '', isLie: 'false' });
 
       // First submission with error
@@ -469,9 +433,7 @@ describe('useEpisodeForm', () => {
         },
       });
 
-      const { result } = renderHook(() =>
-        useEpisodeForm({ presenterId: 'presenter-123' })
-      );
+      const { result } = renderHook(() => useEpisodeForm({ presenterId: 'presenter-123' }));
 
       const mockEvent = createFormEvent({ text: '', isLie: 'false' });
 
@@ -501,9 +463,7 @@ describe('useEpisodeForm', () => {
     });
 
     it('should correctly convert "true" string to boolean true', async () => {
-      const { result } = renderHook(() =>
-        useEpisodeForm({ presenterId: 'presenter-123' })
-      );
+      const { result } = renderHook(() => useEpisodeForm({ presenterId: 'presenter-123' }));
       const mockEvent = createFormEvent({
         text: 'これは嘘です',
         isLie: 'true',
@@ -530,9 +490,7 @@ describe('useEpisodeForm', () => {
         },
       });
 
-      const { result } = renderHook(() =>
-        useEpisodeForm({ presenterId: 'presenter-123' })
-      );
+      const { result } = renderHook(() => useEpisodeForm({ presenterId: 'presenter-123' }));
       const mockEvent = createFormEvent({
         text: 'これは本当です',
         isLie: 'false',
@@ -550,9 +508,7 @@ describe('useEpisodeForm', () => {
     });
 
     it('should handle missing isLie field as false', async () => {
-      const { result } = renderHook(() =>
-        useEpisodeForm({ presenterId: 'presenter-123' })
-      );
+      const { result } = renderHook(() => useEpisodeForm({ presenterId: 'presenter-123' }));
       const mockEvent = createFormEvent({
         text: 'エピソードのみ',
       });

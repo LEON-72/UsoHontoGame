@@ -64,7 +64,8 @@ describe('EmptyState', () => {
     });
 
     it('should handle long message', () => {
-      const longMessage = 'This is a very long message that should still be displayed correctly within the empty state component';
+      const longMessage =
+        'This is a very long message that should still be displayed correctly within the empty state component';
       render(<EmptyState message={longMessage} />);
 
       expect(screen.getByText(longMessage)).toBeInTheDocument();
@@ -123,12 +124,7 @@ describe('EmptyState', () => {
 
   describe('Action Element', () => {
     it('should render action when provided', () => {
-      render(
-        <EmptyState
-          message="No data"
-          action={<button type="button">Add Item</button>}
-        />
-      );
+      render(<EmptyState message="No data" action={<button type="button">Add Item</button>} />);
 
       expect(screen.getByRole('button', { name: 'Add Item' })).toBeInTheDocument();
     });
@@ -141,12 +137,7 @@ describe('EmptyState', () => {
     });
 
     it('should render action with link', () => {
-      render(
-        <EmptyState
-          message="No data"
-          action={<a href="/create">Create New</a>}
-        />
-      );
+      render(<EmptyState message="No data" action={<a href="/create">Create New</a>} />);
 
       expect(screen.getByText('Create New')).toBeInTheDocument();
     });
@@ -170,10 +161,7 @@ describe('EmptyState', () => {
 
     it('should style action container correctly', () => {
       const { container } = render(
-        <EmptyState
-          message="No data"
-          action={<button type="button">Action</button>}
-        />
+        <EmptyState message="No data" action={<button type="button">Action</button>} />
       );
 
       const actionContainer = container.querySelector('.mt-4');
@@ -181,12 +169,7 @@ describe('EmptyState', () => {
     });
 
     it('should handle Japanese action text', () => {
-      render(
-        <EmptyState
-          message="データなし"
-          action={<button type="button">追加する</button>}
-        />
-      );
+      render(<EmptyState message="データなし" action={<button type="button">追加する</button>} />);
 
       expect(screen.getByRole('button', { name: '追加する' })).toBeInTheDocument();
     });
@@ -194,12 +177,7 @@ describe('EmptyState', () => {
 
   describe('Icon Element', () => {
     it('should render icon when provided', () => {
-      render(
-        <EmptyState
-          message="No data"
-          icon={<span data-testid="icon">📦</span>}
-        />
-      );
+      render(<EmptyState message="No data" icon={<span data-testid="icon">📦</span>} />);
 
       expect(screen.getByTestId('icon')).toBeInTheDocument();
     });
@@ -227,23 +205,13 @@ describe('EmptyState', () => {
     });
 
     it('should render icon with image', () => {
-      render(
-        <EmptyState
-          message="No data"
-          icon={<img src="/icon.png" alt="Empty icon" />}
-        />
-      );
+      render(<EmptyState message="No data" icon={<img src="/icon.png" alt="Empty icon" />} />);
 
       expect(screen.getByAltText('Empty icon')).toBeInTheDocument();
     });
 
     it('should style icon container correctly', () => {
-      const { container } = render(
-        <EmptyState
-          message="No data"
-          icon={<span>Icon</span>}
-        />
-      );
+      const { container } = render(<EmptyState message="No data" icon={<span>Icon</span>} />);
 
       const iconContainer = container.querySelector('.mb-4');
       expect(iconContainer).toBeInTheDocument();
@@ -251,10 +219,7 @@ describe('EmptyState', () => {
 
     it('should render icon before message', () => {
       const { container } = render(
-        <EmptyState
-          message="No data"
-          icon={<span data-testid="icon">Icon</span>}
-        />
+        <EmptyState message="No data" icon={<span data-testid="icon">Icon</span>} />
       );
 
       const icon = screen.getByTestId('icon');
@@ -301,24 +266,14 @@ describe('EmptyState', () => {
     });
 
     it('should render with message and sub-message only', () => {
-      render(
-        <EmptyState
-          message="No data"
-          subMessage="Add some items"
-        />
-      );
+      render(<EmptyState message="No data" subMessage="Add some items" />);
 
       expect(screen.getByText('No data')).toBeInTheDocument();
       expect(screen.getByText('Add some items')).toBeInTheDocument();
     });
 
     it('should render with message and action only', () => {
-      render(
-        <EmptyState
-          message="No data"
-          action={<button type="button">Add</button>}
-        />
-      );
+      render(<EmptyState message="No data" action={<button type="button">Add</button>} />);
 
       expect(screen.getByText('No data')).toBeInTheDocument();
       expect(screen.getByRole('button', { name: 'Add' })).toBeInTheDocument();
@@ -348,12 +303,7 @@ describe('EmptyState', () => {
     });
 
     it('should be keyboard accessible when action is focusable', () => {
-      render(
-        <EmptyState
-          message="No data"
-          action={<button type="button">Add Item</button>}
-        />
-      );
+      render(<EmptyState message="No data" action={<button type="button">Add Item</button>} />);
 
       const button = screen.getByRole('button', { name: 'Add Item' });
       button.focus();
@@ -413,12 +363,7 @@ describe('EmptyState', () => {
 
     it('should handle undefined optional props', () => {
       render(
-        <EmptyState
-          message="Main"
-          subMessage={undefined}
-          action={undefined}
-          icon={undefined}
-        />
+        <EmptyState message="Main" subMessage={undefined} action={undefined} icon={undefined} />
       );
 
       expect(screen.getByText('Main')).toBeInTheDocument();

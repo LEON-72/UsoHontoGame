@@ -274,7 +274,7 @@ describe('Badge', () => {
     });
 
     it('should maintain styles with whitespace children', () => {
-      const { container } = render(<Badge>   </Badge>);
+      const { container } = render(<Badge> </Badge>);
 
       const badge = container.querySelector('span');
       expect(badge).toHaveClass('inline-flex', 'rounded-full');

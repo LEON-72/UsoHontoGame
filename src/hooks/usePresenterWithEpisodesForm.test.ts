@@ -156,7 +156,6 @@ describe('usePresenterWithEpisodesForm', () => {
       expect(result.current.formState.episodes[2].text).toBe('最後のエピソード');
     });
 
-
     it('should preserve lie marker when updating episode text', () => {
       const { result } = renderHook(() => usePresenterWithEpisodesForm(gameId));
 
@@ -245,7 +244,6 @@ describe('usePresenterWithEpisodesForm', () => {
       expect(result.current.formState.episodes[1].isLie).toBe(true);
       expect(result.current.formState.episodes[2].isLie).toBe(false);
     });
-
 
     it('should preserve episode text when updating lie marker', () => {
       const { result } = renderHook(() => usePresenterWithEpisodesForm(gameId));
@@ -341,7 +339,6 @@ describe('usePresenterWithEpisodesForm', () => {
       expect(result.current.formState.episodes[2]).toEqual({ text: '', isLie: false });
     });
 
-
     it('should preserve gameId after reset', () => {
       const { result } = renderHook(() => usePresenterWithEpisodesForm(gameId));
 
@@ -361,9 +358,27 @@ describe('usePresenterWithEpisodesForm', () => {
         gameId: 'game-123',
         nickname: '太郎',
         episodes: [
-          { id: 'ep1', presenterId: 'presenter-1', text: 'エピソード1', isLie: true, createdAt: new Date() },
-          { id: 'ep2', presenterId: 'presenter-1', text: 'エピソード2', isLie: false, createdAt: new Date() },
-          { id: 'ep3', presenterId: 'presenter-1', text: 'エピソード3', isLie: false, createdAt: new Date() },
+          {
+            id: 'ep1',
+            presenterId: 'presenter-1',
+            text: 'エピソード1',
+            isLie: true,
+            createdAt: new Date(),
+          },
+          {
+            id: 'ep2',
+            presenterId: 'presenter-1',
+            text: 'エピソード2',
+            isLie: false,
+            createdAt: new Date(),
+          },
+          {
+            id: 'ep3',
+            presenterId: 'presenter-1',
+            text: 'エピソード3',
+            isLie: false,
+            createdAt: new Date(),
+          },
         ],
         createdAt: new Date(),
       };
@@ -426,9 +441,27 @@ describe('usePresenterWithEpisodesForm', () => {
         gameId: 'game-123',
         nickname: '太郎',
         episodes: [
-          { id: 'ep1', presenterId: 'presenter-1', text: 'エピソード1', isLie: true, createdAt: new Date() },
-          { id: 'ep2', presenterId: 'presenter-1', text: 'エピソード2', isLie: false, createdAt: new Date() },
-          { id: 'ep3', presenterId: 'presenter-1', text: 'エピソード3', isLie: false, createdAt: new Date() },
+          {
+            id: 'ep1',
+            presenterId: 'presenter-1',
+            text: 'エピソード1',
+            isLie: true,
+            createdAt: new Date(),
+          },
+          {
+            id: 'ep2',
+            presenterId: 'presenter-1',
+            text: 'エピソード2',
+            isLie: false,
+            createdAt: new Date(),
+          },
+          {
+            id: 'ep3',
+            presenterId: 'presenter-1',
+            text: 'エピソード3',
+            isLie: false,
+            createdAt: new Date(),
+          },
         ],
         createdAt: new Date(),
       };
