@@ -45,6 +45,11 @@ vi.mock('@/server/infrastructure/di/SessionServiceContainer', () => ({
   },
 }));
 
+// Mock Next.js cache functions
+vi.mock('next/cache', () => ({
+  revalidatePath: vi.fn(),
+}));
+
 describe('Status Transition Server Actions', () => {
   let mockRepository: any;
   let mockSessionService: any;

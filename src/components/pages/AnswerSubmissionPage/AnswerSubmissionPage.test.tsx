@@ -8,7 +8,7 @@ import userEvent from '@testing-library/user-event';
 import { AccessibilityProvider } from '@/components/ui/AccessibilityProvider';
 import { AnswerSubmissionPage } from './index';
 import type { GameAnswerFormData } from './hooks/useAnswerSubmission';
-import { useAnswerSubmission } from './hooks/useAnswerSubmission';
+import { useAnswerSubmissionPage } from './hooks/useAnswerSubmissionPage';
 
 // Mock dependencies
 vi.mock('@/components/domain/answer/GameAnswerForm', () => ({
@@ -20,9 +20,22 @@ vi.mock('@/components/domain/answer/GameAnswerForm', () => ({
   ),
 }));
 
-vi.mock('./hooks/useAnswerSubmission');
+// Mock the page hook (which uses the router)
+vi.mock('./hooks/useAnswerSubmissionPage');
 
-const mockUseAnswerSubmission = vi.mocked(useAnswerSubmission);
+// Mock Next.js navigation
+vi.mock('next/navigation', () => ({
+  useRouter: vi.fn(() => ({
+    push: vi.fn(),
+  })),
+}));
+
+// Mock server actions
+vi.mock('@/app/actions/presenter', () => ({
+  getPresentersAction: vi.fn(),
+}));
+
+const mockUseAnswerSubmissionPage = vi.mocked(useAnswerSubmissionPage);
 
 // Test wrapper with AccessibilityProvider
 const TestWrapper = ({ children }: { children: React.ReactNode }) => (
@@ -38,7 +51,7 @@ describe('AnswerSubmissionPage', () => {
 
   describe('Loading State', () => {
     it('should display loading message when data is being fetched', () => {
-      mockUseAnswerSubmission.mockReturnValue({
+      mockUseAnswerSubmissionPage.mockReturnValue({
         formData: null,
         isLoading: true,
         error: null,
@@ -58,7 +71,7 @@ describe('AnswerSubmissionPage', () => {
     });
 
     it('should render loading state in main container', () => {
-      mockUseAnswerSubmission.mockReturnValue({
+      mockUseAnswerSubmissionPage.mockReturnValue({
         formData: null,
         isLoading: true,
         error: null,
@@ -82,7 +95,7 @@ describe('AnswerSubmissionPage', () => {
 
   describe('Error State', () => {
     it('should display error message when loading fails', () => {
-      mockUseAnswerSubmission.mockReturnValue({
+      mockUseAnswerSubmissionPage.mockReturnValue({
         formData: null,
         isLoading: false,
         error: 'ゲームが見つかりませんでした',
@@ -102,7 +115,7 @@ describe('AnswerSubmissionPage', () => {
     });
 
     it('should display game status error appropriately', () => {
-      mockUseAnswerSubmission.mockReturnValue({
+      mockUseAnswerSubmissionPage.mockReturnValue({
         formData: null,
         isLoading: false,
         error: 'このゲームは既に締め切られました',
@@ -122,7 +135,7 @@ describe('AnswerSubmissionPage', () => {
     });
 
     it('should display participant limit error', () => {
-      mockUseAnswerSubmission.mockReturnValue({
+      mockUseAnswerSubmissionPage.mockReturnValue({
         formData: null,
         isLoading: false,
         error: '参加人数が上限に達しました',
@@ -142,7 +155,7 @@ describe('AnswerSubmissionPage', () => {
     });
 
     it('should have error role for accessibility', () => {
-      mockUseAnswerSubmission.mockReturnValue({
+      mockUseAnswerSubmissionPage.mockReturnValue({
         formData: null,
         isLoading: false,
         error: 'エラーが発生しました',
@@ -181,7 +194,7 @@ describe('AnswerSubmissionPage', () => {
     };
 
     it('should render GameAnswerForm when data is loaded', () => {
-      mockUseAnswerSubmission.mockReturnValue({
+      mockUseAnswerSubmissionPage.mockReturnValue({
         formData: mockFormData,
         isLoading: false,
         error: null,
@@ -201,7 +214,7 @@ describe('AnswerSubmissionPage', () => {
     });
 
     it('should pass correct props to GameAnswerForm', () => {
-      mockUseAnswerSubmission.mockReturnValue({
+      mockUseAnswerSubmissionPage.mockReturnValue({
         formData: mockFormData,
         isLoading: false,
         error: null,
@@ -227,7 +240,7 @@ describe('AnswerSubmissionPage', () => {
     });
 
     it('should display page header', () => {
-      mockUseAnswerSubmission.mockReturnValue({
+      mockUseAnswerSubmissionPage.mockReturnValue({
         formData: mockFormData,
         isLoading: false,
         error: null,
@@ -266,7 +279,7 @@ describe('AnswerSubmissionPage', () => {
 
     it('should call handleSubmit when form is submitted', async () => {
       const mockHandleSubmit = vi.fn();
-      mockUseAnswerSubmission.mockReturnValue({
+      mockUseAnswerSubmissionPage.mockReturnValue({
         formData: mockFormData,
         isLoading: false,
         error: null,
@@ -292,7 +305,7 @@ describe('AnswerSubmissionPage', () => {
 
     it('should call handleReset when reset button is clicked', async () => {
       const mockHandleReset = vi.fn();
-      mockUseAnswerSubmission.mockReturnValue({
+      mockUseAnswerSubmissionPage.mockReturnValue({
         formData: mockFormData,
         isLoading: false,
         error: null,
@@ -332,7 +345,7 @@ describe('AnswerSubmissionPage', () => {
     };
 
     it('should use semantic main element', () => {
-      mockUseAnswerSubmission.mockReturnValue({
+      mockUseAnswerSubmissionPage.mockReturnValue({
         formData: mockFormData,
         isLoading: false,
         error: null,
@@ -352,7 +365,7 @@ describe('AnswerSubmissionPage', () => {
     });
 
     it('should have proper heading hierarchy', () => {
-      mockUseAnswerSubmission.mockReturnValue({
+      mockUseAnswerSubmissionPage.mockReturnValue({
         formData: mockFormData,
         isLoading: false,
         error: null,
@@ -388,7 +401,7 @@ describe('AnswerSubmissionPage', () => {
     };
 
     it('should apply correct styling classes to main container', () => {
-      mockUseAnswerSubmission.mockReturnValue({
+      mockUseAnswerSubmissionPage.mockReturnValue({
         formData: mockFormData,
         isLoading: false,
         error: null,
@@ -409,7 +422,7 @@ describe('AnswerSubmissionPage', () => {
     });
 
     it('should use constrained width container for content', () => {
-      mockUseAnswerSubmission.mockReturnValue({
+      mockUseAnswerSubmissionPage.mockReturnValue({
         formData: mockFormData,
         isLoading: false,
         error: null,
@@ -439,7 +452,7 @@ describe('AnswerSubmissionPage', () => {
         isSubmitting: false,
       };
 
-      mockUseAnswerSubmission.mockReturnValue({
+      mockUseAnswerSubmissionPage.mockReturnValue({
         formData: emptyFormData,
         isLoading: false,
         error: null,
@@ -459,7 +472,7 @@ describe('AnswerSubmissionPage', () => {
     });
 
     it('should handle null formData gracefully', () => {
-      mockUseAnswerSubmission.mockReturnValue({
+      mockUseAnswerSubmissionPage.mockReturnValue({
         formData: null,
         isLoading: false,
         error: null,

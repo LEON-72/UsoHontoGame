@@ -22,6 +22,7 @@ import type { IParticipationRepository } from '@/server/domain/repositories/IPar
 import { PrismaGameRepository } from '@/server/infrastructure/repositories/PrismaGameRepository';
 import { PrismaAnswerRepository } from '@/server/infrastructure/repositories/PrismaAnswerRepository';
 import { PrismaParticipationRepository } from '@/server/infrastructure/repositories/PrismaParticipationRepository';
+import { GameId } from '@/server/domain/value-objects/GameId';
 import { createTestDatabase, type TestDatabase } from '../utils/test-database';
 
 describe('Answer Submission Integration', () => {
@@ -72,14 +73,11 @@ describe('Answer Submission Integration', () => {
         { text: 'Lie 1', isLie: true },
         { text: 'Truth 1-2', isLie: false },
       ],
-      sessionId: creatorSessionId,
     });
-    presenter1Id = presenter1Result.presenterId;
+    presenter1Id = presenter1Result.presenter.id;
 
-    // Get lie episode ID for presenter 1
-    const presenters1 = await gameRepository.findPresentersByGameId(gameId);
-    const p1Episodes = presenters1.find((p) => p.id === presenter1Id)?.episodes || [];
-    episode1LieId = p1Episodes.find((e) => e.isLie)?.id || '';
+    // Get lie episode ID from presenter result
+    episode1LieId = presenter1Result.presenter.episodes.find((e) => e.isLie)?.id || '';
 
     // Add second presenter with episodes
     const presenter2Result = await addPresenter.execute({
@@ -90,14 +88,11 @@ describe('Answer Submission Integration', () => {
         { text: 'Truth 2-2', isLie: false },
         { text: 'Lie 2', isLie: true },
       ],
-      sessionId: creatorSessionId,
     });
-    presenter2Id = presenter2Result.presenterId;
+    presenter2Id = presenter2Result.presenter.id;
 
-    // Get lie episode ID for presenter 2
-    const presenters2 = await gameRepository.findPresentersByGameId(gameId);
-    const p2Episodes = presenters2.find((p) => p.id === presenter2Id)?.episodes || [];
-    episode2LieId = p2Episodes.find((e) => e.isLie)?.id || '';
+    // Get lie episode ID from presenter result
+    episode2LieId = presenter2Result.presenter.episodes.find((e) => e.isLie)?.id || '';
 
     // Start the game (準備中 → 出題中)
     const startUseCase = new StartAcceptingResponses(gameRepository);
@@ -275,7 +270,7 @@ describe('Answer Submission Integration', () => {
       // Assert: Submission rejected
       expect(result.success).toBe(false);
       if (!result.success) {
-        expect(result.error.code).toContain('GAME_NOT_ACCEPTING');
+        expect(result.error.code).toContain('GAME_NOT_STARTED');
       }
     });
 
@@ -307,66 +302,39 @@ describe('Answer Submission Integration', () => {
   });
 
   describe('GetGameForAnswers Integration', () => {
-    it('should fetch game with presenters and episodes', async () => {
+    it('should fetch basic game data for validation', async () => {
       // Act: Fetch game for answers
       const getGame = new GetGameForAnswers(gameRepository);
-      const result = await getGame.execute({
-        gameId,
-        sessionId: participantSessionId,
-      });
+      const result = await getGame.execute(gameId);
 
       // Assert: Game data retrieved
       expect(result.success).toBe(true);
       if (result.success) {
-        expect(result.game.id).toBe(gameId);
-        expect(result.game.presenters).toHaveLength(2);
-
-        // Verify presenter structure
-        const presenter1 = result.game.presenters.find((p) => p.id === presenter1Id);
-        expect(presenter1).toBeDefined();
-        expect(presenter1?.name).toBe('Presenter 1');
-        expect(presenter1?.episodes).toHaveLength(3);
-
-        // Verify episodes don't expose isLie flag
-        presenter1?.episodes.forEach((episode) => {
-          expect(episode).toHaveProperty('id');
-          expect(episode).toHaveProperty('text');
-          expect(episode).not.toHaveProperty('isLie');
-        });
+        expect(result.data.id).toBe(gameId);
+        expect(result.data.name).toBeDefined();
+        expect(result.data.status).toBe('出題中');
+        expect(result.data.maxPlayers).toBe(10);
+        expect(result.data.currentPlayers).toBeGreaterThanOrEqual(0);
       }
     });
 
-    it('should load existing selections for returning participant', async () => {
-      // Arrange: Submit initial answer
-      const submitAnswer = new SubmitAnswer(
-        answerRepository,
-        participationRepository,
-        gameRepository
-      );
+    it('should reject closed games', async () => {
+      // Arrange: Close the game
+      const game = await gameRepository.findById(new GameId(gameId));
+      if (game) {
+        game.close();
+        await gameRepository.update(game);
+      }
 
-      await submitAnswer.execute({
-        gameId,
-        sessionId: participantSessionId,
-        nickname: participantNickname,
-        selections: {
-          [presenter1Id]: episode1LieId,
-          [presenter2Id]: episode2LieId,
-        },
-      });
-
-      // Act: Fetch game with existing selections
+      // Act: Try to fetch closed game
       const getGame = new GetGameForAnswers(gameRepository);
-      const result = await getGame.execute({
-        gameId,
-        sessionId: participantSessionId,
-      });
+      const result = await getGame.execute(gameId);
 
-      // Assert: Previous selections loaded
-      expect(result.success).toBe(true);
-      if (result.success) {
-        expect(result.existingSelections).toBeDefined();
-        expect(result.existingSelections?.[presenter1Id]).toBe(episode1LieId);
-        expect(result.existingSelections?.[presenter2Id]).toBe(episode2LieId);
+      // Assert: Rejected with GAME_CLOSED
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.code).toBe('GAME_CLOSED');
+        expect(result.error.message).toContain('締め切られました');
       }
     });
   });

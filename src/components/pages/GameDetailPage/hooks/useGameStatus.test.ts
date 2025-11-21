@@ -19,6 +19,9 @@ describe('useGameStatus', () => {
     vi.clearAllMocks();
     vi.mocked(mockStartGameAction).mockReset();
     vi.mocked(mockCloseGameAction).mockReset();
+
+    // Mock window.confirm to return true by default
+    vi.stubGlobal('confirm', vi.fn(() => true));
   });
 
   describe('initialization', () => {
@@ -126,6 +129,7 @@ describe('useGameStatus', () => {
           initialStatus: '準備中',
           onSuccess: vi.fn(),
           onError,
+          enableRetry: false, // Disable retries to test immediate rollback
         })
       );
 
@@ -225,6 +229,7 @@ describe('useGameStatus', () => {
           initialStatus: '出題中',
           onSuccess: vi.fn(),
           onError,
+          enableRetry: false, // Disable retries to test immediate rollback
         })
       );
 

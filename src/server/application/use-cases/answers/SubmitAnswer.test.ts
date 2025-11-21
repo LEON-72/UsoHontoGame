@@ -24,6 +24,7 @@ describe('SubmitAnswer Use Case', () => {
       findBySessionAndGame: async () => null,
       findByGameId: async () => [],
       delete: async () => {},
+      findSelectionsByAnswer: async () => [],
     };
 
     participationRepository = {
@@ -41,6 +42,27 @@ describe('SubmitAnswer Use Case', () => {
       findAll: async () => [],
       findByCreatorId: async () => [],
       findByStatus: async () => [],
+      findPresentersByGameId: async () => [
+        {
+          id: 'presenter-1',
+          gameId: 'game-123',
+          sessionId: 'session-123',
+          nickname: 'Presenter 1',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          getEpisodes: () => [],
+          addEpisode: () => {},
+          toJSON: () => ({
+            id: 'presenter-1',
+            gameId: 'game-123',
+            sessionId: 'session-123',
+            nickname: 'Presenter 1',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            episodes: [],
+          }),
+        },
+      ],
     };
 
     useCase = new SubmitAnswer(answerRepository, participationRepository, gameRepository);

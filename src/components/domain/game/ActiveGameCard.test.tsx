@@ -189,13 +189,13 @@ describe('ActiveGameCard', () => {
 
       const link = screen.getByRole('link');
       expect(link).toBeInTheDocument();
-      expect(link).toHaveAttribute('href', '/games/game-nav-001');
+      expect(link).toHaveAttribute('href', '/games/game-nav-001/answer');
     });
 
     it('should navigate to correct game detail page for different IDs', () => {
       const testCases = [
-        { id: 'abc123def456', expectedHref: '/games/abc123def456' },
-        { id: 'xyz789ghi012', expectedHref: '/games/xyz789ghi012' },
+        { id: 'abc123def456', expectedHref: '/games/abc123def456/answer' },
+        { id: 'xyz789ghi012', expectedHref: '/games/xyz789ghi012/answer' },
       ];
 
       testCases.forEach(({ id, expectedHref }) => {
@@ -248,7 +248,7 @@ describe('ActiveGameCard', () => {
       render(<ActiveGameCard game={game} />);
 
       const link = screen.getByRole('link');
-      expect(link).toHaveAccessibleName('アクセシビリティテスト のゲーム詳細を見る');
+      expect(link).toHaveAccessibleName('アクセシビリティテスト の回答ページへ移動');
     });
 
     it('should have focus-visible styling for keyboard navigation', () => {
