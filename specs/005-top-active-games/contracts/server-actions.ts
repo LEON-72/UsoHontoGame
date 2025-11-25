@@ -61,7 +61,7 @@ export const errorResponseSchema = z.object({
   success: z.literal(false),
   error: z.string(),
   message: z.string(),
-  details: z.record(z.unknown()).optional(),
+  details: z.record(z.string(), z.unknown()).optional(),
 });
 
 export type ErrorResponse = z.infer<typeof errorResponseSchema>;
