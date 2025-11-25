@@ -2,7 +2,7 @@
  * ActiveGameCard Component
  * Feature: 005-top-active-games (User Story 2 & 3)
  * Feature: 001-lie-detection-answers (Answer submission navigation)
- * Feature: 006-results-dashboard (Dashboard navigation for creators)
+ * Feature: 006-results-dashboard (Dashboard navigation)
  *
  * Displays a single active game with:
  * - Game title
@@ -10,7 +10,7 @@
  * - Formatted creation time
  * - Action buttons:
  *   - Answer submission button (all users)
- *   - Dashboard button (creators only)
+ *   - Dashboard button (all users)
  */
 
 import Link from 'next/link';
@@ -25,14 +25,12 @@ export interface ActiveGameCardProps {
 
 /**
  * ActiveGameCard - Presentational component with navigation
- * Provides navigation to answer submission and dashboard (for creators)
+ * Provides navigation to answer submission and dashboard
  */
 export function ActiveGameCard({ game, currentSessionId }: ActiveGameCardProps) {
   const playerCountText = game.playerLimit
     ? `${game.playerCount} / ${game.playerLimit}人`
     : `${game.playerCount}人`;
-
-  const isCreator = currentSessionId === game.creatorId;
 
   return (
     <article className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition-all duration-200 hover:shadow-md hover:border-gray-300">
@@ -54,7 +52,7 @@ export function ActiveGameCard({ game, currentSessionId }: ActiveGameCardProps) 
 
       {/* Action Buttons */}
       <div className="flex gap-2">
-        {/* Answer Button - Always visible */}
+        {/* Answer Button */}
         <Link
           href={`/games/${game.id}/answer`}
           className="flex-1 rounded-md bg-blue-600 px-4 py-2 text-center text-sm font-medium text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
@@ -62,15 +60,13 @@ export function ActiveGameCard({ game, currentSessionId }: ActiveGameCardProps) 
           回答する
         </Link>
 
-        {/* Dashboard Button - Only for creators */}
-        {isCreator && (
-          <Link
-            href={`/games/${game.id}/dashboard`}
-            className="flex-1 rounded-md border border-gray-300 bg-white px-4 py-2 text-center text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-          >
-            ダッシュボード
-          </Link>
-        )}
+        {/* Dashboard Button - Always visible */}
+        <Link
+          href={`/games/${game.id}/dashboard`}
+          className="flex-1 rounded-md border border-gray-300 bg-white px-4 py-2 text-center text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+        >
+          ダッシュボード
+        </Link>
       </div>
     </article>
   );
