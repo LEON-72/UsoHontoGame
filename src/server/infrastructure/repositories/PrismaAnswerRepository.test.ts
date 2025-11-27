@@ -376,4 +376,121 @@ describe('PrismaAnswerRepository', () => {
       expect(['episode-1', 'episode-2']).toContain(found?.selections.get('presenter-1'));
     });
   });
+
+  describe('findSelectionsByAnswer', () => {
+    it('should return empty array when answer does not exist', async () => {
+      // Tests null check branch (line 81-83)
+      const selections = await repository.findSelectionsByAnswer('non-existent-id');
+      expect(selections).toEqual([]);
+    });
+
+    it('should find selections for valid answer with object selections', async () => {
+      // Tests object type branch (line 86-87)
+      const gameId = 'game-123';
+      await createTestGame(gameId);
+
+      const answer = AnswerEntity.create({
+        sessionId: 'session-123',
+        gameId: gameId,
+        nickname: 'TestUser',
+        selections: { 'presenter-1': 'episode-1', 'presenter-2': 'episode-2' },
+      });
+
+      await repository.upsert(answer);
+
+      // Get the answer ID from database
+      const found = await repository.findBySessionAndGame('session-123', gameId);
+      expect(found).not.toBeNull();
+
+      const selections = await repository.findSelectionsByAnswer(found!.id);
+      expect(selections).toHaveLength(2);
+      expect(selections).toEqual(
+        expect.arrayContaining([
+          { presenterId: 'presenter-1', episodeId: 'episode-1' },
+          { presenterId: 'presenter-2', episodeId: 'episode-2' },
+        ])
+      );
+    });
+
+    it('should handle selections stored as JSON string', async () => {
+      // Tests string type branch (line 86-87)
+      const gameId = 'game-123';
+      await createTestGame(gameId);
+
+      // Manually create answer with selections as JSON string
+      const answerId = 'answer-string-test';
+      await testDb.prisma.answer.create({
+        data: {
+          id: answerId,
+          sessionId: 'session-string',
+          gameId: gameId,
+          nickname: 'TestUser',
+          selections: JSON.stringify({ 'presenter-1': 'episode-1' }),
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      });
+
+      const selections = await repository.findSelectionsByAnswer(answerId);
+      expect(selections).toHaveLength(1);
+      expect(selections[0]).toEqual({ presenterId: 'presenter-1', episodeId: 'episode-1' });
+    });
+
+    it('should handle complex selections with multiple presenters', async () => {
+      // Tests array mapping (line 90-93)
+      const gameId = 'game-123';
+      await createTestGame(gameId);
+
+      const complexSelections: Record<string, string> = {};
+      for (let i = 1; i <= 5; i++) {
+        complexSelections[`presenter-${i}`] = `episode-${i}`;
+      }
+
+      const answer = AnswerEntity.create({
+        sessionId: 'session-complex',
+        gameId: gameId,
+        nickname: 'TestUser',
+        selections: complexSelections,
+      });
+
+      await repository.upsert(answer);
+
+      const found = await repository.findBySessionAndGame('session-complex', gameId);
+      const selections = await repository.findSelectionsByAnswer(found!.id);
+
+      expect(selections).toHaveLength(5);
+      for (let i = 1; i <= 5; i++) {
+        expect(selections).toContainEqual({
+          presenterId: `presenter-${i}`,
+          episodeId: `episode-${i}`,
+        });
+      }
+    });
+
+    it('should handle toDomain with JSON string in findByGameId', async () => {
+      // Tests toDomain string type branch (line 106-107) when called from findByGameId
+      const gameId = 'game-123';
+      await createTestGame(gameId);
+
+      // Manually create answer with selections as JSON string
+      await testDb.prisma.answer.create({
+        data: {
+          id: 'answer-todomain-test',
+          sessionId: 'session-todomain',
+          gameId: gameId,
+          nickname: 'TestUser',
+          selections: JSON.stringify({ 'presenter-1': 'episode-1', 'presenter-2': 'episode-2' }),
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      });
+
+      const answers = await repository.findByGameId(gameId);
+      expect(answers).toHaveLength(1);
+      expect(answers[0]?.nickname).toBe('TestUser');
+      expect(answers[0]?.selections.size).toBe(2);
+      expect(answers[0]?.selections.get('presenter-1')).toBe('episode-1');
+      expect(answers[0]?.selections.get('presenter-2')).toBe('episode-2');
+    });
+  });
 });

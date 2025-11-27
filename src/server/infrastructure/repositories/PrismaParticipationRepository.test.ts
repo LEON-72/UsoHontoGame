@@ -416,5 +416,63 @@ describe('PrismaParticipationRepository', () => {
       expect(found?.joinedAt.getTime()).toBeGreaterThanOrEqual(before);
       expect(found?.joinedAt.getTime()).toBeLessThanOrEqual(after);
     });
+
+    it('should throw error on foreign key violation when game does not exist', async () => {
+      // Test database constraint - foreign key violation
+      const participation = ParticipationEntity.create({
+        sessionId: 'session-123',
+        gameId: 'non-existent-game',
+        nickname: 'TestUser',
+      });
+
+      // Should fail because game doesn't exist (foreign key constraint)
+      await expect(repository.create(participation)).rejects.toThrow();
+    });
+
+    it('should correctly reconstruct participation entity through toDomain', async () => {
+      // Tests toDomain method (line 64-76) - verify full entity reconstruction
+      const gameId = 'game-123';
+      await createTestGame(gameId);
+
+      const originalParticipation = ParticipationEntity.create({
+        sessionId: 'session-todomain',
+        gameId: gameId,
+        nickname: 'DomainTest',
+      });
+
+      await repository.create(originalParticipation);
+
+      const found = await repository.findBySessionAndGame('session-todomain', gameId);
+
+      // Verify all properties are correctly reconstructed
+      expect(found).not.toBeNull();
+      expect(found?.sessionId).toBe('session-todomain');
+      expect(found?.gameId).toBe(gameId);
+      expect(found?.nickname).toBe('DomainTest');
+      expect(found?.joinedAt).toBeInstanceOf(Date);
+      expect(found?.id).toBeTruthy();
+    });
+
+    it('should handle exists method with non-zero count', async () => {
+      // Explicitly tests line 33 return branch (count > 0 true branch)
+      const gameId = 'game-123';
+      await createTestGame(gameId);
+
+      const participation = ParticipationEntity.create({
+        sessionId: 'session-exists',
+        gameId: gameId,
+        nickname: 'ExistsTest',
+      });
+
+      await repository.create(participation);
+
+      // Explicitly verify the true branch of exists (count > 0)
+      const exists = await repository.exists('session-exists', gameId);
+      expect(exists).toBe(true);
+
+      // Verify the false branch (count === 0)
+      const notExists = await repository.exists('session-not-exists', gameId);
+      expect(notExists).toBe(false);
+    });
   });
 });
