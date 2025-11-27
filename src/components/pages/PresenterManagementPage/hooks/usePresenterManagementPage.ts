@@ -3,7 +3,6 @@
 // Manages state and business logic for presenter/episode management
 
 import { useCallback, useEffect, useState } from 'react';
-import { getPresentersAction } from '@/app/actions/presenter';
 import type { PresenterWithLieDto } from '@/server/application/dto/PresenterWithLieDto';
 import type {
   PresenterManagementPageProps,
@@ -28,21 +27,28 @@ export function usePresenterManagementPage({
 
   /**
    * Load all presenters for the game
-   * Fetches presenters from the server using getPresentersAction
+   * Fetches presenters from the API endpoint
    */
   const loadPresenters = useCallback(async () => {
     setIsLoading(true);
     setError(null);
 
     try {
-      // Load all presenters for this game from the server
-      const result = await getPresentersAction(gameId);
+      // Fetch from API endpoint instead of server action
+      const response = await fetch(`/api/games/${gameId}/presenters`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+      });
 
-      if (result.success) {
-        setPresenters(result.presenters);
-      } else {
-        setError(result.error);
+      if (!response.ok) {
+        const error = await response.json();
+        setError(error.details || error.error || 'プレゼンターの読み込みに失敗しました');
+        return;
       }
+
+      const result = await response.json();
+      setPresenters(result.presenters);
     } catch (err) {
       console.error('Failed to load presenters:', err);
       setError('プレゼンターの読み込みに失敗しました');

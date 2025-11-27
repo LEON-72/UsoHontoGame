@@ -9,7 +9,6 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { getActiveGamesAction } from '@/app/actions/game';
 import type { ActiveGameListItem } from '@/types/game';
 
 export interface UseActiveGamesOptions {
@@ -66,11 +65,22 @@ export function useActiveGames(options: UseActiveGamesOptions = {}): UseActiveGa
   } = useQuery({
     queryKey: ['activeGames', { limit }],
     queryFn: async () => {
-      const result = await getActiveGamesAction({ limit });
+      // Fetch from API endpoint instead of server action
+      const params = new URLSearchParams();
+      if (limit) params.append('limit', limit.toString());
 
-      if (!result.success) {
-        throw new Error(result.message || 'Failed to fetch active games');
+      const response = await fetch(`/api/games/active?${params.toString()}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.details || error.error || 'Failed to fetch active games');
       }
+
+      const result = await response.json();
 
       return {
         games: result.games,

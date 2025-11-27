@@ -4,7 +4,6 @@
 // Displays real-time response submission status for active/closed games
 
 import { redirect } from 'next/navigation';
-import { getResponseStatusAction } from '@/app/actions/game';
 import { ResponseStatusPage, ResponseStatusPageError } from '@/components/pages/ResponseStatusPage';
 import { SessionServiceContainer } from '@/server/infrastructure/di/SessionServiceContainer';
 
@@ -26,15 +25,27 @@ export default async function Page({ params }: PageProps) {
   // Extract gameId from params
   const { id: gameId } = await params;
 
-  // Fetch initial data via server action
-  const result = await getResponseStatusAction(gameId);
+  // Fetch initial data via API endpoint
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+  const response = await fetch(`${baseUrl}/api/games/${gameId}/dashboard`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+    cache: 'no-store', // Ensure fresh data for SSR
+  });
 
-  // Handle errors with dedicated error component
-  if (!result.success) {
-    const errorMessage = result.errors._form?.[0] || 'Failed to load dashboard data';
+  // Handle non-OK responses
+  if (!response.ok) {
+    const error = await response.json();
+    const errorMessage = error.details || error.error || 'Failed to load dashboard data';
     return <ResponseStatusPageError errorMessage={errorMessage} />;
   }
 
+  // Parse successful response
+  const data = await response.json();
+
   // Delegate to page component with initial data
-  return <ResponseStatusPage gameId={gameId} initialData={result.data} />;
+  return <ResponseStatusPage gameId={gameId} initialData={data} />;
 }

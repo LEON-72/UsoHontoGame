@@ -8,7 +8,6 @@
 
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
-import { getPresentersAction } from '@/app/actions/presenter';
 import type { PresenterWithLieDto } from '@/server/application/dto/PresenterWithLieDto';
 import { type Presenter, useAnswerSubmission } from './useAnswerSubmission';
 
@@ -68,16 +67,23 @@ export function useAnswerSubmissionPage({
         setIsLoading(true);
         setFetchError(null);
 
-        const result = await getPresentersAction(gameId);
+        // Fetch from API endpoint instead of server action
+        const response = await fetch(`/api/games/${gameId}/presenters`, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'same-origin',
+        });
 
         if (!isMounted) return;
 
-        if (result.success) {
+        if (response.ok) {
+          const result = await response.json();
           // Transform DTO to remove isLie flag
           const transformed = result.presenters.map(transformPresenter);
           setPresenters(transformed);
         } else {
-          setFetchError(result.error);
+          const error = await response.json();
+          setFetchError(error.details || error.error || 'プレゼンターの取得に失敗しました');
         }
       } catch (_err) {
         if (!isMounted) return;
