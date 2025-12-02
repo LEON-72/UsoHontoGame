@@ -21,6 +21,11 @@ export const SUPPORTED_LANGUAGES: readonly Language[] = ['ja', 'en'] as const;
 export const LANGUAGE_STORAGE_KEY = 'uso-honto-language';
 
 /**
+ * Cookie key for language preference (server-side access)
+ */
+export const LANGUAGE_COOKIE_KEY = 'uso-honto-language';
+
+/**
  * Locale mapping for Intl API
  */
 export const LOCALE_MAP: Record<Language, string> = {

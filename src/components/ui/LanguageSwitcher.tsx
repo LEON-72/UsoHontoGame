@@ -21,7 +21,7 @@ export function LanguageSwitcher({ className = '' }: LanguageSwitcherProps) {
 
   // Show the opposite language (what user can switch TO)
   const label = language === 'ja' ? 'EN' : '日本語';
-  const ariaLabel = language === 'ja' ? 'Switch to English' : '日本語に切り替え';
+  const ariaLabel = language === 'ja' ? 'Switch to English' : 'Switch to Japanese';
 
   return (
     <button

@@ -1,11 +1,11 @@
 /**
- * localStorage Persistence Utilities
+ * Storage Persistence Utilities (Client-Side)
  * Feature: 008-i18n-support / US2
  *
- * Handles reading and writing language preference to localStorage
+ * Handles reading and writing language preference to localStorage and cookies (client-side only)
  */
 
-import { LANGUAGE_STORAGE_KEY, SUPPORTED_LANGUAGES } from './constants';
+import { LANGUAGE_COOKIE_KEY, LANGUAGE_STORAGE_KEY, SUPPORTED_LANGUAGES } from './constants';
 import type { Language } from './types';
 
 /**
@@ -48,6 +48,29 @@ export function setStoredLanguage(language: Language): void {
     // localStorage might not be available (SSR, privacy mode, etc.)
     if (process.env.NODE_ENV === 'development') {
       console.warn('Failed to save language to localStorage:', error);
+    }
+  }
+}
+
+// =============================================================================
+// Cookie Storage (Client-Side)
+// =============================================================================
+
+/**
+ * Set language preference in cookie (client-side)
+ *
+ * @param language - Language to store
+ */
+export function setLanguageCookie(language: Language): void {
+  try {
+    const maxAge = 365 * 24 * 60 * 60; // 1 year in seconds
+    const secure = process.env.NODE_ENV === 'production' ? '; Secure' : '';
+    // biome-ignore lint/suspicious/noDocumentCookie: Client-side cookie setting required for server-side language detection
+    document.cookie = `${LANGUAGE_COOKIE_KEY}=${language}; Path=/; Max-Age=${maxAge}; SameSite=Lax${secure}`;
+  } catch (error) {
+    // Cookie setting might fail in certain contexts
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('Failed to set language cookie:', error);
     }
   }
 }

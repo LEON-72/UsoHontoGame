@@ -15,7 +15,7 @@ import type {
   TranslationKey,
 } from '@/lib/i18n';
 import { DEFAULT_LANGUAGE, formatDate, formatNumber, getTranslation } from '@/lib/i18n';
-import { getStoredLanguage, setStoredLanguage } from '@/lib/i18n/storage';
+import { getStoredLanguage, setLanguageCookie, setStoredLanguage } from '@/lib/i18n/storage';
 
 /**
  * Language Context
@@ -49,15 +49,19 @@ export function LanguageProvider({ children, initialLanguage }: LanguageProvider
 
   const setLanguage = useCallback((lang: Language) => {
     setLanguageState(lang);
-    // US2: Persist to localStorage
+    // US2: Persist to localStorage (client-side)
     setStoredLanguage(lang);
+    // Persist to cookie (for server-side access)
+    setLanguageCookie(lang);
   }, []);
 
   const toggleLanguage = useCallback(() => {
     setLanguageState((prev) => {
       const newLang = prev === 'ja' ? 'en' : 'ja';
-      // US2: Persist to localStorage
+      // US2: Persist to localStorage (client-side)
       setStoredLanguage(newLang);
+      // Persist to cookie (for server-side access)
+      setLanguageCookie(newLang);
       return newLang;
     });
   }, []);
