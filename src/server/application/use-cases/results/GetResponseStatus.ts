@@ -53,9 +53,12 @@ export class GetResponseStatus {
       .sort((a, b) => a.nickname.localeCompare(b.nickname)); // Sort alphabetically
 
     // Calculate summary
-    const totalParticipants = game.currentPlayers;
-    const submittedCount = answers.length;
-    const allSubmitted = submittedCount === totalParticipants;
+    // Note: In this app, participation happens on answer submission,
+    // so currentPlayers always equals answers.length
+    // Display max capacity vs current participants for meaningful progress
+    const totalParticipants = game.maxPlayers;
+    const submittedCount = game.currentPlayers;
+    const allSubmitted = submittedCount >= totalParticipants;
 
     // Determine if polling should continue - stop when game is closed
     const shouldContinuePolling = gameStatus === '出題中';
