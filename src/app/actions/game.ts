@@ -10,7 +10,9 @@ import { redirect } from 'next/navigation';
 import { translateZodError } from '@/lib/i18n/translateZodError';
 import type { GameDetailDto } from '@/server/application/dto/GameDetailDto';
 import type { CreateGameOutput, GameManagementDto } from '@/server/application/dto/GameDto';
+import type { RankingDto } from '@/server/application/dto/RankingDto';
 import { GameApplicationService } from '@/server/application/services/GameApplicationService';
+import { ResultsApplicationService } from '@/server/application/services/ResultsApplicationService';
 import {
   CloseGameActionSchema,
   CreateGameSchema,
@@ -20,8 +22,9 @@ import {
   UpdateGameSchema,
 } from '@/server/domain/schemas/gameSchemas';
 
-// GameApplicationService インスタンス（モジュールレベルSingleton）
+// Application Service インスタンス（モジュールレベルSingleton）
 const gameService = new GameApplicationService();
+const resultsService = new ResultsApplicationService();
 
 /**
  * Server Action: Create new game
@@ -52,7 +55,7 @@ export async function createGameAction(
 
   // 3. Application Service呼び出し
   const result = await gameService.createGame({
-    name: validationResult.data.name,
+    name: validationResult.data.name ?? null,
     playerLimit: validationResult.data.playerLimit,
   });
 
@@ -154,6 +157,21 @@ export async function getGameDetailAction(
     return { success: true, game: result.data };
   }
 
+  return result;
+}
+
+/**
+ * Server Action: Get game results (rankings)
+ * Requires session. Returns rankings for closed games only.
+ * @param gameId Game ID
+ * @returns Ranking data or error
+ */
+export async function getResultsAction(
+  gameId: string
+): Promise<
+  { success: true; data: RankingDto } | { success: false; errors: Record<string, string[]> }
+> {
+  const result = await resultsService.getResults(gameId);
   return result;
 }
 
