@@ -4,41 +4,28 @@
 
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { GetPresenterEpisodes } from '@/server/application/use-cases/games/GetPresenterEpisodes';
-import { SessionServiceContainer } from '@/server/infrastructure/di/SessionServiceContainer';
-import { createGameRepository } from '@/server/infrastructure/repositories';
+import { PresenterApplicationService } from '@/server/application/services/PresenterApplicationService';
+
+const presenterService = new PresenterApplicationService();
 
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ presenterId: string }> }
 ) {
   try {
-    // Validate session (required for presenter management)
-    let sessionId: string;
-    try {
-      const sessionService = SessionServiceContainer.getSessionService();
-      sessionId = await sessionService.requireCurrentSession();
-    } catch {
+    const { presenterId } = await params;
+    const result = await presenterService.getPresenterEpisodes(presenterId);
+
+    if (!result.success) {
+      const errorMessages = Object.values(result.errors).flat();
+      const status = errorMessages.some((m) => m.toLowerCase().includes('not found')) ? 404 : 400;
       return NextResponse.json(
-        { error: 'Unauthorized', details: 'Session required' },
-        { status: 401 }
+        { error: 'Failed to get presenter episodes', details: errorMessages.join(', ') },
+        { status }
       );
     }
 
-    // Extract presenterId from params
-    const { presenterId } = await params;
-
-    // Execute GetPresenterEpisodes use case
-    const repository = createGameRepository();
-    const useCase = new GetPresenterEpisodes(repository);
-
-    const result = await useCase.execute({
-      presenterId,
-      requesterId: sessionId,
-    });
-
-    // Return successful response
-    return NextResponse.json({ presenter: result.presenter }, { status: 200 });
+    return NextResponse.json({ presenter: result.data.presenter }, { status: 200 });
   } catch (error) {
     console.error('Presenter episodes API error:', error);
     return NextResponse.json(

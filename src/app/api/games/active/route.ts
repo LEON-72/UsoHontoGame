@@ -1,21 +1,20 @@
 // API Route: Active Games List
 // Feature: 005-top-active-games (User Story 4)
-// Returns list of games with status '出題中' (publicly accessible, no auth required)
+// Returns list of games with status '出題中' / '締切' (publicly accessible, no auth required)
 
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { GetActiveGames } from '@/server/application/use-cases/games/GetActiveGames';
-import { createGameRepository } from '@/server/infrastructure/repositories';
+import { GameApplicationService } from '@/server/application/services/GameApplicationService';
+
+const gameService = new GameApplicationService();
 
 export async function GET(request: NextRequest) {
   try {
-    // Extract query parameters
     const searchParams = request.nextUrl.searchParams;
     const cursor = searchParams.get('cursor') || undefined;
     const limitParam = searchParams.get('limit');
     const limit = limitParam ? parseInt(limitParam, 10) : undefined;
 
-    // Validate limit parameter
     if (limitParam && (Number.isNaN(limit!) || limit! < 1 || limit! > 100)) {
       return NextResponse.json(
         { error: 'Bad Request', details: 'Limit must be between 1 and 100' },
@@ -23,13 +22,8 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Execute GetActiveGames use case (no auth required - public data)
-    const repository = createGameRepository();
-    const useCase = new GetActiveGames(repository);
+    const result = await gameService.getActiveGames({ cursor, limit });
 
-    const result = await useCase.execute({ cursor, limit });
-
-    // Return successful response
     return NextResponse.json(
       {
         games: result.games,

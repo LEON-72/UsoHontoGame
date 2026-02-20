@@ -4,41 +4,27 @@
 
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { GetPresentersByGameId } from '@/server/application/use-cases/games/GetPresentersByGameId';
-import { SessionServiceContainer } from '@/server/infrastructure/di/SessionServiceContainer';
-import { createGameRepository } from '@/server/infrastructure/repositories';
+import { PresenterApplicationService } from '@/server/application/services/PresenterApplicationService';
+
+const presenterService = new PresenterApplicationService();
 
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ gameId: string }> }
 ) {
   try {
-    // Validate session (required for presenter management)
-    let sessionId: string;
-    try {
-      const sessionService = SessionServiceContainer.getSessionService();
-      sessionId = await sessionService.requireCurrentSession();
-    } catch {
+    const { gameId } = await params;
+    const result = await presenterService.getPresentersByGameId(gameId);
+
+    if (!result.success) {
+      const errorMessages = Object.values(result.errors).flat();
       return NextResponse.json(
-        { error: 'Unauthorized', details: 'Session required' },
-        { status: 401 }
+        { error: 'Failed to get presenters', details: errorMessages.join(', ') },
+        { status: 400 }
       );
     }
 
-    // Extract gameId from params
-    const { gameId } = await params;
-
-    // Execute GetPresentersByGameId use case
-    const repository = createGameRepository();
-    const useCase = new GetPresentersByGameId(repository);
-
-    const result = await useCase.execute({
-      gameId,
-      requesterId: sessionId,
-    });
-
-    // Return successful response
-    return NextResponse.json({ presenters: result.presenters }, { status: 200 });
+    return NextResponse.json({ presenters: result.data.presenters }, { status: 200 });
   } catch (error) {
     console.error('Presenters API error:', error);
     return NextResponse.json(

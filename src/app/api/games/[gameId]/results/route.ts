@@ -3,9 +3,9 @@
 // Returns final rankings with winner highlighting
 
 import { type NextRequest, NextResponse } from 'next/server';
-import { GetResults } from '@/server/application/use-cases/results/GetResults';
-import { SessionServiceContainer } from '@/server/infrastructure/di/SessionServiceContainer';
-import { createAnswerRepository, createGameRepository } from '@/server/infrastructure/repositories';
+import { ResultsApplicationService } from '@/server/application/services/ResultsApplicationService';
+
+const resultsService = new ResultsApplicationService();
 
 export async function GET(
   _request: NextRequest,
@@ -13,33 +13,12 @@ export async function GET(
 ) {
   try {
     const { gameId } = await params;
+    const result = await resultsService.getResults(gameId);
 
-    // Validate session
-    let _sessionId: string;
-    try {
-      const sessionService = SessionServiceContainer.getSessionService();
-      _sessionId = await sessionService.requireCurrentSession();
-    } catch {
-      return NextResponse.json(
-        { error: 'Unauthorized', details: 'Session required' },
-        { status: 401 }
-      );
-    }
-
-    // Execute use case
-    const gameRepository = createGameRepository();
-    const answerRepository = createAnswerRepository();
-    const useCase = new GetResults(gameRepository, answerRepository);
-    const result = await useCase.execute(gameId);
-
-    // Handle errors
     if (!result.success) {
       const errorMessages = Object.values(result.errors).flat();
       return NextResponse.json(
-        {
-          error: 'Failed to get results',
-          details: errorMessages.join(', '),
-        },
+        { error: 'Failed to get results', details: errorMessages.join(', ') },
         { status: 400 }
       );
     }
