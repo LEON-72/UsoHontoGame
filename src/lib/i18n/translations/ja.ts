@@ -34,6 +34,8 @@ export const ja: Translations = {
     language: '言語',
     dashboard: 'ダッシュボード',
     activeGames: '出題中/締切のゲーム',
+    managerTop: 'ゲーム管理',
+    playerTop: '参加者TOP',
   },
 
   game: {
